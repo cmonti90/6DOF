@@ -1,0 +1,5 @@
+add_subdirectory(TimeManager)
+add_subdirectory(Motor)
+add_subdirectory(eom)
+add_subdirectory(IMU)
+add_subdirectory(Encoder)
