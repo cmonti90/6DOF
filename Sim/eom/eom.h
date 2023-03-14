@@ -3,14 +3,13 @@
 
 #include <iostream>
 #include <array>
-#include "Motor.h"
 #include "TimeMngr.h"
+#include "mathlib.h"
 
 class eom
 {
 protected:
     TimeMngr *pTimeMngr;
-    Motor *pMtr_;
 
     double dt{0.0};
     double t{0.0};
@@ -28,12 +27,25 @@ protected:
     double thetadot_{0.0};
     double theta_{0.0};
 
+    double mass;
+    double I;
+
+    myMath::Vector3d transStateVecDot;
+    myMath::Vector3d transStateVec;
+
+    myMath::Matrix3d Atrans;
+    myMath::Matrix3d Atrans_inv;
+    myMath::Matrix3d Btrans;
+
+    myMath::Vector3d rotStateVecDot;
+    myMath::Vector3d rotStateVec;
+
+    myMath::Matrix3d Arot;
+    myMath::Matrix3d Arot_inv;
+    myMath::Matrix3d Brot;
     double mb{0.0};
     double mr{0.0};
     double Len{0.0};
-    double I{0.0};
-    double g{0.0};
-    double PI{0.0};
 
     double Frg{0.0};
     double Ff{0.0};
@@ -50,10 +62,10 @@ protected:
 
 public:
     eom();
-    ~eom();
+    ~eom() = default;
     eom(const eom &obj);
     eom &operator=(const eom &obj);
-    void getEomReferences(TimeMngr * refTimeMngr, Motor *refMotor);
+    void getEomReferences(TimeMngr *refTimeMngr);
     void initialize(void);
     void exec(void);
     void setMotorDynamics(void);

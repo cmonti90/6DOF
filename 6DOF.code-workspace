@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"ostream": "cpp",
+			"iostream": "cpp",
+			"functional": "cpp",
+			"memory": "cpp",
+			"sstream": "cpp",
+			"cmath": "cpp"
+		}
+	}
+}

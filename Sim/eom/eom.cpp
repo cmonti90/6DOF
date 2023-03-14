@@ -2,21 +2,17 @@
 
 #include <math.h>
 
-eom::eom() : pMtr_()
+eom::eom()
 {
-    
 }
 
-void eom::getEomReferences(TimeMngr *refTimeMngr, Motor *refMotor)
+void eom::getEomReferences(TimeMngr *refTimeMngr)
 {
     pTimeMngr = refTimeMngr;
-    pMtr_ = refMotor;
 }
 
 void eom::initialize(void)
 {
-    PI = 3.141592653589;
-
     xbdotdot_ = 0.0;
     xbdot_ = 0.0;
     xb_ = 0.0;
@@ -27,13 +23,12 @@ void eom::initialize(void)
 
     thetadotdot_ = 0.0;
     thetadot_ = 0.0;
-    theta_ = 60.0 * PI / 180.0;
+    theta_ = 60.0 * myMath::Constants::PI / 180.0;
 
     mb = 3.0;
     mr = 2.0;
     I = 3.0;
-    g = 9.81;
-    Frg = mr * g;
+    Frg = mr * myMath::Constants::GRAVITY_ACCEL;
     Len = 0.5;
 
     Ff = 0.0;
@@ -47,7 +42,19 @@ void eom::initialize(void)
     t = 0.0;
     counter = 0;
 
-    //printf("thetadotdot = %f\t thetadot = %f\t theta = %f\t", thetadotdot_, thetadot_, theta_);
+    mass = 75.0;
+    Atrans = mass * myMath::Matrix3d().Identity();
+    Atrans_inv = (1.0 / mass) * myMath::Matrix3d().Identity();
+    Btrans = myMath::Matrix3d().Identity();
+
+    I = 10.0;
+    Arot = I * myMath::Matrix3d().Identity();
+    Arot_inv = (1.0 / I) * myMath::Matrix3d().Identity();
+    Arot = myMath::Matrix3d().Identity();
+
+
+
+    // printf("thetadotdot = %f\t thetadot = %f\t theta = %f\t", thetadotdot_, thetadot_, theta_);
 }
 
 void eom::exec(void)
@@ -61,13 +68,17 @@ void eom::exec(void)
 
     if (counter % 1000 == 0)
     {
-        //printf("thetadotdot = %f\t thetadot = %f\t theta = %f", thetadotdot_, thetadot_, theta_);
-        //printf("theta = %f\t", theta_);
+        // printf("thetadotdot = %f\t thetadot = %f\t theta = %f", thetadotdot_, thetadot_, theta_);
+        // printf("theta = %f\t", theta_);
     }
 }
 
 void eom::rungeKutta4thOrder(void)
 {
+    
+
+    //////////////////////////////////////////////////
+
     double dXbdot1;
     double dXbdot2;
     double dXbdot3;
@@ -84,32 +95,6 @@ void eom::rungeKutta4thOrder(void)
     double dTheta2;
     double dTheta3;
     double dTheta4;
-
-    if (thetadot_ > 0.0)
-    {
-        Mf = -Mf_mag;
-    }
-    else if (thetadot_ < 0.0)
-    {
-        Mf = Mf_mag;
-    }
-    else
-    {
-        Mf = 0.0;
-    }
-
-    if ( xbdot_ > 0.0)
-    {
-        Ff = -Ff_mag;
-    }
-    else if (xbdot_ < 0.0)
-    {
-        Ff = Ff_mag;
-    }
-    else
-    {
-        Ff = 0.0;
-    }
 
     dXbdot1 = dt * xbDotDotOde(theta_, thetadot_);
     dXb1 = dt * xbdot_;
@@ -139,27 +124,28 @@ void eom::rungeKutta4thOrder(void)
     thetadot_ += (dThetaDot1 + 2.0 * dThetaDot2 + 2.0 * dThetaDot3 + dThetaDot4) / 6.0;
     theta_ += (dTheta1 + 2.0 * dTheta2 + 2.0 * dTheta3 + dTheta4) / 6.0;
 
-    if (theta_ > 2.0 * PI)
+    if (theta_ > 2.0 * myMath::Constants::PI)
     {
-        theta_ -= 2.0 * PI * std::floor(theta_ / (2.0 * PI));
+        theta_ -= 2.0 * myMath::Constants::PI * std::floor(theta_ / (2.0 * myMath::Constants::PI));
     }
-    else if (theta_ <= 2.0 * PI)
+    else if (theta_ <= 2.0 * myMath::Constants::PI)
     {
-        theta_ -= 2.0 * PI * std::floor(theta_ / (2.0 * PI));
+        theta_ -= 2.0 * myMath::Constants::PI * std::floor(theta_ / (2.0 * myMath::Constants::PI));
     }
 }
 
 double eom::thetaDotDotOde(double theta, double thetadot)
 {
-    return ((std::pow(mr * Len * thetadot, 2) * std::cos(theta) + mr * Len * Ff  + (mb + mr) * Mf - (mb + mr)  * mr * g * Len * std::cos(theta)) / ((mb + mr) * (I + mr * std::pow(Len, 2) - std::pow(mr * Len, 2) * std::sin(theta) / (mb + mr))));
+    
+
+    return ((std::pow(mr * Len * thetadot, 2) * std::cos(theta) + mr * Len * Ff + (mb + mr) * Mf - (mb + mr) * mr * myMath::Constants::GRAVITY_ACCEL * Len * std::cos(theta)) / ((mb + mr) * (I + mr * std::pow(Len, 2) - std::pow(mr * Len, 2) * std::sin(theta) / (mb + mr))));
 }
 
 double eom::xbDotDotOde(double theta, double thetadot)
 {
-    return ((mr * Len * (thetaDotDotOde(theta, thetadot) * std::sin(theta) - std::pow(thetadot, 2) * std::cos(theta)) + Ff + motorAccel) / (mb + mr));
+    return ((mr * Len * (thetaDotDotOde(theta, thetadot) * std::sin(theta) - myMath::SQ(thetadot) * std::cos(theta)) + Ff + motorAccel) / (mb + mr));
 }
 
 void eom::setMotorDynamics(void)
 {
-    motorAccel = pMtr_->getMotorOutput();
 }

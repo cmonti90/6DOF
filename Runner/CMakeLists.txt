@@ -9,14 +9,10 @@ add_executable(${target} ${SOURCES} ${HEADERS})
 target_include_directories(${target}    PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR}
                                                 )
 
-set(libs    Motor
-            eom
-            imu
-            Encoder
-            Controller
-            Navigation
+set(libs    eom
             TimeMngr
     )
 
 target_link_libraries(${target} PUBLIC ${libs}
-                                 mathlib)
+                                PRIVATE mathlib
+                                )

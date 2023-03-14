@@ -12,5 +12,4 @@ list(APPEND CMAKE_PREFIX_PATH $ENV{MATHLIB_DIR})
 find_package(mathlib CONFIG REQUIRED)
 
 add_subdirectory("Sim")
-add_subdirectory("SW")
 add_subdirectory("Runner")
