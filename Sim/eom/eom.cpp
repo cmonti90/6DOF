@@ -23,20 +23,22 @@ void eom::initialize(void)
 
     thetadotdot_ = 0.0;
     thetadot_ = 0.0;
-    theta_ = 60.0 * myMath::Constants::PI / 180.0;
+    theta_ = 0.0;
 
-    mb = 3.0;
-    mr = 2.0;
-    I = 3.0;
-    Frg = mr * myMath::Constants::GRAVITY_ACCEL;
+    mass = 3000.0;
+
+    I = 0.0;
+    I[0][0] = 50.0;  // Ixx
+    I[1][1] = 250.0; // Iyy
+    I[2][2] = 250.0; // Izz
+
+    Frg = mass * myMath::Constants::GRAVITY_ACCEL;
     Len = 0.5;
 
     Ff = 0.0;
     Ff_mag = 0.0;
     Mf = 0.0;
     Mf_mag = 0.0;
-
-    motorAccel = 0.0;
 
     dt = 0.0001;
     t = 0.0;
@@ -49,10 +51,8 @@ void eom::initialize(void)
 
     I = 10.0;
     Arot = I * myMath::Matrix3d().Identity();
-    Arot_inv = (1.0 / I) * myMath::Matrix3d().Identity();
+    // Arot_inv = (1.0 / I) * myMath::Matrix3d().Identity();
     Arot = myMath::Matrix3d().Identity();
-
-
 
     // printf("thetadotdot = %f\t thetadot = %f\t theta = %f\t", thetadotdot_, thetadot_, theta_);
 }
@@ -61,8 +61,6 @@ void eom::exec(void)
 {
     t += dt;
     counter++;
-
-    setMotorDynamics();
 
     rungeKutta4thOrder();
 
@@ -75,9 +73,6 @@ void eom::exec(void)
 
 void eom::rungeKutta4thOrder(void)
 {
-    
-
-    //////////////////////////////////////////////////
 
     double dXbdot1;
     double dXbdot2;
@@ -128,24 +123,40 @@ void eom::rungeKutta4thOrder(void)
     {
         theta_ -= 2.0 * myMath::Constants::PI * std::floor(theta_ / (2.0 * myMath::Constants::PI));
     }
-    else if (theta_ <= 2.0 * myMath::Constants::PI)
+    else if (theta_ <= -2.0 * myMath::Constants::PI)
     {
         theta_ -= 2.0 * myMath::Constants::PI * std::floor(theta_ / (2.0 * myMath::Constants::PI));
     }
+
+    // myMath::Matrix<myMath::Vector3d, 4, 2> dVec;
+    // myMath::Matrix<myMath::Vector3d, 4, 2> dVecDot;
+
+    // dVecDot[0] = dt * stateEquation(Atrans, Arot, transStateVec, rotStateVec);
+    // dVec[0][0] = dt * dVecDot[0][0];
+    // dVec[0][1] = dt * dVecDot[0][1];
+}
+
+myMath::Vector<myMath::Vector3d, 2> eom::stateEquation(const myMath::Matrix3d transMat, const myMath::Matrix3d rotMat, const myMath::Vector3d transVec, const myMath::Vector3d rotVec)
+{
+    myMath::Vector3d transVecDot;
+    myMath::Vector3d rotVecDot;
+
+    transVecDot = transMat.Inverse() * transVec;
+    rotVecDot = rotMat.Inverse() * rotVec;
+
+    myMath::Vector<myMath::Vector3d, 2> combinedVecDot;
+    combinedVecDot[0] = transVecDot;
+    combinedVecDot[1] = rotVecDot;
+
+    return combinedVecDot;
 }
 
 double eom::thetaDotDotOde(double theta, double thetadot)
 {
-    
-
-    return ((std::pow(mr * Len * thetadot, 2) * std::cos(theta) + mr * Len * Ff + (mb + mr) * Mf - (mb + mr) * mr * myMath::Constants::GRAVITY_ACCEL * Len * std::cos(theta)) / ((mb + mr) * (I + mr * std::pow(Len, 2) - std::pow(mr * Len, 2) * std::sin(theta) / (mb + mr))));
+    return 0.0; //((std::pow(mr * Len * thetadot, 2) * std::cos(theta) + mr * Len * Ff + (mb + mr) * Mf - (mb + mr) * mr * myMath::Constants::GRAVITY_ACCEL * Len * std::cos(theta)) / ((mb + mr) * (I + mr * std::pow(Len, 2) - std::pow(mr * Len, 2) * std::sin(theta) / (mb + mr))));
 }
 
 double eom::xbDotDotOde(double theta, double thetadot)
 {
-    return ((mr * Len * (thetaDotDotOde(theta, thetadot) * std::sin(theta) - myMath::SQ(thetadot) * std::cos(theta)) + Ff + motorAccel) / (mb + mr));
-}
-
-void eom::setMotorDynamics(void)
-{
+    return 0.0; //((mr * Len * (thetaDotDotOde(theta, thetadot) * std::sin(theta) - myMath::SQ(thetadot) * std::cos(theta)) + Ff + motorAccel) / (mb + mr));
 }

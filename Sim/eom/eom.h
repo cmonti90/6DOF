@@ -28,7 +28,7 @@ protected:
     double theta_{0.0};
 
     double mass;
-    double I;
+    myMath::Matrix3d I;
 
     myMath::Vector3d transStateVecDot;
     myMath::Vector3d transStateVec;
@@ -53,10 +53,9 @@ protected:
     double Mf{0.0};
     double Mf_mag{0.0};
 
-    double motorAccel{0.0};
-
     void getMotorOutput(void);
     void rungeKutta4thOrder(void);
+    myMath::Vector<myMath::Vector3d, 2> stateEquation(const myMath::Matrix3d transMat, const myMath::Matrix3d rotMat, const myMath::Vector3d transVec, const myMath::Vector3d rotVec);
     double thetaDotDotOde(double xbdotdot, double theta);
     double xbDotDotOde(double xbdotdot, double theta);
 
@@ -68,7 +67,6 @@ public:
     void getEomReferences(TimeMngr *refTimeMngr);
     void initialize(void);
     void exec(void);
-    void setMotorDynamics(void);
 
     double getEomTheta(void)
     {

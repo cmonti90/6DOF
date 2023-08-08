@@ -1,12 +1,10 @@
-set(target eom)
+set(target Autopilot)
 
-set(SOURCES EomComponent.cpp
-            eom.cpp)
+set(SOURCES AutopilotComponent.cpp )
 
-set(HEADERS EomComponent.h
-            eom.h)
+set(HEADERS AutopilotComponent.h )
 
-add_library(${target} ${SOURCES})
+add_library(${target} ${SOURCES} )
 
 target_include_directories(${target}    PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR}
                                                 )

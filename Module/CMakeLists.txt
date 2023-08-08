@@ -1,10 +1,8 @@
-set(target eom)
+set(target procModule)
 
-set(SOURCES EomComponent.cpp
-            eom.cpp)
+set(SOURCES ProcModule.cpp)
 
-set(HEADERS EomComponent.h
-            eom.h)
+set(HEADERS ProcModule.h)
 
 add_library(${target} ${SOURCES})
 
@@ -12,7 +10,9 @@ target_include_directories(${target}    PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR}
                                                 )
 
 target_link_libraries(${target} PUBLIC  TimeMngr
-                                        Messages
-                                PRIVATE mathlib
+                                PRIVATE eom
+                                        Navigation
+                                        Guidance
+                                        Autopilot
                                         PubSub
                                         )

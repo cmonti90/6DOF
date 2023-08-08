@@ -1,10 +1,8 @@
-set(target eom)
+set(target Navigation)
 
-set(SOURCES EomComponent.cpp
-            eom.cpp)
+set(SOURCES NavigationComponent.cpp )
 
-set(HEADERS EomComponent.h
-            eom.h)
+set(HEADERS NavigationComponent.h )
 
 add_library(${target} ${SOURCES})
 

@@ -1,10 +1,8 @@
-set(target eom)
+set(target Guidance)
 
-set(SOURCES EomComponent.cpp
-            eom.cpp)
+set(SOURCES GuidanceComponent.cpp )
 
-set(HEADERS EomComponent.h
-            eom.h)
+set(HEADERS GuidanceComponent.h )
 
 add_library(${target} ${SOURCES})
 

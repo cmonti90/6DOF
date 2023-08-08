@@ -3,40 +3,43 @@
 
 int main()
 {
-        tf = 30.0;
-        counter = 0;
 
-        getSimReferences();
-        initializeSim();
+        wrapper.pProcModule_.launch();
 
-        while (wrapper.pTimeMngr_->getTimeNow() <= tf)
-        {
-                counter++;
+        // tf = 30.0;
+        // counter = 0;
 
-                if (counter % 1000 == 0)
-                {
-                        //printf("time = %6.3f\t", t);
-                }
+        // getSimReferences();
+        // initializeSim();
 
-                runSim();
-        }
+        // while (wrapper.pTimeMngr_->getTimeNow() <= tf)
+        // {
+        //         counter++;
+
+        //         if (counter % 1000 == 0)
+        //         {
+        //                 //printf("time = %6.3f\t", t);
+        //         }
+
+        //         runSim();
+        // }
 
         return 1;
 }
 
-void getSimReferences()
-{
-        wrapper.pEom_->getEomReferences(wrapper.pTimeMngr_);
-}
+// void getSimReferences()
+// {
+        // wrapper.pEom_->getEomReferences(wrapper.pTimeMngr_);
+// }
 
-void initializeSim()
-{
-        wrapper.pTimeMngr_->initialize();
-        wrapper.pEom_->initialize();
-}
+// void initializeSim()
+// {
+        // wrapper.pTimeMngr_->initialize();
+        // wrapper.pEom_->initialize();
+// }
 
-void runSim(void)
-{
-        wrapper.pTimeMngr_->update();
-        wrapper.pEom_->exec();
-}
+// void runSim(void)
+// {
+        // wrapper.pTimeMngr_->update();
+        // wrapper.pEom_->exec();
+// }
