@@ -3,10 +3,13 @@
 
 #include "RtcClock.h"
 
+#include "GravityComponent.h"
 #include "MassPropertiesComponent.h"
 #include "EngineComponent.h"
+#include "ControlSurfacesComponent.h"
 #include "AeroComponent.h"
 #include "EomComponent.h"
+#include "ImuComponent.h"
 
 #include "NavigationComponent.h"
 #include "GuidanceComponent.h"
@@ -19,9 +22,12 @@ pRtcClock( new TimePt::RtcClock( m_time ) ),
 navThread(),
 guidanceThread(),
 autopilotThread(),
+pGravityComponent( new GravityComponent( m_queueMngr ) ),
 pMassPropComponent( new MassPropertiesComponent( m_queueMngr ) ),
 pEngineComponent( new EngineComponent( m_queueMngr ) ),
+pCtrlSurfComponent( new ControlSurfacesComponent( m_queueMngr ) ),
 pEomComponent( new EomComponent( m_queueMngr ) ),
+pImuComponent( new ImuComponent( m_queueMngr ) ),
 pAeroComponent( new AeroComponent( m_queueMngr ) ),
 pNavigationComponent( new NavigationComponent( m_queueMngr ) ),
 pGuidanceComponent( new GuidanceComponent( m_queueMngr ) ),
@@ -44,10 +50,13 @@ void ProcModule::launch()
     addThread( autopilotThread );
     addCompToThread( pAutopilotComponent.get() );
 
-    addSimComp( pMassPropComponent.get() );
     addSimComp( pEngineComponent.get() );
-    addSimComp( pEomComponent.get() );
+    addSimComp( pCtrlSurfComponent.get() );
     addSimComp( pAeroComponent.get() );
+    addSimComp( pGravityComponent.get() );
+    addSimComp( pMassPropComponent.get() );
+    addSimComp( pEomComponent.get() );
+    addSimComp( pImuComponent.get() );
 
     std::cout << "Initializing" << std::endl;
     initialize();

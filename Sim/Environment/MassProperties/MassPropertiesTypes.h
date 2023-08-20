@@ -4,19 +4,18 @@
 #include "MessageContainer.h"
 #include "Payload.h"
 
-#include "AeroMsg.h"
 #include "EngineMsg.h"
+#include "MassPropMsg.h"
 
 namespace MassPropTypes
 {
     struct InData : Intf::MessageContainer<
-        InputPayload<AeroMsg>,
         InputPayload<EngineMsg>
     >
     {};
 
     struct OutData : Intf::MessageContainer<
-        OutputPayload<AeroMsg>
+        OutputPayload<MassPropMsg>
     >
     {};
 }

@@ -3,10 +3,11 @@
 #include "AutopilotTypes.h"
 #include "AutopilotAlgorithm.h"
 
-#include <iostream>
-
 AutopilotComponent::AutopilotComponent(std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::COMPONENT_LABEL name)
-: PubSub::Component(queueMngr, name), pAlg(new AutopilotAlgorithm()), inData_(new AutopilotTypes::InData()), outData_(new AutopilotTypes::OutData())
+    : PubSub::Component(queueMngr, name),
+      pAlg(new AutopilotAlgorithm()),
+      inData_(new AutopilotTypes::InData()),
+      outData_(new AutopilotTypes::OutData())
 {
 }
 
@@ -16,9 +17,11 @@ AutopilotComponent::~AutopilotComponent()
 
 void AutopilotComponent::initialize(void)
 {
-    // subscribe(test1Msg_.get(), PubSub::Message_Type::ACTIVE);
+    subscribe<GuidanceMsg>(*inData_, PubSub::Message_Type::ACTIVE);
 
-    // pAlg->initialize();
+    subscribe<NavMsg>(*inData_, PubSub::Message_Type::PASSIVE);
+
+    pAlg->initialize();
 }
 
 void AutopilotComponent::update(void)
@@ -30,13 +33,15 @@ void AutopilotComponent::update(void)
     {
         switch (label)
         {
-            // case test1Msg::MESSAGE_LABEL:
-            //     receive(test1Msg_.get());
+        case GuidanceMsg::MESSAGE_LABEL:
+            receive<GuidanceMsg>(*inData_);
 
-            //     test2Msg_->msg2data += 0.1;
+            break;
 
-            //     send(test2Msg_.get());
-            //     break;
+        case NavMsg::MESSAGE_LABEL:
+            receive<NavMsg>(*inData_);
+
+            break;
 
         default:
             removeTopMessage();

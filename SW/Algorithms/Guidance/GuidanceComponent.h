@@ -3,8 +3,6 @@
 #define GUIDANCECOMPONENT_H
 
 #include "Component.h"
-#include "test1Msg.h"
-#include "test2Msg.h"
 
 #include <memory>
 

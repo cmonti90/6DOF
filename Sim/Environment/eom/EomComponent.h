@@ -3,6 +3,8 @@
 
 #include "SimComponent.h"
 
+#include <memory>
+
 namespace EomTypes
 {
     struct InData;
@@ -24,8 +26,8 @@ public:
 private:
     std::unique_ptr<eom> pAlg;
 
-    EomTypes::InData* inData_;
-    EomTypes::OutData* outData_;
+    std::unique_ptr<EomTypes::InData> inData_;
+    std::unique_ptr<EomTypes::OutData> outData_;
 
     unsigned int counter_;
 };

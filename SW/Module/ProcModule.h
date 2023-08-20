@@ -11,10 +11,13 @@ namespace TimePt
 }
 
 // Simulation Component forward declarations
+class GravityComponent;
 class MassPropertiesComponent;
 class EngineComponent;
+class ControlSurfacesComponent;
 class AeroComponent;
 class EomComponent;
+class ImuComponent;
 
 // SW Component forward declarations
 class NavigationComponent;
@@ -36,10 +39,13 @@ private:
     PubSub::Thread guidanceThread;
     PubSub::Thread autopilotThread;
 
+    std::unique_ptr<GravityComponent> pGravityComponent;
     std::unique_ptr<MassPropertiesComponent> pMassPropComponent;
     std::unique_ptr<EngineComponent> pEngineComponent;
+    std::unique_ptr<ControlSurfacesComponent> pCtrlSurfComponent;
     std::unique_ptr<EomComponent> pEomComponent;
     std::unique_ptr<AeroComponent> pAeroComponent;
+    std::unique_ptr<ImuComponent> pImuComponent;
 
     std::unique_ptr<NavigationComponent> pNavigationComponent;
     std::unique_ptr<GuidanceComponent> pGuidanceComponent;

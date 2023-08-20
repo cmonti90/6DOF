@@ -4,17 +4,18 @@
 #include "MessageContainer.h"
 #include "Payload.h"
 
-#include "AeroMsg.h"
+#include "ImuMsg.h"
+#include "NavMsg.h"
 
 namespace NavTypes
 {
     struct InData : Intf::MessageContainer<
-        InputPayload<AeroMsg>
+        InputPayload<ImuMsg>
     >
     {};
 
     struct OutData : Intf::MessageContainer<
-        OutputPayload<AeroMsg>
+        OutputPayload<NavMsg>
     >
     {};
 }

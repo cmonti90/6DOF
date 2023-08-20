@@ -5,11 +5,14 @@
 #include "Payload.h"
 
 #include "AeroMsg.h"
+#include "CtrlSurfMsg.h"
+#include "EomMsg.h"
 
 namespace AeroTypes
 {
     struct InData : Intf::MessageContainer<
-        InputPayload<AeroMsg>
+        InputPayload<EomMsg>,
+        InputPayload<CtrlSurfMsg>
     >
     {};
 

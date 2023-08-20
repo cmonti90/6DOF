@@ -3,6 +3,8 @@
 
 #include "Message.h"
 
+#include "MessagePayloadTemplate.hxx"
+
 struct AeroData
 {
     double force[3];
@@ -43,57 +45,6 @@ struct AeroData
     }
 };
 
-class AeroMsg : public PubSub::Message
-{
-public:
-    AeroMsg() : Message( "AeroMsg" ), payload()
-    {
-    }
-
-    ~AeroMsg() {}
-
-    AeroMsg( const AeroMsg& other ) : Message( other ), payload(other.payload)
-    {
-    }
-
-    AeroMsg& operator=( const AeroMsg& other )
-    {
-        Message::operator=( other );
-
-        payload = other.payload;
-
-        return *this;
-    }
-
-    static constexpr PubSub::Message_Label MESSAGE_LABEL = 10;
-
-    PubSub::Message_Label getMessageLabel() const override
-    {
-        return MESSAGE_LABEL;
-    }
-
-    AeroData payload;
-
-    Message* clone() const override
-    {
-        return new AeroMsg( *this );
-    }
-
-    void copy( const Message* other ) override
-    {
-        const AeroMsg* pOther = dynamic_cast< const AeroMsg* >( other );
-
-        if (pOther != nullptr)
-        {
-            payload = pOther->payload;
-        }
-    }
-
-    void reset() override
-    {
-        payload.Default();
-    }
-};
-
+MESSAGE_PAYLOAD(AeroMsg, AeroData, 10)
 
 #endif /* E379D5A1_B7C3_46B7_9DE5_37D4C17FF27D */

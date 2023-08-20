@@ -3,6 +3,8 @@
 
 #include "SimComponent.h"
 
+#include <memory>
+
 namespace AeroTypes
 {
     struct InData;
@@ -25,8 +27,8 @@ private:
     std::unique_ptr<Aero> pAlg;
     unsigned int counter_;
 
-    AeroTypes::InData* inData_;
-    AeroTypes::OutData* outData_;
+    std::unique_ptr<AeroTypes::InData> inData_;
+    std::unique_ptr<AeroTypes::OutData> outData_;
 
 };
 

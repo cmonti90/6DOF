@@ -20,9 +20,12 @@ EomComponent::~EomComponent()
 void EomComponent::initialize(void)
 {
 
-    subscribe<AeroMsg>(*inData_, PubSub::Message_Type::ACTIVE);
+    subscribe<AeroMsg>(*inData_);
+    subscribe<EngineMsg>(*inData_);
+    subscribe<GravityMsg>(*inData_);
+    subscribe<MassPropMsg>(*inData_);
 
-    // pAlg->initialize();
+    pAlg->initialize();
     counter_ = 0u;
 }
 
@@ -38,8 +41,29 @@ void EomComponent::update(void)
         {
         case AeroMsg::MESSAGE_LABEL:
             receive<AeroMsg>(*inData_);
+
             pAlg->addForces(myMath::Vector3d(inData_->AeroData::force));
             pAlg->addMoments(myMath::Vector3d(inData_->AeroData::moment));
+
+            break;
+
+        case EngineMsg::MESSAGE_LABEL:
+            receive<EngineMsg>(*inData_);
+
+            pAlg->addForces(myMath::Vector3d(inData_->EngineData::force));
+            pAlg->addMoments(myMath::Vector3d(inData_->EngineData::moment));
+
+            break;
+
+        case GravityMsg::MESSAGE_LABEL:
+            receive<GravityMsg>(*inData_);
+
+            pAlg->addForces(myMath::Vector3d(inData_->GravityData::force));
+
+            break;
+
+        case MassPropMsg::MESSAGE_LABEL:
+            receive<MassPropMsg>(*inData_);
 
             break;
 
@@ -52,6 +76,8 @@ void EomComponent::update(void)
     }
 
     // pAlg->exec();
+
+    send<EomMsg>(*outData_);
 
     counter_++;
 }

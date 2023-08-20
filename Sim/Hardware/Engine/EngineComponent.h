@@ -3,6 +3,8 @@
 
 #include "SimComponent.h"
 
+#include <memory>
+
 namespace EngineTypes
 {
     struct InData;
@@ -24,8 +26,8 @@ public:
 private:
     std::unique_ptr<engine> pAlg;
 
-    EngineTypes::InData* inData_;
-    EngineTypes::OutData* outData_;
+    std::unique_ptr<EngineTypes::InData> inData_;
+    std::unique_ptr<EngineTypes::OutData> outData_;
 
     unsigned int counter_;
 };

@@ -3,6 +3,8 @@
 
 #include "SimComponent.h"
 
+#include <memory>
+
 namespace MassPropTypes
 {
     struct InData;
@@ -24,8 +26,8 @@ public:
 private:
     std::unique_ptr<MassProperties> pAlg;
 
-    MassPropTypes::InData* inData_;
-    MassPropTypes::OutData* outData_;
+    std::unique_ptr<MassPropTypes::InData> inData_;
+    std::unique_ptr<MassPropTypes::OutData> outData_;
 
     unsigned int counter_;
 };

@@ -4,17 +4,18 @@
 #include "MessageContainer.h"
 #include "Payload.h"
 
-#include "AeroMsg.h"
+#include "NavMsg.h"
+#include "GuidanceMsg.h"
 
 namespace GuidanceTypes
 {
     struct InData : Intf::MessageContainer<
-        InputPayload<AeroMsg>
+        InputPayload<NavMsg>
     >
     {};
 
     struct OutData : Intf::MessageContainer<
-        OutputPayload<AeroMsg>
+        OutputPayload<GuidanceMsg>
     >
     {};
 }

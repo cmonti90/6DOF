@@ -6,17 +6,22 @@
 
 #include "AeroMsg.h"
 #include "EngineMsg.h"
+#include "EomMsg.h"
+#include "GravityMsg.h"
+#include "MassPropMsg.h"
 
 namespace EomTypes
 {
     struct InData : Intf::MessageContainer<
         InputPayload<AeroMsg>,
-        InputPayload<EngineMsg>
+        InputPayload<EngineMsg>,
+        InputPayload<GravityMsg>,
+        InputPayload<MassPropMsg>
     >
     {};
 
     struct OutData : Intf::MessageContainer<
-        OutputPayload<AeroMsg>
+        OutputPayload<EomMsg>
     >
     {};
 }

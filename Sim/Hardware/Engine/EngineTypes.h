@@ -4,17 +4,18 @@
 #include "MessageContainer.h"
 #include "Payload.h"
 
-#include "AeroMsg.h"
+#include "AutopilotMsg.h"
+#include "EngineMsg.h"
 
 namespace EngineTypes
 {
     struct InData : Intf::MessageContainer<
-        InputPayload<AeroMsg>
+        InputPayload<AutopilotMsg>
     >
     {};
 
     struct OutData : Intf::MessageContainer<
-        OutputPayload<AeroMsg>
+        OutputPayload<EngineMsg>
     >
     {};
 }

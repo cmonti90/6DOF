@@ -1,10 +1,15 @@
 
 #include "EngineComponent.h"
+#include "EngineTypes.h"
 
 #include "engine.h"
 
 EngineComponent::EngineComponent( std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::COMPONENT_LABEL name )
-    : PubSub::SimComponent( queueMngr, 1000, name ), pAlg( new engine() ), counter_( 0u )
+    : PubSub::SimComponent( queueMngr, 1000, name ),
+    pAlg( new engine() ),
+    inData_( new EngineTypes::InData() ),
+    outData_( new EngineTypes::OutData() ),
+    counter_( 0u )
 {
 }
 
@@ -15,7 +20,7 @@ EngineComponent::~EngineComponent()
 void EngineComponent::initialize( void )
 {
 
-    // subscribe(aeroMsg_.get(), PubSub::Message_Type::ACTIVE);
+    subscribe<AutopilotMsg>(*inData_);
 
     pAlg->initialize();
     counter_ = 0u;
@@ -31,9 +36,9 @@ void EngineComponent::update( void )
     {
         switch (label)
         {
-        // case AeroMsg::MESSAGE_LABEL:
-        //     receive( aeroMsg_.get() );
-        //     break;
+        case AutopilotMsg::MESSAGE_LABEL:
+            receive<AutopilotMsg>(*inData_);
+            break;
 
         default:
             removeTopMessage();
@@ -43,7 +48,9 @@ void EngineComponent::update( void )
         status = peek( label );
     }
 
-    pAlg->exec();
+    // pAlg->exec();
+
+    send<EngineMsg>( *outData_ );
 
     counter_++;
 }

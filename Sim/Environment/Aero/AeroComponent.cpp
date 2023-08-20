@@ -5,7 +5,11 @@
 #include "Aero.h"
 
 AeroComponent::AeroComponent(std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::COMPONENT_LABEL name)
-    : PubSub::SimComponent(queueMngr, 1000, name), pAlg(new Aero()), inData_(new AeroTypes::InData()), outData_(new AeroTypes::OutData()), counter_(0u)
+    : PubSub::SimComponent(queueMngr, 1000, name),
+      pAlg(new Aero()),
+      inData_(new AeroTypes::InData()),
+      outData_(new AeroTypes::OutData()),
+      counter_(0u)
 {
 }
 
@@ -16,7 +20,8 @@ AeroComponent::~AeroComponent()
 void AeroComponent::initialize(void)
 {
 
-    // subscribe( test2Msg_.get(), PubSub::Message_Type::ACTIVE );
+    subscribe<EomMsg>(*inData_);
+    subscribe<CtrlSurfMsg>(*inData_);
 
     pAlg->initialize();
     counter_ = 0u;
@@ -32,15 +37,20 @@ void AeroComponent::update()
     {
         switch (label)
         {
-            // case test2Msg::MESSAGE_LABEL:
-            //     receive( test2Msg_.get() );
+        case EomMsg::MESSAGE_LABEL:
+            receive<EomMsg>(*inData_);
+            break;
+
+        case CtrlSurfMsg::MESSAGE_LABEL:
+            receive<CtrlSurfMsg>(*inData_);
+            break;
 
         default:
             removeTopMessage();
             break;
-
-            status = peek(label);
         }
+
+        status = peek(label);
     }
 
     // pAlg->exec();
