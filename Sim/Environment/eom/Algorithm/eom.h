@@ -19,7 +19,6 @@ public:
     void addMoments(const myMath::Vector3d &moment);
 
 protected:
-
     enum : unsigned int
     {
         X,
@@ -40,7 +39,7 @@ protected:
     double t{0.0};
     double t_prev{0.0};
     int counter{0};
-    
+
     double mass;
     myMath::Matrix3d I;
 
@@ -48,8 +47,6 @@ protected:
     double naturalWindVelBody;
 
     //
-
-
 
     myMath::Vector3d netForceBody;
     myMath::Vector3d netMomentBody;

@@ -150,7 +150,6 @@ void eom::rungeKutta4thOrder()
     dPsiDot1 = dt * dEulerAngRates[YAW];
     dPsi1 = dt * angRatesBody[YAW];
 
-
     // k2
     dXdot2 = dt * udot(velBody[Y] + dYdot1 / 2.0, velBody[Z] + dZdot1 / 2.0, angRatesBody[PITCH] + dThetaDot1 / 2.0, angRatesBody[YAW] + dPsiDot1 / 2.0);
     dX2 = dt * (velBody[X] + dX1 / 2.0);
@@ -167,7 +166,6 @@ void eom::rungeKutta4thOrder()
     dTheta2 = dt * (angRatesBody[PITCH] + dTheta1 / 2.0);
     dPsiDot2 = dt * dEulerAngRates[YAW];
     dPsi2 = dt * (angRatesBody[YAW] + dPsi1 / 2.0);
-
 
     // k3
     dXdot3 = dt * udot(velBody[Y] + dYdot2 / 2.0, velBody[Z] + dZdot2 / 2.0, angRatesBody[PITCH] + dThetaDot2 / 2.0, angRatesBody[YAW] + dPsiDot2 / 2.0);
@@ -186,7 +184,6 @@ void eom::rungeKutta4thOrder()
     dPsiDot3 = dt * dEulerAngRates[YAW];
     dPsi3 = dt * (angRatesBody[YAW] + dPsi2 / 2.0);
 
-
     // k4
     dXdot4 = dt * udot(velBody[Y] + dYdot3, velBody[Z] + dZdot3, angRatesBody[PITCH] + dThetaDot3, angRatesBody[YAW] + dPsiDot3);
     dX4 = dt * (velBody[X] + dX3);
@@ -203,7 +200,6 @@ void eom::rungeKutta4thOrder()
     dTheta4 = dt * (angRatesBody[PITCH] + dTheta3);
     dPsiDot4 = dt * dEulerAngRates[YAW];
     dPsi4 = dt * (angRatesBody[YAW] + dPsi3);
-
 
     // Update state
     velBody[X] += (dXdot1 + 2.0 * dXdot2 + 2.0 * dXdot3 + dXdot4) / 6.0;
@@ -262,8 +258,8 @@ void eom::updateDCMs()
         lastItr = lat_detic;
 
         lat_detic = std::atan2(
-                        posEcef[Z] + myMath::Constants::EARTH_POLAR_RADIUS * myMath::SQ(myMath::Constants::EARTH_ECCENTRICITY) * std::sin(lat_detic),
-                        std::sqrt(myMath::SQ(posEcef[X]) + myMath::SQ(posEcef[Y]) - myMath::SQ(myMath::Constants::EARTH_ECCENTRICITY) * myMath::Constants::EARTH_EQUITORIAL_RADIUS * myMath::SQ(std::cos(lat_detic))));
+            posEcef[Z] + myMath::Constants::EARTH_POLAR_RADIUS * myMath::SQ(myMath::Constants::EARTH_ECCENTRICITY) * std::sin(lat_detic),
+            std::sqrt(myMath::SQ(posEcef[X]) + myMath::SQ(posEcef[Y]) - myMath::SQ(myMath::Constants::EARTH_ECCENTRICITY) * myMath::Constants::EARTH_EQUITORIAL_RADIUS * myMath::SQ(std::cos(lat_detic))));
     }
 
     if (std::abs(lat_detic - lastItr) > eps)

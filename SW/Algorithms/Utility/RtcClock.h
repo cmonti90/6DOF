@@ -3,22 +3,24 @@
 
 #include "Time.h"
 
+#include <memory>
+
 namespace TimePt
 {
     class RtcClock
     {
     public:
         RtcClock() = delete;
-        RtcClock(const PubSub::Time& realClock) : realClock_(realClock) {}
-        virtual ~RtcClock();
+        RtcClock(const std::shared_ptr<PubSub::Time>& realClock) : realClock_(realClock) {}
+        virtual ~RtcClock() = default;
 
         double getTimeNow(void) const
         {
-            return realClock_.getTimeNow();
+            return realClock_->getTimeNow();
         }
 
     private:
-        PubSub::Time realClock_;
+        std::shared_ptr<PubSub::Time> realClock_;
     };
 }
 

@@ -5,7 +5,10 @@
 
 #include <memory>
 
-class RtcClock;
+namespace TimePt
+{
+    class RtcClock;
+}
 
 // Simulation Component forward declarations
 class MassPropertiesComponent;
@@ -27,7 +30,7 @@ public:
     void launch();
 
 private:
-    std::shared_ptr<RtcClock> pRtcClock;
+    std::shared_ptr<TimePt::RtcClock> pRtcClock;
 
     PubSub::Thread navThread;
     PubSub::Thread guidanceThread;

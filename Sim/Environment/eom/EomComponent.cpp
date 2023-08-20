@@ -4,8 +4,12 @@
 
 #include "eom.h"
 
-EomComponent::EomComponent( std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::COMPONENT_LABEL name )
-    : PubSub::SimComponent( queueMngr, 1000, name ), pAlg( new eom() ), inData_(new EomTypes::InData()), outData_(new EomTypes::OutData()), counter_( 0u )
+EomComponent::EomComponent(std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::COMPONENT_LABEL name)
+    : PubSub::SimComponent(queueMngr, 1000, name),
+      pAlg(new eom()),
+      inData_(new EomTypes::InData()),
+      outData_(new EomTypes::OutData()),
+      counter_(0u)
 {
 }
 
@@ -13,29 +17,29 @@ EomComponent::~EomComponent()
 {
 }
 
-void EomComponent::initialize( void )
+void EomComponent::initialize(void)
 {
 
-    subscribe<AeroMsg>( *inData_, PubSub::Message_Type::ACTIVE );
+    subscribe<AeroMsg>(*inData_, PubSub::Message_Type::ACTIVE);
 
     // pAlg->initialize();
     counter_ = 0u;
 }
 
-void EomComponent::update( void )
+void EomComponent::update(void)
 {
 
     PubSub::Message_Label label;
-    PubSub::MessageStatus status = peek( label );
+    PubSub::MessageStatus status = peek(label);
 
     while (status == PubSub::MessageStatus::MESSAGE_AVAILABLE)
     {
         switch (label)
         {
         case AeroMsg::MESSAGE_LABEL:
-            receive<AeroMsg>( *inData_ );
-            pAlg->addForces( myMath::Vector3d( inData_->AeroData::force ) );
-            pAlg->addMoments( myMath::Vector3d( inData_->AeroData::moment ) );
+            receive<AeroMsg>(*inData_);
+            pAlg->addForces(myMath::Vector3d(inData_->AeroData::force));
+            pAlg->addMoments(myMath::Vector3d(inData_->AeroData::moment));
 
             break;
 
@@ -44,7 +48,7 @@ void EomComponent::update( void )
             break;
         }
 
-        status = peek( label );
+        status = peek(label);
     }
 
     // pAlg->exec();
@@ -52,7 +56,7 @@ void EomComponent::update( void )
     counter_++;
 }
 
-void EomComponent::finalize( void )
+void EomComponent::finalize(void)
 {
     pAlg->finalize();
 }
