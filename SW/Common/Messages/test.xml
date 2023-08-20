@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test>
+    <message>
+        <id>1</id>
+        <text>Test message 1</text>
+    </message>
+    <message>
+        <id>2</id>
+        <text>Test message 2</text>
+    </message>
+</test>

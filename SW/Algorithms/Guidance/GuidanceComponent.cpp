@@ -1,10 +1,12 @@
 
 #include "GuidanceComponent.h"
+#include "GuidanceTypes.h"
+#include "GuidanceAlgorithm.h"
 
 #include <iostream>
 
-GuidanceComponent::GuidanceComponent(std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::COMPONENT_LABEL name)
-: PubSub::Component(queueMngr, name), test1Msg_(new test1Msg()), test2Msg_(new test2Msg()), test3Msg_(new test3Msg())
+GuidanceComponent::GuidanceComponent( std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::COMPONENT_LABEL name )
+    : PubSub::Component( queueMngr, name ), pAlg( new GuidanceAlgorithm() ), inData_( new GuidanceTypes::InData() ), outData_( new GuidanceTypes::OutData() )
 {
 }
 
@@ -12,57 +14,41 @@ GuidanceComponent::~GuidanceComponent()
 {
 }
 
-void GuidanceComponent::initialize(void)
+void GuidanceComponent::initialize( void )
 {
-    std::cout << getComponentLabel() << ": initialize()" << std::endl;
 
-    std::cout << getComponentLabel() << ": subscribing to " << test1Msg_->getMessageLabel() << std::endl;
+    // subscribe( test1Msg_.get(), PubSub::Message_Type::ACTIVE );
 
-    subscribe(test1Msg_.get(), PubSub::Message_Type::ACTIVE);
-
-    std::cout << getComponentLabel() << ": subscribed to " << test1Msg_->getMessageLabel() << std::endl;
-
-    subscribe(test3Msg_.get(), PubSub::Message_Type::PASSIVE);
+    // pAlg->initialize();
 }
 
-void GuidanceComponent::update(void)
+void GuidanceComponent::update( void )
 {
     PubSub::Message_Label label;
-    PubSub::MessageStatus status = peek(label);
-
-    std::cout << getComponentLabel() << "::update()" << std::endl;
-
-    std::cout << getComponentLabel() << " peeked: ";
-    std::cout << "status = " << status << ", label = " << label << std::endl;
+    PubSub::MessageStatus status = peek( label );
 
     while (status == PubSub::MessageStatus::MESSAGE_AVAILABLE)
     {
-        if (label == test1Msg_->getMessageLabel())
+        switch (label)
         {
-            std::cout << getComponentLabel() << " receiving " << test1Msg_->getMessageLabel() << std::endl;
-            receive(test1Msg_.get());
+        // case test1Msg::MESSAGE_LABEL:
+        //     receive( test1Msg_.get() );
 
-            std::cout << getComponentLabel() << " received " << test1Msg_->getMessageLabel() << " with data = " << test1Msg_->msg1data << std::endl;
+        //     test2Msg_->msg2data += 0.1;
 
-            test2Msg_->msg2data += 0.1;
+        //     send( test2Msg_.get() );
+        //     break;
 
-            send(test2Msg_.get());
-
-            std::cout << getComponentLabel() << " sent " << test2Msg_->getMessageLabel() << " with data = " << test2Msg_->msg2data << std::endl;
-        }
-        else if (label == test3Msg_->getMessageLabel())
-        {
-            std::cout << getComponentLabel() << " receiving " << test3Msg_->getMessageLabel() << std::endl;
-            receive(test3Msg_.get());
-
-            std::cout << getComponentLabel() << " received " << test3Msg_->getMessageLabel() << " with data = " << test3Msg_->msg3data << std::endl;
+        default:
+            removeTopMessage();
+            break;
         }
 
-        status = peek(label);
+        status = peek( label );
     }
 }
 
-void GuidanceComponent::finalize(void)
+void GuidanceComponent::finalize( void )
 {
-    std::cout << getComponentLabel() << ": finalize()" << std::endl;
+    pAlg->finalize();
 }

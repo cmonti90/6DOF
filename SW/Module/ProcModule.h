@@ -5,7 +5,15 @@
 
 #include <memory>
 
+class RtcClock;
+
+// Simulation Component forward declarations
+class MassPropertiesComponent;
+class EngineComponent;
+class AeroComponent;
 class EomComponent;
+
+// SW Component forward declarations
 class NavigationComponent;
 class GuidanceComponent;
 class AutopilotComponent;
@@ -19,11 +27,17 @@ public:
     void launch();
 
 private:
+    std::shared_ptr<RtcClock> pRtcClock;
+
     PubSub::Thread navThread;
     PubSub::Thread guidanceThread;
     PubSub::Thread autopilotThread;
 
+    std::unique_ptr<MassPropertiesComponent> pMassPropComponent;
+    std::unique_ptr<EngineComponent> pEngineComponent;
     std::unique_ptr<EomComponent> pEomComponent;
+    std::unique_ptr<AeroComponent> pAeroComponent;
+
     std::unique_ptr<NavigationComponent> pNavigationComponent;
     std::unique_ptr<GuidanceComponent> pGuidanceComponent;
     std::unique_ptr<AutopilotComponent> pAutopilotComponent;

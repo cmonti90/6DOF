@@ -1,12 +1,14 @@
 set(target Messages)
 
-set(SOURCES test1Msg.cpp
-            test2Msg.cpp
-            test3Msg.cpp)
+set(SOURCES     AeroMsg.cpp
+                EngineMsg.cpp
+                test1Msg.cpp
+                test2Msg.cpp)
 
-set(HEADERS test1Msg.h
-            test2Msg.h
-            test3Msg.h)
+set(HEADERS     AeroMsg.h
+                EngineMsg.h
+                test1Msg.h
+                test2Msg.h)
 
 add_library(${target} SHARED ${SOURCES} ${HEADERS})
 

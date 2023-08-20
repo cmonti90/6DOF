@@ -20,13 +20,15 @@ public:
 
     // const PubSub::Message_Label MESSAGE_LABEL{std::string("test2Msg")};
 
-    static const PubSub::Message_Label MESSAGE_LABEL;
-    double msg2data;
 
-    // PubSub::Message_Label getMessageLabel() const override
-    // {
-    //     return MESSAGE_LABEL;
-    // }
+    static constexpr PubSub::Message_Label MESSAGE_LABEL = 40;
+
+    PubSub::Message_Label getMessageLabel() const override
+    {
+        return MESSAGE_LABEL;
+    }
+
+    double msg2data;
 
     Message *clone() const override
     {
@@ -43,9 +45,9 @@ public:
         }
     }
 
-    double dataStructure() const
+    void reset() override
     {
-        return msg2data;
+        msg2data = 0.0;
     }
 };
 

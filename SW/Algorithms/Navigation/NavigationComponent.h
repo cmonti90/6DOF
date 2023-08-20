@@ -2,11 +2,15 @@
 #define A6ADAB6A_3052_4300_85E1_E2ADB7292594
 
 #include "Component.h"
-#include "test1Msg.h"
-#include "test2Msg.h"
-#include "test3Msg.h"
 
 #include <memory>
+namespace NavTypes
+{
+    struct InData;
+    struct OutData;
+}
+
+class NavigationAlgorithm;
 
 class NavigationComponent : public PubSub::Component
 {
@@ -18,9 +22,11 @@ public:
     void update(void) override;
     void finalize(void) override;
 
-    std::unique_ptr<test1Msg> test1Msg_;
-    std::unique_ptr<test2Msg> test2Msg_;
-    std::unique_ptr<test3Msg> test3Msg_;
+private:
+    std::unique_ptr<NavigationAlgorithm> pAlg;
+
+    std::unique_ptr<NavTypes::InData> inData_;
+    std::unique_ptr<NavTypes::OutData> outData_;
 
 };
 

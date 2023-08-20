@@ -1,8 +1,8 @@
-set(target procModule)
+set(target engineAlgorithm)
 
-set(SOURCES ProcModule.cpp)
+set(SOURCES engine.cpp)
 
-set(HEADERS ProcModule.h)
+set(HEADERS engine.h)
 
 add_library(${target} ${SOURCES})
 
@@ -10,9 +10,8 @@ target_include_directories(${target}    PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR}
                                                 )
 
 target_link_libraries(${target} PUBLIC  TimeMngr
-                                PRIVATE eom
-                                        Navigation
-                                        Guidance
-                                        Autopilot
+                                        Messages
+                                PRIVATE mathlib
                                         PubSub
+                                        AircraftProperties
                                         )

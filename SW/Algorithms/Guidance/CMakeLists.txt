@@ -1,8 +1,17 @@
+set(target GuidanceIntf)
+add_library(${target} INTERFACE)
+target_include_directories(${target}    INTERFACE  ${CMAKE_CURRENT_SOURCE_DIR} )
+
+
+######################################
+
+
 set(target Guidance)
 
-set(SOURCES GuidanceComponent.cpp )
+set(SOURCES     GuidanceComponent.cpp )
 
-set(HEADERS GuidanceComponent.h )
+set(HEADERS     GuidanceComponent.h
+                GuidanceTypes.h )
 
 add_library(${target} ${SOURCES})
 
@@ -13,4 +22,7 @@ target_link_libraries(${target} PUBLIC  TimeMngr
                                         Messages
                                 PRIVATE mathlib
                                         PubSub
+                                        GuidanceAlgorithm
                                         )
+
+add_subdirectory(Algorithm)

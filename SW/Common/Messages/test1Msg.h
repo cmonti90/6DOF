@@ -19,7 +19,13 @@ public:
         return *this;
     }
 
-    const static PubSub::Message_Label MESSAGE_LABEL;
+    static constexpr PubSub::Message_Label MESSAGE_LABEL = 30;
+
+    PubSub::Message_Label getMessageLabel() const override
+    {
+        return MESSAGE_LABEL;
+    }
+
     double msg1data;
 
     Message* clone() const override
@@ -38,9 +44,9 @@ public:
         }
     }
 
-    double dataStructure() const
+    void reset() override
     {
-        return msg1data;
+        msg1data = 0.0;
     }
 
 

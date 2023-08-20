@@ -1,8 +1,17 @@
+set(target NavIntf)
+add_library(${target} INTERFACE)
+target_include_directories(${target}    INTERFACE  ${CMAKE_CURRENT_SOURCE_DIR} )
+
+
+######################################
+
+
 set(target Navigation)
 
-set(SOURCES NavigationComponent.cpp )
+set(SOURCES     NavigationComponent.cpp )
 
-set(HEADERS NavigationComponent.h )
+set(HEADERS     NavigationComponent.h
+                NavigationTypes.h )
 
 add_library(${target} ${SOURCES})
 
@@ -13,4 +22,7 @@ target_link_libraries(${target} PUBLIC  TimeMngr
                                         Messages
                                 PRIVATE mathlib
                                         PubSub
+                                        NavigationAlgorithm
                                         )
+
+add_subdirectory(Algorithm)

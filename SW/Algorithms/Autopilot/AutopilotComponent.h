@@ -5,9 +5,16 @@
 #include "Component.h"
 #include "test1Msg.h"
 #include "test2Msg.h"
-#include "test3Msg.h"
 
 #include <memory>
+
+namespace AutopilotTypes
+{
+    struct InData;
+    struct OutData;
+}
+
+class AutopilotAlgorithm;
 
 class AutopilotComponent : public PubSub::Component
 {
@@ -19,9 +26,11 @@ public:
     void update(void) override;
     void finalize(void) override;
 
-    std::unique_ptr<test1Msg> test1Msg_;
-    std::unique_ptr<test2Msg> test2Msg_;
-    std::unique_ptr<test3Msg> test3Msg_;
+private:
+    std::unique_ptr<AutopilotAlgorithm> pAlg;
+
+    std::unique_ptr<AutopilotTypes::InData> inData_;
+    std::unique_ptr<AutopilotTypes::OutData> outData_;
 
 };
 

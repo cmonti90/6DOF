@@ -1,10 +1,8 @@
-set(target eom)
+set(target MassPropertiesAlgorithm)
 
-set(SOURCES EomComponent.cpp
-            eom.cpp)
+set(SOURCES MassProperties.cpp)
 
-set(HEADERS EomComponent.h
-            eom.h)
+set(HEADERS MassProperties.h)
 
 add_library(${target} ${SOURCES})
 

@@ -1,2 +1,3 @@
 add_subdirectory(TimeManager)
-add_subdirectory(eom)
+add_subdirectory(Environment)
+add_subdirectory(Hardware)

@@ -13,4 +13,7 @@ target_link_libraries(${target} PUBLIC  TimeMngr
                                         Messages
                                 PRIVATE mathlib
                                         PubSub
+                                        AutopilotAlgorithm
                                         )
+
+add_subdirectory(Algorithm)
