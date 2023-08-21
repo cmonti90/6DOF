@@ -2,6 +2,7 @@
 #include "GuidanceComponent.h"
 #include "GuidanceTypes.h"
 #include "GuidanceAlgorithm.h"
+#include "TryCatch.h"
 
 #include <iostream>
 
@@ -27,25 +28,29 @@ void GuidanceComponent::initialize(void)
 
 void GuidanceComponent::update(void)
 {
-    PubSub::Message_Label label;
-    PubSub::MessageStatus status = peek(label);
-
-    while (status == PubSub::MessageStatus::MESSAGE_AVAILABLE)
+    BEGIN_CHECKED_EXCEPTION()
     {
-        switch (label)
+        PubSub::Message_Label label;
+        PubSub::MessageStatus status = peek(label);
+
+        while (status == PubSub::MessageStatus::MESSAGE_AVAILABLE)
         {
-        case NavMsg::MESSAGE_LABEL:
-            receive<NavMsg>(*inData_);
+            switch (label)
+            {
+            case NavMsg::MESSAGE_LABEL:
+                receive<NavMsg>(*inData_);
 
-            break;
+                break;
 
-        default:
-            removeTopMessage();
-            break;
+            default:
+                removeTopMessage();
+                break;
+            }
+
+            status = peek(label);
         }
-
-        status = peek(label);
     }
+    END_CHECKED_EXCEPTION()
 }
 
 void GuidanceComponent::finalize(void)

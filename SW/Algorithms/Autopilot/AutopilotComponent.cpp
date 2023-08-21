@@ -2,6 +2,7 @@
 #include "AutopilotComponent.h"
 #include "AutopilotTypes.h"
 #include "AutopilotAlgorithm.h"
+#include "TryCatch.h"
 
 AutopilotComponent::AutopilotComponent(std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::COMPONENT_LABEL name)
     : PubSub::Component(queueMngr, name),
@@ -26,30 +27,34 @@ void AutopilotComponent::initialize(void)
 
 void AutopilotComponent::update(void)
 {
-    PubSub::Message_Label label;
-    PubSub::MessageStatus status = peek(label);
-
-    while (status == PubSub::MessageStatus::MESSAGE_AVAILABLE)
+    BEGIN_CHECKED_EXCEPTION()
     {
-        switch (label)
+        PubSub::Message_Label label;
+        PubSub::MessageStatus status = peek(label);
+
+        while (status == PubSub::MessageStatus::MESSAGE_AVAILABLE)
         {
-        case GuidanceMsg::MESSAGE_LABEL:
-            receive<GuidanceMsg>(*inData_);
+            switch (label)
+            {
+            case GuidanceMsg::MESSAGE_LABEL:
+                receive<GuidanceMsg>(*inData_);
 
-            break;
+                break;
 
-        case NavMsg::MESSAGE_LABEL:
-            receive<NavMsg>(*inData_);
+            case NavMsg::MESSAGE_LABEL:
+                receive<NavMsg>(*inData_);
 
-            break;
+                break;
 
-        default:
-            removeTopMessage();
-            break;
+            default:
+                removeTopMessage();
+                break;
+            }
+
+            status = peek(label);
         }
-
-        status = peek(label);
     }
+    END_CHECKED_EXCEPTION()
 }
 
 void AutopilotComponent::finalize(void)

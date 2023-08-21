@@ -42,23 +42,23 @@ void EomComponent::update(void)
         case AeroMsg::MESSAGE_LABEL:
             receive<AeroMsg>(*inData_);
 
-            pAlg->addForces(myMath::Vector3d(inData_->AeroData::force));
-            pAlg->addMoments(myMath::Vector3d(inData_->AeroData::moment));
+            pAlg->addForces(inData_->AeroData::forceBody);
+            pAlg->addMoments(inData_->AeroData::momentBody);
 
             break;
 
         case EngineMsg::MESSAGE_LABEL:
             receive<EngineMsg>(*inData_);
 
-            pAlg->addForces(myMath::Vector3d(inData_->EngineData::force));
-            pAlg->addMoments(myMath::Vector3d(inData_->EngineData::moment));
+            pAlg->addForces(inData_->EngineData::forceBody);
+            pAlg->addMoments(inData_->EngineData::momentBody);
 
             break;
 
         case GravityMsg::MESSAGE_LABEL:
             receive<GravityMsg>(*inData_);
 
-            pAlg->addForces(myMath::Vector3d(inData_->GravityData::force));
+            pAlg->addForces(inData_->GravityData::forceBody);
 
             break;
 
@@ -75,7 +75,7 @@ void EomComponent::update(void)
         status = peek(label);
     }
 
-    // pAlg->exec();
+    pAlg->exec(*inData_, *outData_);
 
     send<EomMsg>(*outData_);
 

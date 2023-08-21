@@ -3,6 +3,7 @@
 
 #include "TimeMngr.h"
 #include "mathlib.h"
+#include "EomTypes.h"
 
 class eom
 {
@@ -11,7 +12,7 @@ public:
     ~eom();
 
     void initialize(void);
-    void exec(void);
+    void exec(const EomTypes::InData &inData, EomTypes::OutData &outData);
     void finalize(void);
 
     // Setters
@@ -19,6 +20,8 @@ public:
     void addMoments(const myMath::Vector3d &moment);
 
 protected:
+    void BuildOutput(EomTypes::OutData &outData);
+
     enum : unsigned int
     {
         X,
@@ -40,9 +43,6 @@ protected:
     double t_prev{0.0};
     int counter{0};
 
-    double mass;
-    myMath::Matrix3d I;
-
     myMath::Vector3d windVelBody;
     double naturalWindVelBody;
 
@@ -57,11 +57,13 @@ protected:
     myMath::Vector3d angRatesBody;
     myMath::Vector3d angAccelBody;
 
-    myMath::Vector3d posEcef;
-    myMath::Vector3d velEcef;
+    myMath::Vector3d dPosEci;
 
     myMath::Vector3d posEci;
     myMath::Vector3d velEci;
+
+    myMath::Vector3d posEcef;
+    myMath::Vector3d velEcef;
 
     myMath::Vector3d posEnu;
     myMath::Vector3d velEnu;
@@ -99,14 +101,20 @@ protected:
 
     double altSeaLevel;
 
-    double udot(const double v, const double w, const double q, const double r);
-    double vdot(const double u, const double w, const double p, const double r);
-    double wdot(const double u, const double v, const double p, const double q);
+    double udot(const double v, const double w, const double q, const double r, const EomTypes::InData &inData);
+    double vdot(const double u, const double w, const double p, const double r, const EomTypes::InData &inData);
+    double wdot(const double u, const double v, const double p, const double q, const EomTypes::InData &inData);
 
-    myMath::Vector3d angularRatesDerivative(const double p, const double q, const double r);
+    myMath::Vector3d angularRatesDerivative(const double p, const double q, const double r, const EomTypes::InData &inData);
 
-    void rungeKutta4thOrder();
-    void updateDCMs();
+    void rungeKutta4thOrder(const EomTypes::InData &inData);
+
+    void update();
+    void updateEcef();
+    void updateNed();
+    void updateBody();
+    void updateAeroAngles();
+    void updateWind();
     void updateStates();
 };
 

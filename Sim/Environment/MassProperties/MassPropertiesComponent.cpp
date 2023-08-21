@@ -36,9 +36,9 @@ void MassPropertiesComponent::update(void)
     {
         switch (label)
         {
-            case EngineMsg::MESSAGE_LABEL:
-                receive<EngineMsg>(*inData_);
-                break;
+        case EngineMsg::MESSAGE_LABEL:
+            receive<EngineMsg>(*inData_);
+            break;
 
         default:
             removeTopMessage();
@@ -48,12 +48,7 @@ void MassPropertiesComponent::update(void)
         status = peek(label);
     }
 
-    // pAlg->exec();
-
-    if (counter_ % 5 == 0)
-    {
-        // send( test1Msg_.get() );
-    }
+    pAlg->exec(*inData_, *outData_);
 
     send<MassPropMsg>(*outData_);
 

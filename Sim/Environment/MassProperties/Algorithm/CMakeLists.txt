@@ -13,4 +13,5 @@ target_link_libraries(${target} PUBLIC  TimeMngr
                                         Messages
                                 PRIVATE mathlib
                                         PubSub
+                                        MassPropertiesIntf
                                         )

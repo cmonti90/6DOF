@@ -2,6 +2,7 @@
 #include "NavigationComponent.h"
 #include "NavigationTypes.h"
 #include "NavigationAlgorithm.h"
+#include "TryCatch.h"
 
 NavigationComponent::NavigationComponent(std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::COMPONENT_LABEL name)
     : PubSub::Component(queueMngr, name),
@@ -27,25 +28,29 @@ void NavigationComponent::initialize(void)
 
 void NavigationComponent::update(void)
 {
-    PubSub::Message_Label label;
-    PubSub::MessageStatus status = peek(label);
-
-    while (status == PubSub::MessageStatus::MESSAGE_AVAILABLE)
+    BEGIN_CHECKED_EXCEPTION()
     {
-        switch (label)
+        PubSub::Message_Label label;
+        PubSub::MessageStatus status = peek(label);
+
+        while (status == PubSub::MessageStatus::MESSAGE_AVAILABLE)
         {
-        case ImuMsg::MESSAGE_LABEL:
-            receive<ImuMsg>(*inData_);
+            switch (label)
+            {
+            case ImuMsg::MESSAGE_LABEL:
+                receive<ImuMsg>(*inData_);
 
-            break;
+                break;
 
-        default:
-            removeTopMessage();
-            break;
+            default:
+                removeTopMessage();
+                break;
+            }
+
+            status = peek(label);
         }
-
-        status = peek(label);
     }
+    END_CHECKED_EXCEPTION()
 }
 
 void NavigationComponent::finalize(void)

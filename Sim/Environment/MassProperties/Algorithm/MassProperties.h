@@ -1,9 +1,8 @@
 #ifndef AERO_H
 #define AERO_H
 
-#include <iostream>
-#include <array>
-#include "TimeMngr.h"
+#include "MassPropertiesTypes.h"
+
 #include "mathlib.h"
 
 class MassProperties
@@ -15,7 +14,7 @@ public:
     ~MassProperties();
 
     void initialize(void);
-    void exec(void);
+    void exec(const MassPropTypes::InData &inData, MassPropTypes::OutData &outData);
     void finalize(void);
 };
 

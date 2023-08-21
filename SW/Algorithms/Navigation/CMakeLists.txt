@@ -23,6 +23,7 @@ target_link_libraries(${target} PUBLIC  TimeMngr
                                 PRIVATE mathlib
                                         PubSub
                                         NavigationAlgorithm
+                                        DebugTools
                                         )
 
 add_subdirectory(Algorithm)
