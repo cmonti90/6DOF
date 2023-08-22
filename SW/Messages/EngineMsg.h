@@ -3,6 +3,8 @@
 
 #include "MessagePayloadTemplate.hxx"
 
+#include "MsgIds.hpp"
+
 #include "Vector.h"
 
 struct EngineData
@@ -34,6 +36,6 @@ struct EngineData
     }
 };
 
-MESSAGE_PAYLOAD(EngineMsg, EngineData, 40)
+MESSAGE_PAYLOAD(EngineMsg, EngineData, EngineMsgId)
 
 #endif /* B0EB4116_CB1C_4110_A642_7A06E863FA04 */

@@ -53,8 +53,8 @@ void ProcModule::launch()
     addSimComp( pEngineComponent.get() );
     addSimComp( pCtrlSurfComponent.get() );
     addSimComp( pAeroComponent.get() );
-    addSimComp( pGravityComponent.get() );
     addSimComp( pMassPropComponent.get() );
+    addSimComp( pGravityComponent.get() );
     addSimComp( pEomComponent.get() );
     addSimComp( pImuComponent.get() );
 

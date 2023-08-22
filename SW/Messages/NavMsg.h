@@ -3,6 +3,8 @@
 
 #include "MessagePayloadTemplate.hxx"
 
+#include "MsgIds.hpp"
+
 struct NavData
 {
     double force[3];
@@ -43,7 +45,7 @@ struct NavData
     }
 };
 
-MESSAGE_PAYLOAD(NavMsg, NavData, 90)
+MESSAGE_PAYLOAD(NavMsg, NavData, NavMsgId)
 
 
 #endif /* B25DAB41_D1E7_4D25_9D19_0F2F59867A12 */

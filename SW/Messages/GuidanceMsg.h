@@ -3,6 +3,8 @@
 
 #include "MessagePayloadTemplate.hxx"
 
+#include "MsgIds.hpp"
+
 struct GuidanceData
 {
     double guidanceAccelCmdXbody;
@@ -38,6 +40,6 @@ struct GuidanceData
     }
 };
 
-MESSAGE_PAYLOAD(GuidanceMsg, GuidanceData, 70)
+MESSAGE_PAYLOAD(GuidanceMsg, GuidanceData, GuidanceMsgId)
 
 #endif /* BA4F55A0_04C9_4204_90F7_54C14F0C45D3 */

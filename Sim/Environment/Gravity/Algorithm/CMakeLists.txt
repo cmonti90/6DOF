@@ -14,4 +14,5 @@ target_link_libraries(${target} PUBLIC  TimeMngr
                                 PRIVATE mathlib
                                         PubSub
                                         AircraftProperties
+                                        GravityIntf
                                         )

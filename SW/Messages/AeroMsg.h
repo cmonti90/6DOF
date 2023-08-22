@@ -3,6 +3,8 @@
 
 #include "MessagePayloadTemplate.hxx"
 
+#include "MsgIds.hpp"
+
 #include "Vector.h"
 
 struct AeroData
@@ -34,6 +36,6 @@ struct AeroData
     }
 };
 
-MESSAGE_PAYLOAD(AeroMsg, AeroData, 10)
+MESSAGE_PAYLOAD(AeroMsg, AeroData, AeroMsgId)
 
 #endif /* E379D5A1_B7C3_46B7_9DE5_37D4C17FF27D */

@@ -98,6 +98,8 @@ void eom::BuildOutput(EomTypes::OutData &outData)
 
     outData.angleOfAttack = angleOfAttack;
     outData.angleOfSideslip = angleOfSideslip;
+
+    outData.bodyFromNed = bodyFromNed;
 }
 
 void eom::update()

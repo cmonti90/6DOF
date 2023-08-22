@@ -3,6 +3,8 @@
 
 #include "MessagePayloadTemplate.hxx"
 
+#include "MsgIds.hpp"
+
 struct ImuData
 {
     double accelXBody;
@@ -54,6 +56,6 @@ struct ImuData
     }
 };
 
-MESSAGE_PAYLOAD(ImuMsg, ImuData, 45)
+MESSAGE_PAYLOAD(ImuMsg, ImuData, ImuMsgId)
 
 #endif /* F826EEC0_1BBA_4DB7_9903_1AD431D6F7E0 */

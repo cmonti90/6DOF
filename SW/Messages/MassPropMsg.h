@@ -38,6 +38,6 @@ struct MassPropData
     }
 };
 
-MESSAGE_PAYLOAD(MassPropMsg, MassPropData, 80)
+MESSAGE_PAYLOAD(MassPropMsg, MassPropData, MassPropMsgId)
 
 #endif /* A8451F51_1CD9_49A9_B6C8_C86EEE36E4EF */

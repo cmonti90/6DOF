@@ -3,24 +3,22 @@
 
 #include "MessagePayloadTemplate.hxx"
 
+#include "MsgIds.hpp"
+
+#include <Vector.h>
+
 struct GravityData
 {
-    double forceBody[3];
+    myMath::Vector3d forceBody;
 
     void Default()
     {
-        for (unsigned int i{ 0u }; i < 3u; ++i)
-        {
-            forceBody[i] = 0.0;
-        }
+        forceBody = 0.0;
     }
 
-    GravityData& operator=( const GravityData& other )
+    GravityData &operator=(const GravityData &other)
     {
-        for (unsigned int i{ 0u }; i < 3u; ++i)
-        {
-            forceBody[i] = other.forceBody[i];
-        }
+        forceBody = other.forceBody;
 
         return *this;
     }
@@ -30,15 +28,11 @@ struct GravityData
         Default();
     }
 
-    GravityData( const GravityData& other ) : forceBody()
+    GravityData(const GravityData &other) : forceBody(other.forceBody)
     {
-        for (unsigned int i{ 0u }; i < 3u; ++i)
-        {
-            forceBody[i] = other.forceBody[i];
-        }
     }
 };
 
-MESSAGE_PAYLOAD(GravityMsg, GravityData, 60)
+MESSAGE_PAYLOAD(GravityMsg, GravityData, GravityMsgId)
 
 #endif /* A9459157_330F_44B7_8744_E91039735134 */

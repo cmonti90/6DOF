@@ -3,6 +3,8 @@
 
 #include "MessagePayloadTemplate.hxx"
 
+#include "MsgIds.hpp"
+
 struct CtrlSurfData
 {
     double aileronDefl[2];
@@ -50,6 +52,6 @@ struct CtrlSurfData
     }
 };
 
-MESSAGE_PAYLOAD(CtrlSurfMsg, CtrlSurfData, 30)
+MESSAGE_PAYLOAD(CtrlSurfMsg, CtrlSurfData, CtrlSurfMsgId)
 
 #endif /* BCDAC3B3_41A6_4230_93D3_810E27CE0C75 */

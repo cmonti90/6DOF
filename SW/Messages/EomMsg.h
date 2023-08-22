@@ -3,6 +3,8 @@
 
 #include "MessagePayloadTemplate.hxx"
 
+#include "MsgIds.hpp"
+
 #include "mathlib.h"
 
 struct EomData
@@ -23,6 +25,8 @@ struct EomData
     double angleOfAttack;
     double angleOfSideslip;
 
+    myMath::Matrix3d bodyFromNed;
+
     void Default()
     {
         windVelBody = 0.0;
@@ -40,6 +44,8 @@ struct EomData
 
         angleOfAttack = 0.0;
         angleOfSideslip = 0.0;
+
+        bodyFromNed = 0.0;
     }
 
     EomData &operator=(const EomData &other)
@@ -60,6 +66,8 @@ struct EomData
         angleOfAttack = other.angleOfAttack;
         angleOfSideslip = other.angleOfSideslip;
 
+        bodyFromNed = other.bodyFromNed;
+
         return *this;
     }
 
@@ -74,7 +82,8 @@ struct EomData
           eulerAngs(),
           eulerAngRates(),
           angleOfAttack(),
-          angleOfSideslip()
+          angleOfSideslip(),
+          bodyFromNed()
     {
         Default();
     }
@@ -90,11 +99,12 @@ struct EomData
           eulerAngs(other.eulerAngs),
           eulerAngRates(other.eulerAngRates),
           angleOfAttack(other.angleOfAttack),
-          angleOfSideslip(other.angleOfSideslip)
+          angleOfSideslip(other.angleOfSideslip),
+          bodyFromNed(other.bodyFromNed)
     {
     }
 };
 
-MESSAGE_PAYLOAD(EomMsg, EomData, 50)
+MESSAGE_PAYLOAD(EomMsg, EomData, EomMsgId)
 
 #endif /* DABE8334_1F6B_471B_BBDB_38B35BA70571 */

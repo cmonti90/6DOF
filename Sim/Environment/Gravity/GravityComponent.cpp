@@ -21,6 +21,7 @@ void GravityComponent::initialize(void)
 {
 
     subscribe<EomMsg>(*inData_);
+    subscribe<MassPropMsg>(*inData_);
 
     pAlg->initialize();
     counter_ = 0u;
@@ -40,6 +41,10 @@ void GravityComponent::update()
             receive<EomMsg>(*inData_);
             break;
 
+        case MassPropMsg::MESSAGE_LABEL:
+            receive<MassPropMsg>(*inData_);
+            break;
+
         default:
             removeTopMessage();
             break;
@@ -48,7 +53,7 @@ void GravityComponent::update()
         status = peek(label);
     }
 
-    // pAlg->exec();
+    pAlg->exec(*inData_, *outData_);
 
     send<GravityMsg>(*outData_);
 

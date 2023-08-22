@@ -3,6 +3,8 @@
 
 #include "MessagePayloadTemplate.hxx"
 
+#include "MsgIds.hpp"
+
 struct AutopilotData
 {
     double aileronDefl[2];
@@ -50,7 +52,7 @@ struct AutopilotData
     }
 };
 
-MESSAGE_PAYLOAD(AutopilotMsg, AutopilotData, 20)
+MESSAGE_PAYLOAD(AutopilotMsg, AutopilotData, AutopilotMsgId)
 
 
 #endif /* F15DA9AA_97B0_47B5_A143_AAB1476B4CE1 */

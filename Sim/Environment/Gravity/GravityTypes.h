@@ -6,11 +6,13 @@
 
 #include "EomMsg.h"
 #include "GravityMsg.h"
+#include "MassPropMsg.h"
 
 namespace GravityTypes
 {
     struct InData : Intf::MessageContainer<
-        InputPayload<EomMsg>
+        InputPayload<EomMsg>,
+        InputPayload<MassPropMsg>
     >
     {};
 

@@ -3,6 +3,7 @@
 
 #include "TimeMngr.h"
 #include "mathlib.h"
+#include "GravityTypes.h"
 
 class Gravity
 {
@@ -13,10 +14,13 @@ public:
     ~Gravity();
 
     void initialize(void);
-    void exec(void);
+    void exec(const GravityTypes::InData& inData, GravityTypes::OutData& outData);
     void finalize(void);
 
 protected:
+    myMath::Vector3d gravForceNed;
+
+    void BuildOutput(const GravityTypes::InData& inData, GravityTypes::OutData& outData);
 
 private:
     Gravity& operator=(const Gravity& orig) = delete;
