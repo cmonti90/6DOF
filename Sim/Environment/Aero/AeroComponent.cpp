@@ -19,6 +19,8 @@ AeroComponent::~AeroComponent()
 
 void AeroComponent::initialize(void)
 {
+    inData_->initialize();
+    outData_->initialize();
 
     subscribe<EomMsg>(*inData_);
     subscribe<CtrlSurfMsg>(*inData_);
@@ -53,7 +55,7 @@ void AeroComponent::update()
         status = peek(label);
     }
 
-    // pAlg->exec();
+    pAlg->exec(*inData_, *outData_);
 
     send<AeroMsg>(*outData_);
 

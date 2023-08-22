@@ -1,8 +1,7 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
-#include "TimeMngr.h"
-#include "mathlib.h"
+#include "EngineTypes.h"
 
 class engine
 {
@@ -11,14 +10,15 @@ public:
     ~engine();
 
     void initialize(void);
-    void exec(void);
+    void exec(const EngineTypes::InData& inData, EngineTypes::OutData& outData);
     void finalize(void);
 
 protected:
-    double ctrlInput;
 
     myMath::Vector3d netForceBody;
     myMath::Vector3d netMomentBody;
+
+    void BuildOutput(EngineTypes::OutData& outData);
 };
 
 #endif /* ENGINE_H */

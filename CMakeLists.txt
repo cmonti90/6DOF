@@ -15,4 +15,3 @@ find_package(PubSub CONFIG REQUIRED)
 
 add_subdirectory("SW")
 add_subdirectory("Sim")
-add_subdirectory("Runner")

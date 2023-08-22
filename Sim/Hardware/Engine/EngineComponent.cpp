@@ -19,6 +19,8 @@ EngineComponent::~EngineComponent()
 
 void EngineComponent::initialize( void )
 {
+    inData_->initialize();
+    outData_->initialize();
 
     subscribe<AutopilotMsg>(*inData_);
 
@@ -48,7 +50,7 @@ void EngineComponent::update( void )
         status = peek( label );
     }
 
-    // pAlg->exec();
+    pAlg->exec(*inData_, *outData_);
 
     send<EngineMsg>( *outData_ );
 

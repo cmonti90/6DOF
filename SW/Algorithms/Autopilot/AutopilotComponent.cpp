@@ -18,6 +18,9 @@ AutopilotComponent::~AutopilotComponent()
 
 void AutopilotComponent::initialize(void)
 {
+    inData_->initialize();
+    outData_->initialize();
+
     subscribe<GuidanceMsg>(*inData_, PubSub::Message_Type::ACTIVE);
 
     subscribe<NavMsg>(*inData_, PubSub::Message_Type::PASSIVE);

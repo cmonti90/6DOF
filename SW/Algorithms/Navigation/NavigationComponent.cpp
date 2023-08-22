@@ -4,7 +4,9 @@
 #include "NavigationAlgorithm.h"
 #include "TryCatch.h"
 
-NavigationComponent::NavigationComponent(std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::COMPONENT_LABEL name)
+NavigationComponent::NavigationComponent(std::shared_ptr<PubSub::QueueMngr> queueMngr,
+                                         const std::shared_ptr<TimePt::RtcClock> rtcClock,
+                                         const PubSub::COMPONENT_LABEL name)
     : PubSub::Component(queueMngr, name),
       pAlg(new NavigationAlgorithm()),
       inData_(new NavTypes::InData()),
@@ -18,12 +20,12 @@ NavigationComponent::~NavigationComponent()
 
 void NavigationComponent::initialize(void)
 {
+    inData_->initialize();
+    outData_->initialize();
+    
     subscribe<ImuMsg>(*inData_, PubSub::Message_Type::ACTIVE);
 
     pAlg->initialize();
-
-    inData_->reset();
-    outData_->reset();
 }
 
 void NavigationComponent::update(void)

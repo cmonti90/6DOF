@@ -16,11 +16,15 @@ namespace TimePt
 
         double getTimeNow(void) const
         {
+            std::lock_guard<std::mutex> lock(mutex_);
+
             return realClock_->getTimeNow();
         }
 
     private:
         std::shared_ptr<PubSub::Time> realClock_;
+
+        mutable std::mutex mutex_;
     };
 }
 

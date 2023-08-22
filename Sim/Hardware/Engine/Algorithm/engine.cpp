@@ -20,9 +20,16 @@ void engine::finalize()
 {
 }
 
-void engine::exec()
+void engine::exec(const EngineTypes::InData& inData, EngineTypes::OutData& outData)
 {
-
     netForceBody = 0.0;
     netMomentBody = 0.0;
+
+    BuildOutput(outData);
+}
+
+void engine::BuildOutput(EngineTypes::OutData& outData)
+{
+    outData.forceBody = netForceBody;
+    outData.momentBody = netMomentBody;
 }

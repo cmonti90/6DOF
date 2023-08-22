@@ -19,6 +19,8 @@ ImuComponent::~ImuComponent()
 
 void ImuComponent::initialize( void )
 {
+    inData_->initialize();
+    outData_->initialize();
 
     subscribe<EomMsg>(*inData_);
 
@@ -48,7 +50,7 @@ void ImuComponent::update( void )
         status = peek( label );
     }
 
-    // pAlg->exec();
+    pAlg->exec(*inData_, *outData_);
 
     send<ImuMsg>(*outData_);
 

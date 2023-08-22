@@ -19,6 +19,8 @@ EomComponent::~EomComponent()
 
 void EomComponent::initialize(void)
 {
+    inData_->initialize();
+    outData_->initialize();
 
     subscribe<AeroMsg>(*inData_);
     subscribe<EngineMsg>(*inData_);

@@ -19,6 +19,8 @@ MassPropertiesComponent::~MassPropertiesComponent()
 
 void MassPropertiesComponent::initialize(void)
 {
+    inData_->initialize();
+    outData_->initialize();
 
     subscribe<EngineMsg>(*inData_);
 

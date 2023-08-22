@@ -26,6 +26,7 @@ struct EomData
     double angleOfSideslip;
 
     myMath::Matrix3d bodyFromNed;
+    myMath::Matrix3d bodyFromWind;
 
     void Default()
     {
@@ -46,6 +47,7 @@ struct EomData
         angleOfSideslip = 0.0;
 
         bodyFromNed = 0.0;
+        bodyFromWind = 0.0;
     }
 
     EomData &operator=(const EomData &other)
@@ -67,6 +69,7 @@ struct EomData
         angleOfSideslip = other.angleOfSideslip;
 
         bodyFromNed = other.bodyFromNed;
+        bodyFromWind = other.bodyFromWind;
 
         return *this;
     }
@@ -83,7 +86,8 @@ struct EomData
           eulerAngRates(),
           angleOfAttack(),
           angleOfSideslip(),
-          bodyFromNed()
+          bodyFromNed(),
+          bodyFromWind()
     {
         Default();
     }
@@ -100,7 +104,8 @@ struct EomData
           eulerAngRates(other.eulerAngRates),
           angleOfAttack(other.angleOfAttack),
           angleOfSideslip(other.angleOfSideslip),
-          bodyFromNed(other.bodyFromNed)
+          bodyFromNed(other.bodyFromNed),
+          bodyFromWind(other.bodyFromWind)
     {
     }
 };

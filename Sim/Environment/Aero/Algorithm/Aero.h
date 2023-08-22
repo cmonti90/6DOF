@@ -1,8 +1,8 @@
 #ifndef AERO_H
 #define AERO_H
 
-#include "TimeMngr.h"
 #include "mathlib.h"
+#include "AeroTypes.h"
 
 class Aero
 {
@@ -13,10 +13,14 @@ public:
     ~Aero();
 
     void initialize(void);
-    void exec(void);
+    void exec(const AeroTypes::InData& inData, AeroTypes::OutData& outData);
     void finalize(void);
 
 protected:
+
+    myMath::Vector3d aeroForceBody;
+    myMath::Vector3d aeroMomentBody;
+
     // Aerodynamic coefficients
     double C_D;
     double C_L;
@@ -35,11 +39,6 @@ protected:
     double M_m;
     double M_n;
 
-    // Aerodynamic state variables
-    double angleOfAttack;
-    double angleOfSideslip;
-    double bankAngle;
-
     // Aerodynamic state derivatives
     double angleOfAttackDot;
     double angleOfSideslipDot;
@@ -53,6 +52,8 @@ protected:
     void updateCoefficients();
     void computeAeroForces();
     void computeAeroMoments();
+
+    void BuildOutput(AeroTypes::OutData& outData);
 
 private:
     Aero& operator=(const Aero& orig) = delete;

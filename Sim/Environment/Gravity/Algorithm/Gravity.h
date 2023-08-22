@@ -1,7 +1,6 @@
 #ifndef GRAVITY_H
 #define GRAVITY_H
 
-#include "TimeMngr.h"
 #include "mathlib.h"
 #include "GravityTypes.h"
 

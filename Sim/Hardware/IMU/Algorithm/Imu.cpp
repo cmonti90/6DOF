@@ -18,9 +18,12 @@ void Imu::finalize()
 {
 }
 
-void Imu::exec()
+void Imu::exec(const ImuTypes::InData& inData, ImuTypes::OutData& outData)
 {
 
-    netForceBody = 0.0;
-    netMomentBody = 0.0;
+}
+
+void Imu::BuildOutput(ImuTypes::OutData& outData)
+{
+
 }

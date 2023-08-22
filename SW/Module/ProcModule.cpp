@@ -29,7 +29,7 @@ pCtrlSurfComponent( new ControlSurfacesComponent( m_queueMngr ) ),
 pEomComponent( new EomComponent( m_queueMngr ) ),
 pImuComponent( new ImuComponent( m_queueMngr ) ),
 pAeroComponent( new AeroComponent( m_queueMngr ) ),
-pNavigationComponent( new NavigationComponent( m_queueMngr ) ),
+pNavigationComponent( new NavigationComponent( m_queueMngr, pRtcClock ) ),
 pGuidanceComponent( new GuidanceComponent( m_queueMngr ) ),
 pAutopilotComponent( new AutopilotComponent( m_queueMngr ) )
 {

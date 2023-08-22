@@ -1,7 +1,6 @@
 #ifndef EOM_H
 #define EOM_H
 
-#include "TimeMngr.h"
 #include "mathlib.h"
 #include "EomTypes.h"
 
@@ -35,8 +34,6 @@ protected:
         PITCH,
         YAW
     };
-
-    TimeMngr *pTimeMngr;
 
     double dt{0.0};
     double t{0.0};

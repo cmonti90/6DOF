@@ -1,8 +1,7 @@
 #ifndef CONTROL_SURFACES_H
 #define CONTROL_SURFACES_H
 
-#include "TimeMngr.h"
-#include "mathlib.h"
+#include "ControlSurfacesTypes.h"
 
 class CtrlSurfs
 {
@@ -11,14 +10,16 @@ public:
     ~CtrlSurfs();
 
     void initialize(void);
-    void exec(void);
+    void exec(const CtrlSurfTypes::InData& inData, CtrlSurfTypes::OutData& outData);
     void finalize(void);
 
 protected:
-    double ctrlInput;
+    double aileronDefl[2];
+    double elevatorDefl;
+    double rudderDefl;
 
-    myMath::Vector3d netForceBody;
-    myMath::Vector3d netMomentBody;
+    void BuildOutput(CtrlSurfTypes::OutData& outData);
+
 };
 
 #endif /* CONTROL_SURFACES_H */

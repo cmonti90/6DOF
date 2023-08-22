@@ -20,6 +20,8 @@ GuidanceComponent::~GuidanceComponent()
 
 void GuidanceComponent::initialize(void)
 {
+    inData_->initialize();
+    outData_->initialize();
 
     subscribe<NavMsg>(*inData_, PubSub::Message_Type::ACTIVE);
 

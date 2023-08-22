@@ -19,6 +19,8 @@ ControlSurfacesComponent::~ControlSurfacesComponent()
 
 void ControlSurfacesComponent::initialize( void )
 {
+    inData_->initialize();
+    outData_->initialize();
 
     subscribe<AutopilotMsg>(*inData_);
 
@@ -48,7 +50,7 @@ void ControlSurfacesComponent::update( void )
         status = peek( label );
     }
 
-    // pAlg->exec();
+    pAlg->exec(*inData_, *outData_);
 
     send<CtrlSurfMsg>(*outData_);
 

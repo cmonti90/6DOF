@@ -18,9 +18,9 @@ void Aero::initialize()
 
 }
 
-void Aero::exec()
+void Aero::exec(const AeroTypes::InData& inData, AeroTypes::OutData& outData)
 {
-    airDensity = AeroTables::densityTable.lookUp(altSeaLevel);
+    // airDensity = AeroTables::densityTable.lookUp(altSeaLevel);
     dynamicPressure = 0.5 * airDensity * myMath::SQ(velT);
 
     updateCoefficients();
@@ -33,6 +33,12 @@ void Aero::exec()
 void Aero::finalize()
 {
     // Do nothing
+}
+
+void Aero::BuildOutput(AeroTypes::OutData& outData)
+{
+    outData.forceBody = aeroForceBody;
+    outData.momentBody = aeroMomentBody;
 }
 
 void Aero::updateCoefficients()

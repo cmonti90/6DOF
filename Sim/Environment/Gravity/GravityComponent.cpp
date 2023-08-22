@@ -19,6 +19,8 @@ GravityComponent::~GravityComponent()
 
 void GravityComponent::initialize(void)
 {
+    inData_->initialize();
+    outData_->initialize();
 
     subscribe<EomMsg>(*inData_);
     subscribe<MassPropMsg>(*inData_);
