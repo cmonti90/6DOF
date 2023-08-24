@@ -13,5 +13,6 @@ target_link_libraries(${target} PRIVATE mathlib
                                         PubSub
                                         AircraftProperties
                                         eomIntf
+                                        EarthModels
                                         Messages
                                         )

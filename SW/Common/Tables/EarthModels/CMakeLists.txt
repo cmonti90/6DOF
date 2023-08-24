@@ -1,16 +1,11 @@
 
-set(target TableTemplates)
+set(target EarthModels)
 
-set(HEADERS Table1D.h )
+set(HEADERS WGS84.h )
 
 add_library(${target} INTERFACE ${HEADERS})
 
 target_include_directories(${target}    INTERFACE  ${CMAKE_CURRENT_SOURCE_DIR}
                                                 )
 
-
-##################################################
-
-
-add_subdirectory(Aero)
-add_subdirectory(EarthModels)
+target_link_libraries(${target} INTERFACE  mathlib )

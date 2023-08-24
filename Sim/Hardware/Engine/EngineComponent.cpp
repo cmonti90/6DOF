@@ -4,7 +4,7 @@
 
 #include "engine.h"
 
-EngineComponent::EngineComponent( std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::COMPONENT_LABEL name )
+EngineComponent::EngineComponent( std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::Component_Label name )
     : PubSub::SimComponent( queueMngr, 1000, name ),
     pAlg( new engine() ),
     inData_( new EngineTypes::InData() ),

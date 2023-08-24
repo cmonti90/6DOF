@@ -1,2 +1,3 @@
-add_subdirectory(Tables)
+add_subdirectory(AircraftProperties)
 add_subdirectory(DebugTools)
+add_subdirectory(Tables)

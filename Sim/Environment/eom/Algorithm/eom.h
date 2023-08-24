@@ -72,13 +72,15 @@ protected:
     double angleOfAttackTotal;
     double angleOfAttackTotalClockAng;
     double angleOfAttack;
+    double angleOfAttackDot;
     double angleOfSideslip;
+    double angleOfSideslipDot;
 
     double lat_centric;
     double lon_centric;
 
-    double lat_detic;
-    double lon_detic;
+    double lat_geodetic;
+    double lon_geodetic;
 
     double phi;
     double theta;
@@ -97,6 +99,7 @@ protected:
     myMath::Matrix3d enuFromEcef;
 
     double altSeaLevel;
+    double altGeodetic;
 
     double udot(const double v, const double w, const double q, const double r, const EomTypes::InData &inData);
     double vdot(const double u, const double w, const double p, const double r, const EomTypes::InData &inData);

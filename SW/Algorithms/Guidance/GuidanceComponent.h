@@ -17,7 +17,7 @@ class GuidanceAlgorithm;
 class GuidanceComponent : public PubSub::Component
 {
 public:
-    GuidanceComponent(std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::COMPONENT_LABEL name = "GuidanceComponent");
+    GuidanceComponent(std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::Component_Label name = "GuidanceComponent");
     virtual ~GuidanceComponent();
 
     void initialize(void) override;

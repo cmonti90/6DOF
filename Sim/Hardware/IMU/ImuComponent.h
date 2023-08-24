@@ -16,7 +16,7 @@ class Imu;
 class ImuComponent : public PubSub::SimComponent
 {
 public:
-    ImuComponent(std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::COMPONENT_LABEL name = "ImuComponent");
+    ImuComponent(std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::Component_Label name = "ImuComponent");
     virtual ~ImuComponent();
 
     void initialize(void) override;

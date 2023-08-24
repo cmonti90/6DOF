@@ -16,7 +16,7 @@ class eom;
 class EomComponent : public PubSub::SimComponent
 {
 public:
-    EomComponent( std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::COMPONENT_LABEL name = "EomComponent" );
+    EomComponent( std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::Component_Label name = "EomComponent" );
     virtual ~EomComponent();
 
     void initialize( void ) override;

@@ -21,8 +21,6 @@ namespace Aircraft
     static constexpr double WingLiftCurveSlopeAtY = 0.0; // rad^-1 (a_y)
     static constexpr double WingLiftCurveSlopeAtZ = 0.0; // rad^-1 (a_z)
     static constexpr double WingLiftCurveSlopeAtX = 0.0; // rad^-1 (a_x)
-
-
 }
 
 #endif /* E310DEA6_9F7E_4DEE_9019_DA65A6CAB980 */

@@ -4,7 +4,7 @@
 #include "AutopilotAlgorithm.h"
 #include "TryCatch.h"
 
-AutopilotComponent::AutopilotComponent(std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::COMPONENT_LABEL name)
+AutopilotComponent::AutopilotComponent(std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::Component_Label name)
     : PubSub::Component(queueMngr, name),
       pAlg(new AutopilotAlgorithm()),
       inData_(new AutopilotTypes::InData()),

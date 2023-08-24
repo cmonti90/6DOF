@@ -17,7 +17,7 @@ class AutopilotAlgorithm;
 class AutopilotComponent : public PubSub::Component
 {
 public:
-    AutopilotComponent(std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::COMPONENT_LABEL name = "AutopilotComponent");
+    AutopilotComponent(std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::Component_Label name = "AutopilotComponent");
     virtual ~AutopilotComponent();
 
     void initialize(void) override;

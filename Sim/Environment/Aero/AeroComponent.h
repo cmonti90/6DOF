@@ -16,7 +16,7 @@ class Aero;
 class AeroComponent : public PubSub::SimComponent
 {
 public:
-    AeroComponent( std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::COMPONENT_LABEL name = "AeroComponent" );
+    AeroComponent( std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::Component_Label name = "AeroComponent" );
     virtual ~AeroComponent();
 
     void initialize( void ) override;

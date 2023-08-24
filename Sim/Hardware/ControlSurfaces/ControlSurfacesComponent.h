@@ -16,7 +16,7 @@ class CtrlSurfs;
 class ControlSurfacesComponent : public PubSub::SimComponent
 {
 public:
-    ControlSurfacesComponent(std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::COMPONENT_LABEL name = "ControlSurfacesComponent");
+    ControlSurfacesComponent(std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::Component_Label name = "ControlSurfacesComponent");
     virtual ~ControlSurfacesComponent();
 
     void initialize(void) override;

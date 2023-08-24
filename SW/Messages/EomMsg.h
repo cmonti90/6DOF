@@ -25,6 +25,11 @@ struct EomData
     double angleOfAttack;
     double angleOfSideslip;
 
+    double angleOfAttackDot;
+    double angleOfSideslipDot;
+
+    double altSeaLevel;
+
     myMath::Matrix3d bodyFromNed;
     myMath::Matrix3d bodyFromWind;
 
@@ -45,6 +50,11 @@ struct EomData
 
         angleOfAttack = 0.0;
         angleOfSideslip = 0.0;
+
+        angleOfAttackDot = 0.0;
+        angleOfSideslipDot = 0.0;
+
+        altSeaLevel = 0.0;
 
         bodyFromNed = 0.0;
         bodyFromWind = 0.0;
@@ -68,6 +78,11 @@ struct EomData
         angleOfAttack = other.angleOfAttack;
         angleOfSideslip = other.angleOfSideslip;
 
+        angleOfAttackDot = other.angleOfAttackDot;
+        angleOfSideslipDot = other.angleOfSideslipDot;
+
+        altSeaLevel = other.altSeaLevel;
+
         bodyFromNed = other.bodyFromNed;
         bodyFromWind = other.bodyFromWind;
 
@@ -86,6 +101,9 @@ struct EomData
           eulerAngRates(),
           angleOfAttack(),
           angleOfSideslip(),
+          angleOfAttackDot(),
+          angleOfSideslipDot(),
+          altSeaLevel(),
           bodyFromNed(),
           bodyFromWind()
     {
@@ -104,6 +122,9 @@ struct EomData
           eulerAngRates(other.eulerAngRates),
           angleOfAttack(other.angleOfAttack),
           angleOfSideslip(other.angleOfSideslip),
+          angleOfAttackDot(other.angleOfAttackDot),
+          angleOfSideslipDot(other.angleOfSideslipDot),
+          altSeaLevel(other.altSeaLevel),
           bodyFromNed(other.bodyFromNed),
           bodyFromWind(other.bodyFromWind)
     {

@@ -1,5 +1,6 @@
 #include "eom.h"
 
+#include "WGS84.h"
 #include "PhysicalProperties.h"
 
 #include <math.h>
@@ -101,6 +102,8 @@ void eom::BuildOutput(EomTypes::OutData &outData)
 
     outData.bodyFromNed = bodyFromNed;
     outData.bodyFromWind = bodyFromWind;
+
+    outData.altSeaLevel = altSeaLevel;
 }
 
 void eom::update()
@@ -295,6 +298,8 @@ void eom::updateEcef()
     ecefFromEci[2][2] = 1.0;
 
     posEcef = ecefFromEci * posEci;
+
+    altSeaLevel = posEcef.Magnitude() - myMath::Constants::EARTH_SEALEVEL_RADIUS;
 }
 
 void eom::updateNed()
@@ -302,37 +307,39 @@ void eom::updateNed()
     lat_centric = std::atan2(posEcef[Z], posEcef[X]);
     lon_centric = std::atan2(posEcef[Y], posEcef[X]);
 
-    lon_detic = lon_centric;
+    lon_geodetic = lon_centric;
 
-    double eps = 1.0e-8;
-    lat_detic = std::atan2(posEcef[Z], std::sqrt(myMath::SQ(posEcef[X]) + myMath::SQ(posEcef[Y])));
-    double lastItr;
+    // double eps = 1.0e-8;
+    // lat_geodetic = std::atan2(posEcef[Z], std::sqrt(myMath::SQ(posEcef[X]) + myMath::SQ(posEcef[Y])));
+    // double lastItr;
 
-    for (unsigned int i{0u}; i < 30u && (std::abs(lat_detic - lastItr) > eps); i++)
-    {
-        lastItr = lat_detic;
+    // for (unsigned int i{0u}; i < 30u && (std::abs(lat_geodetic - lastItr) > eps); i++)
+    // {
+    //     lastItr = lat_geodetic;
 
-        lat_detic = std::atan2(
-            posEcef[Z] + myMath::Constants::EARTH_POLAR_RADIUS * myMath::SQ(myMath::Constants::EARTH_ECCENTRICITY) * std::sin(lat_detic),
-            std::sqrt(myMath::SQ(posEcef[X]) + myMath::SQ(posEcef[Y]) - myMath::SQ(myMath::Constants::EARTH_ECCENTRICITY) * myMath::Constants::EARTH_EQUITORIAL_RADIUS * myMath::SQ(std::cos(lat_detic))));
-    }
+    //     lat_geodetic = std::atan2(
+    //         posEcef[Z] + myMath::Constants::EARTH_POLAR_RADIUS * myMath::SQ(myMath::Constants::EARTH_ECCENTRICITY) * std::sin(lat_geodetic),
+    //         std::sqrt(myMath::SQ(posEcef[X]) + myMath::SQ(posEcef[Y]) - myMath::SQ(myMath::Constants::EARTH_ECCENTRICITY) * myMath::Constants::EARTH_EQUITORIAL_RADIUS * myMath::SQ(std::cos(lat_geodetic))));
+    // }
 
-    if (std::abs(lat_detic - lastItr) > eps)
-    {
-        std::cout << "Warning: Detic latitude did not converge to within " << eps << " radians. Delta = " << std::abs(lat_detic - lastItr) << " radians." << std::endl;
-    }
+    // if (std::abs(lat_geodetic - lastItr) > eps)
+    // {
+    //     std::cout << "Warning: Detic latitude did not converge to within " << eps << " radians. Delta = " << std::abs(lat_geodetic - lastItr) << " radians." << std::endl;
+    // }
 
-    enuFromEcef[0][0] = -std::sin(lon_detic);
-    enuFromEcef[0][1] = std::cos(lon_detic);
+    WGS84::ecefToLla(posEcef, lat_geodetic, lon_geodetic, altGeodetic);
+
+    enuFromEcef[0][0] = -std::sin(lon_geodetic);
+    enuFromEcef[0][1] = std::cos(lon_geodetic);
     enuFromEcef[0][2] = 0.0;
 
-    enuFromEcef[1][0] = -std::sin(lat_detic) * std::cos(lon_detic);
-    enuFromEcef[1][1] = -std::sin(lat_detic) * std::sin(lon_detic);
-    enuFromEcef[1][2] = std::cos(lat_detic);
+    enuFromEcef[1][0] = -std::sin(lat_geodetic) * std::cos(lon_geodetic);
+    enuFromEcef[1][1] = -std::sin(lat_geodetic) * std::sin(lon_geodetic);
+    enuFromEcef[1][2] = std::cos(lat_geodetic);
 
-    enuFromEcef[2][0] = std::cos(lat_detic) * std::cos(lon_detic);
-    enuFromEcef[2][1] = std::cos(lat_detic) * std::sin(lon_detic);
-    enuFromEcef[2][2] = std::sin(lat_detic);
+    enuFromEcef[2][0] = std::cos(lat_geodetic) * std::cos(lon_geodetic);
+    enuFromEcef[2][1] = std::cos(lat_geodetic) * std::sin(lon_geodetic);
+    enuFromEcef[2][2] = std::sin(lat_geodetic);
 
     nedFromEcef = enuFromNed.Transpose() * enuFromEcef;
 }
@@ -390,13 +397,14 @@ void eom::updateBody()
 void eom::updateAeroAngles()
 {
     angleOfAttack = std::atan2(velBody[Z], velBody[X]) + Aircraft::WingIncidenceAngle;
-
     angleOfSideslip = std::asin(velBody[Y] / velBody.Magnitude());
+
+    angleOfAttackDot = (std::cos(angleOfSideslip) * accelBody[X] + std::sin(angleOfSideslip) * accelBody[Z]) / velBody.Magnitude();
+    angleOfSideslipDot = (accelBody[Y] - angleOfAttackDot * velBody[Y]) / velBody.Magnitude();
 
     flightPathAngle = eulerAngles[PITCH] - angleOfAttack;
 
     angleOfAttackTotal = std::acos(velBody[X] / velBody.Magnitude());
-
     angleOfAttackTotalClockAng = std::atan2(velBody[Y], velBody[Z]);
 }
 

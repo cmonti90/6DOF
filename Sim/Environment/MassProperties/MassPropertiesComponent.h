@@ -16,7 +16,7 @@ class MassProperties;
 class MassPropertiesComponent : public PubSub::SimComponent
 {
 public:
-    MassPropertiesComponent(std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::COMPONENT_LABEL name = "MassPropertiesComponent");
+    MassPropertiesComponent(std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::Component_Label name = "MassPropertiesComponent");
     virtual ~MassPropertiesComponent();
 
     void initialize(void) override;

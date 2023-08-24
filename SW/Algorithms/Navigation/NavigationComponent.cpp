@@ -6,7 +6,7 @@
 
 NavigationComponent::NavigationComponent(std::shared_ptr<PubSub::QueueMngr> queueMngr,
                                          const std::shared_ptr<TimePt::RtcClock> rtcClock,
-                                         const PubSub::COMPONENT_LABEL name)
+                                         const PubSub::Component_Label name)
     : PubSub::Component(queueMngr, name),
       pAlg(new NavigationAlgorithm()),
       inData_(new NavTypes::InData()),
@@ -22,7 +22,7 @@ void NavigationComponent::initialize(void)
 {
     inData_->initialize();
     outData_->initialize();
-    
+
     subscribe<ImuMsg>(*inData_, PubSub::Message_Type::ACTIVE);
 
     pAlg->initialize();

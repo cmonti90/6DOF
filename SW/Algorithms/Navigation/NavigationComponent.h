@@ -22,7 +22,7 @@ class NavigationComponent : public PubSub::Component
 public:
     NavigationComponent(std::shared_ptr<PubSub::QueueMngr> queueMngr,
                         const std::shared_ptr<TimePt::RtcClock> rtcClock,
-                        const PubSub::COMPONENT_LABEL name = "NavigationComponent");
+                        const PubSub::Component_Label name = "NavigationComponent");
     virtual ~NavigationComponent();
 
     void initialize(void) override;

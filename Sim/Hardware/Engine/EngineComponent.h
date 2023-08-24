@@ -16,7 +16,7 @@ class engine;
 class EngineComponent : public PubSub::SimComponent
 {
 public:
-    EngineComponent(std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::COMPONENT_LABEL name = "EngineComponent");
+    EngineComponent(std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::Component_Label name = "EngineComponent");
     virtual ~EngineComponent();
 
     void initialize(void) override;

@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-GuidanceComponent::GuidanceComponent(std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::COMPONENT_LABEL name)
+GuidanceComponent::GuidanceComponent(std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::Component_Label name)
     : PubSub::Component(queueMngr, name),
       pAlg(new GuidanceAlgorithm()),
       inData_(new GuidanceTypes::InData()),
