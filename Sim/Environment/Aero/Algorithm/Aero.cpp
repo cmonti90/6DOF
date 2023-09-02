@@ -54,59 +54,66 @@ void Aero::updateCoefficients(const AeroTypes::InData& inData)
 
 void Aero::updateWingCoefficients(const AeroTypes::InData& inData)
 {
-    C_Dw = CDw_0 + CDw_alpha * myMath::ABS(inData.angleOfAttack) + CDw_alphaDot * myMath::ABS(inData.angleOfAttackDot) + CDw_q * myMath::ABS(inData.eulerAngRates[1]) + CDw_deltaE * myMath::ABS(inData.elevatorDefl) + CDw_deltaA * (myMath::ABS(inData.aileronDefl[0]) + myMath::ABS(inData.aileronDefl[1])) + CDw_deltaR * myMath::ABS(inData.rudderDefl) + CDw_deltaT * myMath::ABS(inData.throttle);
-    C_Lw = CLw_0 + CLw_alpha * inData.angleOfAttack + CLw_alphaDot * inData.angleOfAttackDot + CLw_q * inData.eulerAngRates[1] + CLw_deltaE * inData.elevatorDefl + CLw_deltaA * (inData.aileronDefl[0] + inData.aileronDefl[1]) + CLw_deltaR * inData.rudderDefl + CLw_deltaT * inData.throttle;
-    C_Yw = CYw_0 + CYw_beta * inData.angleOfSideslip + CYw_betaDot * inData.angleOfSideslipDot + CYw_p * inData.eulerAngRates[0] + CYw_r * inData.eulerAngRates[2] + CYw_deltaA * (inData.aileronDefl[0] - inData.aileronDefl[1]) + CYw_deltaR * inData.rudderDefl + CYw_deltaT * inData.throttle;
+    wing.C_D = wing.C_D0 + wing.C_Dalpha * myMath::ABS(inData.angleOfAttack) + wing.C_DalphaDot * myMath::ABS(inData.angleOfAttackDot) + wing.C_Dq * myMath::ABS(inData.eulerAngRates[1]);
+    wing.C_L = wing.C_L0 + wing.C_Lalpha * inData.angleOfAttack + wing.C_LalphaDot * inData.angleOfAttackDot + wing.C_Lq * inData.eulerAngRates[1];
+    wing.C_Y = wing.C_Y0 + wing.C_Ybeta * inData.angleOfSideslip + wing.C_YbetaDot * inData.angleOfSideslipDot + wing.C_Yp * inData.eulerAngRates[0] + wing.C_Yr * inData.eulerAngRates[2];
 
-    C_lw = Clw_0 + Clw_beta * inData.angleOfSideslip + Clw_betaDot * inData.angleOfSideslipDot + Clw_p * inData.eulerAngRates[0] + Clw_r * inData.eulerAngRates[2] + Clw_deltaA * (inData.aileronDefl[0] - inData.aileronDefl[1]) + Clw_deltaR * inData.rudderDefl + Clw_deltaT * inData.throttle;
-    C_mw = Cmw_0 + Cmw_alpha * inData.angleOfAttack + Cmw_alphaDot * inData.angleOfAttackDot + Cmw_q * inData.eulerAngRates[1] + Cmw_deltaE * inData.elevatorDefl + Cmw_deltaA * inData.aileronDefl[0] + Cmw_deltaR * inData.rudderDefl + Cmw_deltaT * inData.throttle;
-    C_nw = Cnw_0 + Cnw_beta * inData.angleOfSideslip + Cnw_betaDot * inData.angleOfSideslipDot + Cnw_p * inData.eulerAngRates[0] + Cnw_r * inData.eulerAngRates[2] + Cnw_deltaA * (inData.aileronDefl[0] - inData.aileronDefl[1]) + Cnw_deltaR * inData.rudderDefl + Cnw_deltaT * inData.throttle;
+    wing.C_l = wing.C_l0 + wing.C_lbeta * inData.angleOfSideslip + wing.C_lbetaDot * inData.angleOfSideslipDot + wing.C_lp * inData.eulerAngRates[0] + wing.C_lr * inData.eulerAngRates[2];
+    wing.C_m = wing.C_m0 + wing.C_malpha * inData.angleOfAttack + wing.C_malphaDot * inData.angleOfAttackDot + wing.C_mq * inData.eulerAngRates[1];
+    wing.C_n = wing.C_n0 + wing.C_nbeta * inData.angleOfSideslip + wing.C_nbetaDot * inData.angleOfSideslipDot + wing.C_np * inData.eulerAngRates[0] + wing.C_nr * inData.eulerAngRates[2];
 }
 
 void Aero::updateFuselageCoefficients(const AeroTypes::InData& inData)
 {
-    C_Df = CDf_0 + CDf_alpha * myMath::ABS(inData.angleOfAttack) + CDf_alphaDot * myMath::ABS(inData.angleOfAttackDot) + CDf_q * myMath::ABS(inData.eulerAngRates[1]);
-    C_Lf = CLf_0 + CLf_alpha * inData.angleOfAttack + CLf_alphaDot * inData.angleOfAttackDot + CLf_q * inData.eulerAngRates[1];
-    C_Yf = CYf_0 + CYf_beta * inData.angleOfSideslip + CYf_betaDot * inData.angleOfSideslipDot + CYf_p * inData.eulerAngRates[0] + CYf_r * inData.eulerAngRates[2];
+    fuselage.C_D = fuselage.C_D0 + fuselage.C_Dalpha * myMath::ABS(inData.angleOfAttack - Aircraft::WingIncidenceAngle) + fuselage.C_DalphaDot * myMath::ABS(inData.angleOfAttackDot) + fuselage.C_Dq * myMath::ABS(inData.eulerAngRates[1]);
+    fuselage.C_L = fuselage.C_L0 + fuselage.C_Lalpha * (inData.angleOfAttack - Aircraft::WingIncidenceAngle) + fuselage.C_LalphaDot * inData.angleOfAttackDot + fuselage.C_Lq * inData.eulerAngRates[1];
+    fuselage.C_Y = fuselage.C_Y0 + fuselage.C_Ybeta * inData.angleOfSideslip + fuselage.C_YbetaDot * inData.angleOfSideslipDot + fuselage.C_Yp * inData.eulerAngRates[0] + fuselage.C_Yr * inData.eulerAngRates[2];
 
-    C_lf = Clf_0 + Clf_beta * inData.angleOfSideslip + Clf_betaDot * inData.angleOfSideslipDot + Clf_p * inData.eulerAngRates[0] + Clf_r * inData.eulerAngRates[2];
-    C_mf = Cmf_0 + Cmf_alpha * inData.angleOfAttack + Cmf_alphaDot * inData.angleOfAttackDot + Cmf_q * inData.eulerAngRates[1];
-    C_nf = Cnf_0 + Cnf_beta * inData.angleOfSideslip + Cnf_betaDot * inData.angleOfSideslipDot + Cnf_p * inData.eulerAngRates[0] + Cnf_r * inData.eulerAngRates[2];
+    fuselage.C_l = fuselage.C_l0 + fuselage.C_lbeta * inData.angleOfSideslip + fuselage.C_lbetaDot * inData.angleOfSideslipDot + fuselage.C_lp * inData.eulerAngRates[0] + fuselage.C_lr * inData.eulerAngRates[2];
+    fuselage.C_m = fuselage.C_m0 + fuselage.C_malpha * (inData.angleOfAttack - Aircraft::WingIncidenceAngle) + fuselage.C_malphaDot * inData.angleOfAttackDot + fuselage.C_mq * inData.eulerAngRates[1];
+    fuselage.C_n = fuselage.C_n0 + fuselage.C_nbeta * inData.angleOfSideslip + fuselage.C_nbetaDot * inData.angleOfSideslipDot + fuselage.C_np * inData.eulerAngRates[0] + fuselage.C_nr * inData.eulerAngRates[2];
 }
 
 void Aero::updateHorizontalTailCoefficients(const AeroTypes::InData& inData)
 {
-    C_Dht = CDht_0 + CDht_alpha * myMath::ABS(inData.angleOfAttack) + CDht_alphaDot * myMath::ABS(inData.angleOfAttackDot) + CDht_q * myMath::ABS(inData.eulerAngRates[1]);
-    C_Lht = CLht_0 + CLht_alpha * inData.angleOfAttack + CLht_alphaDot * inData.angleOfAttackDot + CLht_q * inData.eulerAngRates[1];
-    C_Yht = CYht_0 + CYht_beta * inData.angleOfSideslip + CYht_betaDot * inData.angleOfSideslipDot + CYht_p * inData.eulerAngRates[0] + CYht_r * inData.eulerAngRates[2];
+    horzTail.C_D = horzTail.C_D0 + horzTail.C_Dalpha * myMath::ABS(inData.angleOfAttack - Aircraft::WingIncidenceAngle) + horzTail.C_DalphaDot * myMath::ABS(inData.angleOfAttackDot) + horzTail.C_Dq * myMath::ABS(inData.eulerAngRates[1]);
+    horzTail.C_L = horzTail.C_L0 + horzTail.C_Lalpha * (inData.angleOfAttack - Aircraft::WingIncidenceAngle) + horzTail.C_LalphaDot * inData.angleOfAttackDot + horzTail.C_Lq * inData.eulerAngRates[1];
+    horzTail.C_Y = horzTail.C_Y0 + horzTail.C_Ybeta * inData.angleOfSideslip + horzTail.C_YbetaDot * inData.angleOfSideslipDot + horzTail.C_Yp * inData.eulerAngRates[0] + horzTail.C_Yr * inData.eulerAngRates[2];
 
-    C_lht = Clht_0 + Clht_beta * inData.angleOfSideslip + Clht_betaDot * inData.angleOfSideslipDot + Clht_p * inData.eulerAngRates[0] + Clht_r * inData.eulerAngRates[2];
-    C_mht = Cmht_0 + Cmht_alpha * inData.angleOfAttack + Cmht_alphaDot * inData.angleOfAttackDot + Cmht_q * inData.eulerAngRates[1];
-    C_nht = Cnht_0 + Cnht_beta * inData.angleOfSideslip + Cnht_betaDot * inData.angleOfSideslipDot + Cnht_p * inData.eulerAngRates[0] + Cnht_r * inData.eulerAngRates[2];
+    horzTail.C_l = horzTail.C_l0 + horzTail.C_lbeta * inData.angleOfSideslip + horzTail.C_lbetaDot * inData.angleOfSideslipDot + horzTail.C_lp * inData.eulerAngRates[0] + horzTail.C_lr * inData.eulerAngRates[2];
+    horzTail.C_m = horzTail.C_m0 + horzTail.C_malpha * (inData.angleOfAttack - Aircraft::WingIncidenceAngle) + horzTail.C_malphaDot * inData.angleOfAttackDot + horzTail.C_mq * inData.eulerAngRates[1];
+    horzTail.C_n = horzTail.C_n0 + horzTail.C_nbeta * inData.angleOfSideslip + horzTail.C_nbetaDot * inData.angleOfSideslipDot + horzTail.C_np * inData.eulerAngRates[0] + horzTail.C_nr * inData.eulerAngRates[2];
 }
 
 void Aero::updateVerticalTailCoefficients(const AeroTypes::InData& inData)
 {
-    C_Dvt = CDvt_0 + CDvt_alpha * myMath::ABS(inData.angleOfAttack) + CDvt_alphaDot * myMath::ABS(inData.angleOfAttackDot) + CDvt_q * myMath::ABS(inData.eulerAngRates[1]);
-    C_Lvt = CLvt_0 + CLvt_alpha * inData.angleOfAttack + CLvt_alphaDot * inData.angleOfAttackDot + CLvt_q * inData.eulerAngRates[1];
-    C_Yvt = CYvt_0 + CYvt_beta * inData.angleOfSideslip + CYvt_betaDot * inData.angleOfSideslipDot + CYvt_p * inData.eulerAngRates[0] + CYvt_r * inData.eulerAngRates[2];
+    vertTail.C_D = vertTail.C_D0 + vertTail.C_Dalpha * myMath::ABS(inData.angleOfAttack - Aircraft::WingIncidenceAngle) + vertTail.C_DalphaDot * myMath::ABS(inData.angleOfAttackDot) + vertTail.C_Dq * myMath::ABS(inData.eulerAngRates[1]);
+    vertTail.C_L = vertTail.C_L0 + vertTail.C_Lalpha * (inData.angleOfAttack - Aircraft::WingIncidenceAngle) + vertTail.C_LalphaDot * inData.angleOfAttackDot + vertTail.C_Lq * inData.eulerAngRates[1];
+    vertTail.C_Y = vertTail.C_Y0 + vertTail.C_Ybeta * inData.angleOfSideslip + vertTail.C_YbetaDot * inData.angleOfSideslipDot + vertTail.C_Yp * inData.eulerAngRates[0] + vertTail.C_Yr * inData.eulerAngRates[2];
 
-    C_lvt = Clvt_0 + Clvt_beta * inData.angleOfSideslip + Clvt_betaDot * inData.angleOfSideslipDot + Clvt_p * inData.eulerAngRates[0] + Clvt_r * inData.eulerAngRates[2];
-    C_mvt = Cmvt_0 + Cmvt_alpha * inData.angleOfAttack + Cmvt_alphaDot * inData.angleOfAttackDot + Cmvt_q * inData.eulerAngRates[1];
-    C_nvt = Cnvt_0 + Cnvt_beta * inData.angleOfSideslip + Cnvt_betaDot * inData.angleOfSideslipDot + Cnvt_p * inData.eulerAngRates[0] + Cnvt_r * inData.eulerAngRates[2];
+    vertTail.C_l = vertTail.C_l0 + vertTail.C_lbeta * inData.angleOfSideslip + vertTail.C_lbetaDot * inData.angleOfSideslipDot + vertTail.C_lp * inData.eulerAngRates[0] + vertTail.C_lr * inData.eulerAngRates[2];
+    vertTail.C_m = vertTail.C_m0 + vertTail.C_malpha * (inData.angleOfAttack - Aircraft::WingIncidenceAngle) + vertTail.C_malphaDot * inData.angleOfAttackDot + vertTail.C_mq * inData.eulerAngRates[1];
+    vertTail.C_n = vertTail.C_n0 + vertTail.C_nbeta * inData.angleOfSideslip + vertTail.C_nbetaDot * inData.angleOfSideslipDot + vertTail.C_np * inData.eulerAngRates[0] + vertTail.C_nr * inData.eulerAngRates[2];
+}
+
+void Aero::updateAileronCoefficients(const AeroTypes::InData& inData)
+{
+    
 }
 
 void Aero::computeAeroForces()
 {
-    F_D = dynamicPressure * (Aircraft::WingArea * C_Dw + Aircraft::FuselageArea * C_Df + Aircraft::HorziontalTailArea * C_Dht + Aircraft::VerticalTailArea * C_Dvt);
-    F_L = dynamicPressure * (Aircraft::WingArea * C_Lw + Aircraft::FuselageArea * C_Lf + Aircraft::HorziontalTailArea * C_Lht);
-    F_Y = dynamicPressure * (Aircraft::WingArea * C_Yw + Aircraft::FuselageArea * C_Yf + Aircraft::HorziontalTailArea * C_Yht + Aircraft::VerticalTailArea * C_Yvt);
+    F_D = dynamicPressure * (Aircraft::WingArea * wing.C_D + Aircraft::FuselageArea * fuselage.C_D + Aircraft::HorizontalTailArea * horzTail.C_D + Aircraft::VerticalTailArea * vertTail.C_D);
+    F_L = dynamicPressure * (Aircraft::WingArea * wing.C_L + Aircraft::FuselageArea * fuselage.C_L + Aircraft::HorizontalTailArea * horzTail.C_L);
+    F_Y = dynamicPressure * (Aircraft::WingArea * wing.C_Y + Aircraft::FuselageArea * fuselage.C_Y + Aircraft::HorizontalTailArea * horzTail.C_Y + Aircraft::VerticalTailArea * vertTail.C_Y);
+
+    aeroForceBody = myMath::Vector3d({-F_D, F_Y, F_L});
 }
 
 void Aero::computeAeroMoments()
 {
-    M_l = dynamicPressure * (Aircraft::WingArea * Aircraft::WingSpan * C_l + Aircraft::FuselageArea * Aircraft::FuselageLength * C_lf +  * Aircraft::HorziontalTailArea * Aircraft::HorziontalTailSpan * C_lht +  * Aircraft::VerticalTailArea * Aircraft::VerticalTailSpan * C_lvt);
-    M_m = dynamicPressure * (Aircraft::WingArea * Aircraft::WingMeanChord * C_m + Aircraft::FuselageArea * Aircraft::FuselageLength * C_mf + Aircraft::HorziontalTailArea * Aircraft::HorziontalTailMeanChord * C_mht + Aircraft::VerticalTailArea * Aircraft::VerticalTailMeanChord * C_mvt);
-    M_n = dynamicPressure * (Aircraft::WingArea * Aircraft::WingSpan * C_n + Aircraft::FuselageArea * Aircraft::FuselageLength * C_nf + Aircraft::HorziontalTailArea * Aircraft::HorziontalTailSpan * C_nht + Aircraft::VerticalTailArea * Aircraft::VerticalTailSpan * C_nvt);
+    M_l = dynamicPressure * (Aircraft::WingArea * Aircraft::WingSpan * wing.C_l + Aircraft::FuselageArea * Aircraft::FuselageLength * fuselage.C_l + Aircraft::HorizontalTailArea * Aircraft::HorizontalTailSpan * horzTail.C_l + Aircraft::VerticalTailArea * Aircraft::VerticalTailSpan * vertTail.C_l);
+    M_m = dynamicPressure * (Aircraft::WingArea * Aircraft::WingMeanChord * wing.C_m + Aircraft::FuselageArea * Aircraft::FuselageLength * fuselage.C_m + Aircraft::HorizontalTailArea * Aircraft::HorizontalTailSpan * horzTail.C_m + Aircraft::VerticalTailArea * Aircraft::VerticalTailMeanChord * vertTail.C_m);
+    M_n = dynamicPressure * (Aircraft::WingArea * Aircraft::WingSpan * wing.C_n + Aircraft::FuselageArea * Aircraft::FuselageLength * fuselage.C_n + Aircraft::HorizontalTailArea * Aircraft::HorizontalTailSpan * horzTail.C_n + Aircraft::VerticalTailArea * Aircraft::VerticalTailSpan * vertTail.C_n);
 }
 

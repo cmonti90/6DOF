@@ -82,9 +82,32 @@ void EomComponent::update(void)
     send<EomMsg>(*outData_);
 
     counter_++;
+
+    testing();
 }
 
 void EomComponent::finalize(void)
 {
     pAlg->finalize();
+}
+
+#include "mathlib.h"
+#include <iostream>
+
+void EomComponent::testing()
+{
+    myMath::AngleD ang;
+    ang[0] = 30.0 * myMath::Constants::DEG_TO_RAD;
+    ang[1] = 15.0 * myMath::Constants::DEG_TO_RAD;
+    ang[2] = 40.0 * myMath::Constants::DEG_TO_RAD;
+
+    myMath::DCMd dcm = ang.ToDCM(myMath::EulerOrder::ZXZ);
+
+    std::cout << "DCM: " << std::endl;
+    std::cout << dcm[0][0] << "  " << dcm[0][1] << "  " << dcm[0][2] << std::endl;
+    std::cout << dcm[1][0] << "  " << dcm[1][1] << "  " << dcm[1][2] << std::endl;
+    std::cout << dcm[2][0] << "  " << dcm[2][1] << "  " << dcm[2][2] << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
+
 }

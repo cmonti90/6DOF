@@ -21,20 +21,57 @@ protected:
     myMath::Vector3d aeroForceBody;
     myMath::Vector3d aeroMomentBody;
 
-    // Aerodynamic coefficients
-    double C_D;
-    double C_L;
-    double C_Y;
-    double C_l;
-    double C_m;
-    double C_n;
+    struct Coef
+    {
+        double C_D;
+        double C_D0;
+        double C_Dalpha;
+        double C_DalphaDot;
+        double C_Dq;
 
-    double C_Dw;
-    double C_Lw;
-    double C_Yw;
-    double C_lw;
-    double C_mw;
-    double C_nw;
+        double C_L;
+        double C_L0;
+        double C_Lalpha;
+        double C_LalphaDot;
+        double C_Lq;
+
+        double C_Y;
+        double C_Y0;
+        double C_Ybeta;
+        double C_YbetaDot;
+        double C_Yp;
+        double C_Yr;
+
+        double C_l;
+        double C_l0;
+        double C_lbeta;
+        double C_lbetaDot;
+        double C_lp;
+        double C_lr;
+
+        double C_m;
+        double C_m0;
+        double C_malpha;
+        double C_malphaDot;
+        double C_mq;
+
+        double C_n;
+        double C_n0;
+        double C_nbeta;
+        double C_nbetaDot;
+        double C_np;
+        double C_nr;
+    };
+
+    // Aerodynamic coefficients
+
+    Coef wing;
+    Coef fuselage;
+    Coef horzTail;
+    Coef vertTail;
+    Coef ail;
+    Coef elev;
+    Coef rudder;
 
     double C_Df;
     double C_Lf;
@@ -85,6 +122,9 @@ protected:
     void updateFuselageCoefficients(const AeroTypes::InData& inData);
     void updateHorizontalTailCoefficients(const AeroTypes::InData& inData);
     void updateVerticalTailCoefficients(const AeroTypes::InData& inData);
+    void updateAileronCoefficients(const AeroTypes::InData& inData);
+    void updateElevatorCoefficients(const AeroTypes::InData& inData);
+    void updateRudderCoefficients(const AeroTypes::InData& inData);
     void computeAeroForces();
     void computeAeroMoments();
 

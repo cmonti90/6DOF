@@ -55,7 +55,7 @@ void AeroComponent::update()
         status = peek(label);
     }
 
-    pAlg->exec(*inData_, *outData_);
+    // pAlg->exec(*inData_, *outData_);
 
     send<AeroMsg>(*outData_);
 
