@@ -19,7 +19,7 @@ struct EomData
     myMath::Vector3d posEcef;
     myMath::Vector3d velEcef;
 
-    myMath::Vector3d eulerAngs;
+    myMath::AngleD eulerAngs;
     myMath::Vector3d eulerAngRates;
 
     double angleOfAttack;
@@ -30,8 +30,8 @@ struct EomData
 
     double altSeaLevel;
 
-    myMath::Matrix3d bodyFromNed;
-    myMath::Matrix3d bodyFromWind;
+    myMath::DCMd bodyFromNed;
+    myMath::DCMd bodyFromWind;
 
     void Default()
     {

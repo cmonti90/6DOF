@@ -48,7 +48,7 @@ protected:
     myMath::Vector3d netForceBody;
     myMath::Vector3d netMomentBody;
 
-    myMath::Vector3d eulerAngles;
+    myMath::AngleD eulerAngles;
     myMath::Vector3d velBody;
     myMath::Vector3d accelBody;
     myMath::Vector3d angRatesBody;
@@ -89,14 +89,14 @@ protected:
     double earthRotation;
 
     // DCMs
-    myMath::Matrix3d ecefFromEci;
-    myMath::Matrix3d bodyFromEcef;
-    myMath::Matrix3d bodyFromEci;
-    myMath::Matrix3d bodyFromNed;
-    myMath::Matrix3d bodyFromWind;
-    myMath::Matrix3d nedFromEcef;
-    myMath::Matrix3d enuFromNed;
-    myMath::Matrix3d enuFromEcef;
+    myMath::DCMd ecefFromEci;
+    myMath::DCMd bodyFromEcef;
+    myMath::DCMd bodyFromEci;
+    myMath::DCMd bodyFromNed;
+    myMath::DCMd bodyFromWind;
+    myMath::DCMd nedFromEcef;
+    myMath::DCMd enuFromNed;
+    myMath::DCMd enuFromEcef;
 
     double altSeaLevel;
     double altGeodetic;

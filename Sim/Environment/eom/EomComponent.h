@@ -23,8 +23,6 @@ public:
     void update( void ) override;
     void finalize( void ) override;
 
-    void testing();
-
 private:
     std::unique_ptr<eom> pAlg;
 

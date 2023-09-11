@@ -35,7 +35,7 @@ void eom::initialize()
 
     angRatesBody = 0.0; // rad/sec
 
-    ecefFromEci = myMath::Matrix3d::Identity();
+    ecefFromEci = myMath::DCMd::Identity();
 
     enuFromNed[0][0] = 0.0;
     enuFromNed[0][1] = 1.0;
@@ -309,25 +309,7 @@ void eom::updateNed()
 
     lon_geodetic = lon_centric;
 
-    // double eps = 1.0e-8;
-    // lat_geodetic = std::atan2(posEcef[Z], std::sqrt(myMath::SQ(posEcef[X]) + myMath::SQ(posEcef[Y])));
-    // double lastItr;
-
-    // for (unsigned int i{0u}; i < 30u && (std::abs(lat_geodetic - lastItr) > eps); i++)
-    // {
-    //     lastItr = lat_geodetic;
-
-    //     lat_geodetic = std::atan2(
-    //         posEcef[Z] + myMath::Constants::EARTH_POLAR_RADIUS * myMath::SQ(myMath::Constants::EARTH_ECCENTRICITY) * std::sin(lat_geodetic),
-    //         std::sqrt(myMath::SQ(posEcef[X]) + myMath::SQ(posEcef[Y]) - myMath::SQ(myMath::Constants::EARTH_ECCENTRICITY) * myMath::Constants::EARTH_EQUITORIAL_RADIUS * myMath::SQ(std::cos(lat_geodetic))));
-    // }
-
-    // if (std::abs(lat_geodetic - lastItr) > eps)
-    // {
-    //     std::cout << "Warning: Detic latitude did not converge to within " << eps << " radians. Delta = " << std::abs(lat_geodetic - lastItr) << " radians." << std::endl;
-    // }
-
-    WGS84::ecefToLla(posEcef, lat_geodetic, lon_geodetic, altGeodetic);
+    WGS84::EcefToLla(posEcef, lat_geodetic, lon_geodetic, altGeodetic);
 
     enuFromEcef[0][0] = -std::sin(lon_geodetic);
     enuFromEcef[0][1] = std::cos(lon_geodetic);
