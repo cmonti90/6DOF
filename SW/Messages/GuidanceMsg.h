@@ -18,25 +18,9 @@ struct GuidanceData
         guidanceAccelCmdZbody = 0.0;
     }
 
-    GuidanceData &operator=(const GuidanceData &other)
-    {
-        guidanceAccelCmdXbody = other.guidanceAccelCmdXbody;
-        guidanceAccelCmdYbody = other.guidanceAccelCmdYbody;
-        guidanceAccelCmdZbody = other.guidanceAccelCmdZbody;
-
-        return *this;
-    }
-
     GuidanceData() : guidanceAccelCmdXbody(), guidanceAccelCmdYbody(), guidanceAccelCmdZbody()
     {
         Default();
-    }
-
-    GuidanceData(const GuidanceData &other) : guidanceAccelCmdXbody(), guidanceAccelCmdYbody(), guidanceAccelCmdZbody()
-    {
-        guidanceAccelCmdXbody = other.guidanceAccelCmdXbody;
-        guidanceAccelCmdYbody = other.guidanceAccelCmdYbody;
-        guidanceAccelCmdZbody = other.guidanceAccelCmdZbody;
     }
 };
 

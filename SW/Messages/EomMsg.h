@@ -9,18 +9,18 @@
 
 struct EomData
 {
-    myMath::Vector3d windVelBody;
-    myMath::Vector3d velBody;
-    myMath::Vector3d accelBody;
+    double windVelBody_raw[3];
+    double velBody_raw[3];
+    double accelBody_raw[3];
 
-    myMath::Vector3d posEci;
-    myMath::Vector3d velEci;
+    double posEci_raw[3];
+    double velEci_raw[3];
 
-    myMath::Vector3d posEcef;
-    myMath::Vector3d velEcef;
+    double posEcef_raw[3];
+    double velEcef_raw[3];
 
-    myMath::AngleD eulerAngs;
-    myMath::Vector3d eulerAngRates;
+    double eulerAngs_raw[3];
+    double eulerAngRates_raw[3];
 
     double angleOfAttack;
     double angleOfSideslip;
@@ -30,24 +30,11 @@ struct EomData
 
     double altSeaLevel;
 
-    myMath::DCMd bodyFromNed;
-    myMath::DCMd bodyFromWind;
+    double bodyFromNed_raw[3][3];
+    double bodyFromWind_raw[3][3];
 
     void Default()
     {
-        windVelBody = 0.0;
-        velBody = 0.0;
-        accelBody = 0.0;
-
-        posEci = 0.0;
-        velEci = 0.0;
-
-        posEcef = 0.0;
-        velEcef = 0.0;
-
-        eulerAngs = 0.0;
-        eulerAngRates = 0.0;
-
         angleOfAttack = 0.0;
         angleOfSideslip = 0.0;
 
@@ -56,78 +43,48 @@ struct EomData
 
         altSeaLevel = 0.0;
 
-        bodyFromNed = 0.0;
-        bodyFromWind = 0.0;
-    }
+        for (unsigned int i{0u}; i < 3u; i++)
+        {
+            windVelBody_raw[i] = 0.0;
+            velBody_raw[i] = 0.0;
+            accelBody_raw[i] = 0.0;
 
-    EomData &operator=(const EomData &other)
-    {
-        windVelBody = other.windVelBody;
-        velBody = other.velBody;
-        accelBody = other.accelBody;
+            posEci_raw[i] = 0.0;
+            velEci_raw[i] = 0.0;
 
-        posEci = other.posEci;
-        velEci = other.velEci;
+            posEcef_raw[i] = 0.0;
+            velEcef_raw[i] = 0.0;
 
-        posEcef = other.posEcef;
-        velEcef = other.velEcef;
+            eulerAngs_raw[i] = 0.0;
+            eulerAngRates_raw[i] = 0.0;
 
-        eulerAngs = other.eulerAngs;
-        eulerAngRates = other.eulerAngRates;
-
-        angleOfAttack = other.angleOfAttack;
-        angleOfSideslip = other.angleOfSideslip;
-
-        angleOfAttackDot = other.angleOfAttackDot;
-        angleOfSideslipDot = other.angleOfSideslipDot;
-
-        altSeaLevel = other.altSeaLevel;
-
-        bodyFromNed = other.bodyFromNed;
-        bodyFromWind = other.bodyFromWind;
-
-        return *this;
+            for (unsigned int j{0u}; j < 3u; j++)
+            {
+                bodyFromNed_raw[i][j] = 0.0;
+                bodyFromWind_raw[i][j] = 0.0;
+            }
+        }
     }
 
     EomData()
-        : windVelBody(),
-          velBody(),
-          accelBody(),
-          posEci(),
-          velEci(),
-          posEcef(),
-          velEcef(),
-          eulerAngs(),
-          eulerAngRates(),
+        : windVelBody_raw(),
+          velBody_raw(),
+          accelBody_raw(),
+          posEci_raw(),
+          velEci_raw(),
+          posEcef_raw(),
+          velEcef_raw(),
+          eulerAngs_raw(),
+          eulerAngRates_raw(),
           angleOfAttack(),
           angleOfSideslip(),
           angleOfAttackDot(),
           angleOfSideslipDot(),
           altSeaLevel(),
-          bodyFromNed(),
-          bodyFromWind()
+          bodyFromNed_raw(),
+          bodyFromWind_raw()
     {
         Default();
-    }
-
-    EomData(const EomData &other)
-        : windVelBody(other.windVelBody),
-          velBody(other.velBody),
-          accelBody(other.accelBody),
-          posEci(other.posEci),
-          velEci(other.velEci),
-          posEcef(other.posEcef),
-          velEcef(other.velEcef),
-          eulerAngs(other.eulerAngs),
-          eulerAngRates(other.eulerAngRates),
-          angleOfAttack(other.angleOfAttack),
-          angleOfSideslip(other.angleOfSideslip),
-          angleOfAttackDot(other.angleOfAttackDot),
-          angleOfSideslipDot(other.angleOfSideslipDot),
-          altSeaLevel(other.altSeaLevel),
-          bodyFromNed(other.bodyFromNed),
-          bodyFromWind(other.bodyFromWind)
-    {
     }
 };
 

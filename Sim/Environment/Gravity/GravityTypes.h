@@ -8,16 +8,20 @@
 #include "GravityMsg.h"
 #include "MassPropMsg.h"
 
+#include "EomDataSerialization.h"
+#include "GravityDataSerialization.h"
+#include "MassPropDataSerialization.h"
+
 namespace GravityTypes
 {
     struct InData : Intf::MessageContainer<
-        InputPayload<EomMsg>,
-        InputPayload<MassPropMsg>
+        InputPayload<EomMsg, Deserialize>,
+        InputPayload<MassPropMsg, Deserialize>
     >
     {};
 
     struct OutData : Intf::MessageContainer<
-        OutputPayload<GravityMsg>
+        OutputPayload<GravityMsg, Serialize>
     >
     {};
 }

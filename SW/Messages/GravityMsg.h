@@ -5,31 +5,21 @@
 
 #include "MsgIds.hpp"
 
-#include <Vector.h>
-
 struct GravityData
 {
-    myMath::Vector3d forceBody;
+    double forceBody_raw[3];
 
     void Default()
     {
-        forceBody = 0.0;
+        for (int i = 0; i < 3; i++)
+        {
+            forceBody_raw[i] = 0.0;
+        }
     }
 
-    GravityData &operator=(const GravityData &other)
-    {
-        forceBody = other.forceBody;
-
-        return *this;
-    }
-
-    GravityData() : forceBody()
+    GravityData() : forceBody_raw()
     {
         Default();
-    }
-
-    GravityData(const GravityData &other) : forceBody(other.forceBody)
-    {
     }
 };
 

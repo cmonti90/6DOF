@@ -3,6 +3,7 @@
 
 #include "MessageContainer.h"
 #include "Payload.h"
+#include "Decorators.h"
 
 #include "AutopilotMsg.h"
 #include "GuidanceMsg.h"

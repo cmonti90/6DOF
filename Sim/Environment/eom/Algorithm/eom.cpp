@@ -158,34 +158,27 @@ void eom::rungeKutta4thOrder(const EomTypes::InData &inData)
     double dZ3;
     double dZ4;
 
+    myMath::QuaternionD dQdot1;
+    myMath::QuaternionD dQdot2;
+    myMath::QuaternionD dQdot3;
+    myMath::QuaternionD dQdot4;
+
     double dPhiDot1;
     double dPhiDot2;
     double dPhiDot3;
     double dPhiDot4;
-    double dPhi1;
-    double dPhi2;
-    double dPhi3;
-    double dPhi4;
 
     double dThetaDot1;
     double dThetaDot2;
     double dThetaDot3;
     double dThetaDot4;
-    double dTheta1;
-    double dTheta2;
-    double dTheta3;
-    double dTheta4;
 
     double dPsiDot1;
     double dPsiDot2;
     double dPsiDot3;
     double dPsiDot4;
-    double dPsi1;
-    double dPsi2;
-    double dPsi3;
-    double dPsi4;
 
-    myMath::Vector3d dEulerAngRates;
+    myMath::Vector3d dAngBodyRates;
 
     accelBody[X] = udot(velBody[Y], velBody[Z], angRatesBody[PITCH], angRatesBody[YAW], inData);
     accelBody[Y] = vdot(velBody[X], velBody[Z], angRatesBody[ROLL], angRatesBody[YAW], inData);
@@ -201,14 +194,13 @@ void eom::rungeKutta4thOrder(const EomTypes::InData &inData)
     dZdot1 = dt * wdot(velBody[X], velBody[Y], angRatesBody[ROLL], angRatesBody[PITCH], inData);
     dZ1 = dt * velBody[Z];
 
-    dEulerAngRates = angularRatesDerivative(angRatesBody[0], angRatesBody[1], angRatesBody[2], inData);
+    dAngBodyRates = angularRatesDerivative(angRatesBody[0], angRatesBody[1], angRatesBody[2], inData);
 
-    dPhiDot1 = dt * dEulerAngRates[ROLL];
-    dPhi1 = dt * angRatesBody[ROLL];
-    dThetaDot1 = dt * dEulerAngRates[PITCH];
-    dTheta1 = dt * angRatesBody[PITCH];
-    dPsiDot1 = dt * dEulerAngRates[YAW];
-    dPsi1 = dt * angRatesBody[YAW];
+    dPhiDot1 = dt * dAngBodyRates[ROLL];
+    dThetaDot1 = dt * dAngBodyRates[PITCH];
+    dPsiDot1 = dt * dAngBodyRates[YAW];
+
+    dQdot1 = dt * quaternionDerivative(angRatesBody[0], angRatesBody[1], angRatesBody[2], q_eciToBody);
 
     // k2
     dXdot2 = dt * udot(velBody[Y] + dYdot1 / 2.0, velBody[Z] + dZdot1 / 2.0, angRatesBody[PITCH] + dThetaDot1 / 2.0, angRatesBody[YAW] + dPsiDot1 / 2.0, inData);
@@ -218,14 +210,14 @@ void eom::rungeKutta4thOrder(const EomTypes::InData &inData)
     dZdot2 = dt * wdot(velBody[X] + dXdot1 / 2.0, velBody[Y] + dYdot1 / 2.0, angRatesBody[ROLL] + dPhiDot1 / 2.0, angRatesBody[PITCH] + dThetaDot1 / 2.0, inData);
     dZ2 = dt * (velBody[Z] + dZ1 / 2.0);
 
-    dEulerAngRates = angularRatesDerivative(angRatesBody[ROLL] + dPhiDot1 / 2.0, angRatesBody[PITCH] + dThetaDot1 / 2.0, angRatesBody[YAW] + dPsiDot1 / 2.0, inData);
+    dAngBodyRates = angularRatesDerivative(angRatesBody[ROLL] + dPhiDot1 / 2.0, angRatesBody[PITCH] + dThetaDot1 / 2.0, angRatesBody[YAW] + dPsiDot1 / 2.0, inData);
 
-    dPhiDot2 = dt * dEulerAngRates[ROLL];
-    dPhi2 = dt * (angRatesBody[ROLL] + dPhi1 / 2.0);
-    dThetaDot2 = dt * dEulerAngRates[PITCH];
-    dTheta2 = dt * (angRatesBody[PITCH] + dTheta1 / 2.0);
-    dPsiDot2 = dt * dEulerAngRates[YAW];
-    dPsi2 = dt * (angRatesBody[YAW] + dPsi1 / 2.0);
+    dPhiDot2 = dt * dAngBodyRates[ROLL];
+    dThetaDot2 = dt * dAngBodyRates[PITCH];
+    dPsiDot2 = dt * dAngBodyRates[YAW];
+
+    dQdot2 = dt * quaternionDerivative(angRatesBody[0] + dPhiDot1 / 2.0, angRatesBody[1] + dThetaDot1 / 2.0, angRatesBody[2] + dPsiDot1 / 2.0, q_eciToBody + dQdot1 / 2.0);
+    
 
     // k3
     dXdot3 = dt * udot(velBody[Y] + dYdot2 / 2.0, velBody[Z] + dZdot2 / 2.0, angRatesBody[PITCH] + dThetaDot2 / 2.0, angRatesBody[YAW] + dPsiDot2 / 2.0, inData);
@@ -235,14 +227,11 @@ void eom::rungeKutta4thOrder(const EomTypes::InData &inData)
     dZdot3 = dt * wdot(velBody[X] + dXdot2 / 2.0, velBody[Y] + dYdot2 / 2.0, angRatesBody[ROLL] + dPhiDot2 / 2.0, angRatesBody[PITCH] + dThetaDot2 / 2.0, inData);
     dZ3 = dt * (velBody[Z] + dZ2 / 2.0);
 
-    dEulerAngRates = angularRatesDerivative(angRatesBody[ROLL] + dPhiDot2 / 2.0, angRatesBody[PITCH] + dThetaDot2 / 2.0, angRatesBody[YAW] + dPsiDot2 / 2.0, inData);
+    dAngBodyRates = angularRatesDerivative(angRatesBody[ROLL] + dPhiDot2 / 2.0, angRatesBody[PITCH] + dThetaDot2 / 2.0, angRatesBody[YAW] + dPsiDot2 / 2.0, inData);
 
-    dPhiDot3 = dt * dEulerAngRates[ROLL];
-    dPhi3 = dt * (angRatesBody[ROLL] + dPhi2 / 2.0);
-    dThetaDot3 = dt * dEulerAngRates[PITCH];
-    dTheta3 = dt * (angRatesBody[PITCH] + dTheta2 / 2.0);
-    dPsiDot3 = dt * dEulerAngRates[YAW];
-    dPsi3 = dt * (angRatesBody[YAW] + dPsi2 / 2.0);
+    dPhiDot3 = dt * dAngBodyRates[ROLL];
+    dThetaDot3 = dt * dAngBodyRates[PITCH];
+    dPsiDot3 = dt * dAngBodyRates[YAW];
 
     // k4
     dXdot4 = dt * udot(velBody[Y] + dYdot3, velBody[Z] + dZdot3, angRatesBody[PITCH] + dThetaDot3, angRatesBody[YAW] + dPsiDot3, inData);
@@ -252,14 +241,11 @@ void eom::rungeKutta4thOrder(const EomTypes::InData &inData)
     dZdot4 = dt * wdot(velBody[X] + dXdot3, velBody[Y] + dYdot3, angRatesBody[ROLL] + dPhiDot3, angRatesBody[PITCH] + dThetaDot3, inData);
     dZ4 = dt * (velBody[Z] + dZ3);
 
-    dEulerAngRates = angularRatesDerivative(angRatesBody[ROLL] + dPhiDot3, angRatesBody[PITCH] + dThetaDot3, angRatesBody[YAW] + dPsiDot3, inData);
+    dAngBodyRates = angularRatesDerivative(angRatesBody[ROLL] + dPhiDot3, angRatesBody[PITCH] + dThetaDot3, angRatesBody[YAW] + dPsiDot3, inData);
 
-    dPhiDot4 = dt * dEulerAngRates[ROLL];
-    dPhi4 = dt * (angRatesBody[ROLL] + dPhi3);
-    dThetaDot4 = dt * dEulerAngRates[PITCH];
-    dTheta4 = dt * (angRatesBody[PITCH] + dTheta3);
-    dPsiDot4 = dt * dEulerAngRates[YAW];
-    dPsi4 = dt * (angRatesBody[YAW] + dPsi3);
+    dPhiDot4 = dt * dAngBodyRates[ROLL];
+    dThetaDot4 = dt * dAngBodyRates[PITCH];
+    dPsiDot4 = dt * dAngBodyRates[YAW];
 
     // Update state
     velBody[X] += (dXdot1 + 2.0 * dXdot2 + 2.0 * dXdot3 + dXdot4) / 6.0;
@@ -277,9 +263,9 @@ void eom::rungeKutta4thOrder(const EomTypes::InData &inData)
     angRatesBody[PITCH] += (dThetaDot1 + 2.0 * dThetaDot2 + 2.0 * dThetaDot3 + dThetaDot4) / 6.0;
     angRatesBody[YAW] += (dPsiDot1 + 2.0 * dPsiDot2 + 2.0 * dPsiDot3 + dPsiDot4) / 6.0;
 
-    eulerAngles[ROLL] += (dPhi1 + 2.0 * dPhi2 + 2.0 * dPhi3 + dPhi4) / 6.0;
-    eulerAngles[PITCH] += (dTheta1 + 2.0 * dTheta2 + 2.0 * dTheta3 + dTheta4) / 6.0;
-    eulerAngles[YAW] += (dPsi1 + 2.0 * dPsi2 + 2.0 * dPsi3 + dPsi4) / 6.0;
+    // eulerAngles[ROLL] += (dPhi1 + 2.0 * dPhi2 + 2.0 * dPhi3 + dPhi4) / 6.0;
+    // eulerAngles[PITCH] += (dTheta1 + 2.0 * dTheta2 + 2.0 * dTheta3 + dTheta4) / 6.0;
+    // eulerAngles[YAW] += (dPsi1 + 2.0 * dPsi2 + 2.0 * dPsi3 + dPsi4) / 6.0;
 }
 
 void eom::updateEcef()
@@ -431,6 +417,33 @@ myMath::Vector3d eom::angularRatesDerivative(const double p, const double q, con
     angularRatesDerivs[YAW] = -p * (-p * inData.I[X][Y] + q * inData.I[Y][Y] - r * inData.I[Y][Z]) + q * (p * inData.I[X][X] - q * inData.I[X][Y] + r * inData.I[X][Z]) + netMomentBody[YAW];
 
     return inData.I.Inverse() * angularRatesDerivs;
+}
+
+myMath::QuaternionD eom::quaternionDerivative(const double p, const double q, const double r, const myMath::QuaternionD &q0)
+{
+    myMath::Matrix4d omega;
+
+    omega[0][0] = 0.0;
+    omega[0][1] = r;
+    omega[0][2] = -q;
+    omega[0][3] = p;
+
+    omega[1][0] = -r;
+    omega[1][1] = 0.0;
+    omega[1][2] = p;
+    omega[1][3] = q;
+
+    omega[2][0] = q;
+    omega[2][1] = -p;
+    omega[2][2] = 0.0;
+    omega[2][3] = r;
+
+    omega[3][0] = -p;
+    omega[3][1] = -q;
+    omega[3][2] = -r;
+    omega[3][3] = 0.0;
+
+    return (0.5 * omega * q0);
 }
 
 void eom::addForces(const myMath::Vector3d &force)

@@ -8,33 +8,26 @@
 struct MassPropData
 {
     double mass;
-    myMath::Matrix3d I;
+    double I_raw[3][3];
 
     void Default()
     {
         mass = 0.0;
-        I = 0.0;
-    }
 
-    MassPropData &operator=(const MassPropData &other)
-    {
-        mass = other.mass;
-        I = other.I;
-
-        return *this;
+        for (unsigned int i{0u}; i < 3u; i++)
+        {
+            for (unsigned int j{0u}; j < 3u; j++)
+            {
+                I_raw[i][j] = 0.0;
+            }
+        }
     }
 
     MassPropData()
-    : mass(),
-    I()
+        : mass(),
+          I_raw()
     {
         Default();
-    }
-
-    MassPropData(const MassPropData &other)
-        : mass(other.mass), 
-        I(other.I)
-    {
     }
 };
 

@@ -32,6 +32,8 @@ void GuidanceComponent::update(void)
 {
     BEGIN_CHECKED_EXCEPTION()
     {
+        inData_->reset();
+        
         PubSub::Message_Label label;
         PubSub::MessageStatus status = peek(label);
 

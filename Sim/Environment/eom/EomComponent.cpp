@@ -44,23 +44,23 @@ void EomComponent::update(void)
         case AeroMsg::MESSAGE_LABEL:
             receive<AeroMsg>(*inData_);
 
-            pAlg->addForces(inData_->AeroData::forceBody);
-            pAlg->addMoments(inData_->AeroData::momentBody);
+            pAlg->addForces(inData_->PayloadDeserializer<AeroData>::forceBody);
+            pAlg->addMoments(inData_->PayloadDeserializer<AeroData>::momentBody);
 
             break;
 
         case EngineMsg::MESSAGE_LABEL:
             receive<EngineMsg>(*inData_);
 
-            pAlg->addForces(inData_->EngineData::forceBody);
-            pAlg->addMoments(inData_->EngineData::momentBody);
+            pAlg->addForces(inData_->PayloadDeserializer<EngineData>::forceBody);
+            pAlg->addMoments(inData_->PayloadDeserializer<EngineData>::momentBody);
 
             break;
 
         case GravityMsg::MESSAGE_LABEL:
             receive<GravityMsg>(*inData_);
 
-            pAlg->addForces(inData_->GravityData::forceBody);
+            pAlg->addForces(inData_->PayloadDeserializer<GravityData>::forceBody);
 
             break;
 

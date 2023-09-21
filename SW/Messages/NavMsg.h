@@ -19,29 +19,9 @@ struct NavData
         }
     }
 
-    NavData& operator=( const NavData& other )
-    {
-        for (unsigned int i{ 0u }; i < 3u; ++i)
-        {
-            force[i] = other.force[i];
-            moment[i] = other.moment[i];
-        }
-
-        return *this;
-    }
-
     NavData() : force(), moment()
     {
         Default();
-    }
-
-    NavData( const NavData& other ) : force(), moment()
-    {
-        for (unsigned int i{ 0u }; i < 3u; ++i)
-        {
-            force[i] = other.force[i];
-            moment[i] = other.moment[i];
-        }
     }
 };
 

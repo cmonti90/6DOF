@@ -5,34 +5,23 @@
 
 #include "MsgIds.hpp"
 
-#include "Vector.h"
-
 struct AeroData
 {
-    myMath::Vector3d forceBody;
-    myMath::Vector3d momentBody;
+    double forceBody_raw[3];
+    double momentBody_raw[3];
 
     void Default()
     {
-        forceBody = 0.0;
-        momentBody = 0.0;
+        for (int i = 0; i < 3; i++)
+        {
+            forceBody_raw[i] = 0.0;
+            momentBody_raw[i] = 0.0;
+        }
     }
 
-    AeroData &operator=(const AeroData &other)
-    {
-        forceBody = other.forceBody;
-        momentBody = other.momentBody;
-
-        return *this;
-    }
-
-    AeroData() : forceBody(), momentBody()
+    AeroData() : forceBody_raw(), momentBody_raw()
     {
         Default();
-    }
-
-    AeroData(const AeroData &other) : forceBody(other.forceBody), momentBody(other.momentBody)
-    {
     }
 };
 

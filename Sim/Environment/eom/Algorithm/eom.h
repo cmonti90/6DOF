@@ -82,11 +82,19 @@ protected:
     double lat_geodetic;
     double lon_geodetic;
 
-    double phi;
-    double theta;
-    double psi;
-
     double earthRotation;
+
+
+    // Quaternions
+    myMath::QuaternionD q_nedToNed;
+    myMath::QuaternionD q_ecefToEcef;
+    myMath::QuaternionD q_ecefToNed;
+    myMath::QuaternionD q_ecefToEci;
+    myMath::QuaternionD q_ecefToBody;
+    myMath::QuaternionD q_eciToBody;
+
+    myMath::QuaternionD qdot_body;
+
 
     // DCMs
     myMath::DCMd ecefFromEci;
@@ -106,6 +114,7 @@ protected:
     double wdot(const double u, const double v, const double p, const double q, const EomTypes::InData &inData);
 
     myMath::Vector3d angularRatesDerivative(const double p, const double q, const double r, const EomTypes::InData &inData);
+    myMath::QuaternionD quaternionDerivative(const double p, const double q, const double r, const myMath::QuaternionD &q0);
 
     void rungeKutta4thOrder(const EomTypes::InData &inData);
 

@@ -3,14 +3,17 @@
 
 #include "MessageContainer.h"
 #include "Payload.h"
+#include "Decorators.h"
 
 #include "ImuMsg.h"
 #include "EomMsg.h"
 
+#include "EomDataSerialization.h"
+
 namespace ImuTypes
 {
     struct InData : Intf::MessageContainer<
-        InputPayload<EomMsg>
+        InputPayload<EomMsg, Deserialize>
     >
     {};
 

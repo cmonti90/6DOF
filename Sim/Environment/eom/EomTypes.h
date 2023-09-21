@@ -3,6 +3,7 @@
 
 #include "MessageContainer.h"
 #include "Payload.h"
+#include "Decorators.h"
 
 #include "AeroMsg.h"
 #include "EngineMsg.h"
@@ -10,18 +11,24 @@
 #include "GravityMsg.h"
 #include "MassPropMsg.h"
 
+#include "GravityDataSerialization.h"
+#include "AeroDataSerialization.h"
+#include "EngineDataSerialization.h"
+#include "EomDataSerialization.h"
+#include "MassPropDataSerialization.h"
+
 namespace EomTypes
 {
     struct InData : Intf::MessageContainer<
-        InputPayload<AeroMsg>,
-        InputPayload<EngineMsg>,
-        InputPayload<GravityMsg>,
-        InputPayload<MassPropMsg>
+        InputPayload<AeroMsg, Deserialize, Persistent>,
+        InputPayload<EngineMsg, Deserialize>,
+        InputPayload<GravityMsg, Deserialize>,
+        InputPayload<MassPropMsg, Deserialize, Persistent>
     >
     {};
 
     struct OutData : Intf::MessageContainer<
-        OutputPayload<EomMsg>
+        OutputPayload<EomMsg, Serialize>
     >
     {};
 }

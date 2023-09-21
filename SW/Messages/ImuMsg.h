@@ -26,33 +26,9 @@ struct ImuData
         yawRate = 0.0;
     }
 
-    ImuData &operator=(const ImuData &other)
-    {
-        accelXBody = other.accelXBody;
-        accelYBody = other.accelYBody;
-        accelZBody = other.accelZBody;
-
-        rollRate = other.rollRate;
-        pitchRate = other.pitchRate;
-        yawRate = other.yawRate;
-
-        return *this;
-    }
-
     ImuData() : accelXBody(), accelYBody(), accelZBody(), rollRate(), pitchRate(), yawRate()
     {
         Default();
-    }
-
-    ImuData(const ImuData &other) : accelXBody(), accelYBody(), accelZBody(), rollRate(), pitchRate(), yawRate()
-    {
-        accelXBody = other.accelXBody;
-        accelYBody = other.accelYBody;
-        accelZBody = other.accelZBody;
-
-        rollRate = other.rollRate;
-        pitchRate = other.pitchRate;
-        yawRate = other.yawRate;
     }
 };
 

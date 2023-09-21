@@ -6,6 +6,7 @@
 
 #include "EngineMsg.h"
 #include "MassPropMsg.h"
+#include "MassPropDataSerialization.h"
 
 namespace MassPropTypes
 {
@@ -15,7 +16,7 @@ namespace MassPropTypes
     {};
 
     struct OutData : Intf::MessageContainer<
-        OutputPayload<MassPropMsg>
+        OutputPayload<MassPropMsg, Serialize>
     >
     {};
 }

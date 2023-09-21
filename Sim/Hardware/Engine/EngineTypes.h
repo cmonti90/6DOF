@@ -7,6 +7,8 @@
 #include "AutopilotMsg.h"
 #include "EngineMsg.h"
 
+#include "EngineDataSerialization.h"
+
 namespace EngineTypes
 {
     struct InData : Intf::MessageContainer<
@@ -15,7 +17,7 @@ namespace EngineTypes
     {};
 
     struct OutData : Intf::MessageContainer<
-        OutputPayload<EngineMsg>
+        OutputPayload<EngineMsg, Serialize>
     >
     {};
 }

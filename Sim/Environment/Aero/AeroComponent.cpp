@@ -29,6 +29,8 @@ void AeroComponent::initialize(void)
     counter_ = 0u;
 }
 
+#include <iostream>
+
 void AeroComponent::update()
 {
 
@@ -41,6 +43,8 @@ void AeroComponent::update()
         {
         case EomMsg::MESSAGE_LABEL:
             receive<EomMsg>(*inData_);
+
+            // std::cout << "AeroComponent EomMsg accel = " << inData_->accelBody[0] << std::endl;
             break;
 
         case CtrlSurfMsg::MESSAGE_LABEL:

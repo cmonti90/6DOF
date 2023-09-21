@@ -8,16 +8,19 @@
 #include "CtrlSurfMsg.h"
 #include "EomMsg.h"
 
+#include "AeroDataSerialization.h"
+#include "EomDataSerialization.h"
+
 namespace AeroTypes
 {
     struct InData : Intf::MessageContainer<
-        InputPayload<EomMsg>,
+        InputPayload<EomMsg, Deserialize>,
         InputPayload<CtrlSurfMsg>
     >
     {};
 
     struct OutData : Intf::MessageContainer<
-        OutputPayload<AeroMsg>
+        OutputPayload<AeroMsg, Serialize>
     >
     {};
 }

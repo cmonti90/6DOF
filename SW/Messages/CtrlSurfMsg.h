@@ -22,33 +22,9 @@ struct CtrlSurfData
         rudderDefl = 0.0;
     }
 
-    CtrlSurfData &operator=(const CtrlSurfData &other)
-    {
-        for (unsigned int i{0u}; i < 2u; ++i)
-        {
-            aileronDefl[i] = other.aileronDefl[i];
-        }
-
-        elevatorDefl = other.elevatorDefl;
-        rudderDefl = other.rudderDefl;
-
-        return *this;
-    }
-
     CtrlSurfData() : aileronDefl(), elevatorDefl(), rudderDefl()
     {
         Default();
-    }
-
-    CtrlSurfData(const CtrlSurfData &other) : aileronDefl(), elevatorDefl(), rudderDefl()
-    {
-        for (unsigned int i{0u}; i < 2u; ++i)
-        {
-            aileronDefl[i] = other.aileronDefl[i];
-        }
-
-        elevatorDefl = other.elevatorDefl;
-        rudderDefl = other.rudderDefl;
     }
 };
 
