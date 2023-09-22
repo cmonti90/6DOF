@@ -17,7 +17,7 @@ void MassProperties::initialize(void)
 
 void MassProperties::exec(const MassPropTypes::InData &inData, MassPropTypes::OutData &outData)
 {
-    outData.mass = 2000.0; // kg
+    outData.mass = 5000.0; // kg
 
     outData.I[0][0] = 250.0; // kg*m^2, Ixx
     outData.I[0][1] = 50.0;   // kg*m^2, Ixy

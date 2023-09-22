@@ -114,7 +114,7 @@ protected:
     double wdot(const double u, const double v, const double p, const double q, const EomTypes::InData &inData);
 
     myMath::Vector3d angularRatesDerivative(const double p, const double q, const double r, const EomTypes::InData &inData);
-    myMath::QuaternionD quaternionDerivative(const double p, const double q, const double r, const myMath::QuaternionD &q0);
+    myMath::QuaternionD quaternionDerivative(const double p, const double q, const double r, myMath::QuaternionD q0);
 
     void rungeKutta4thOrder(const EomTypes::InData &inData);
 

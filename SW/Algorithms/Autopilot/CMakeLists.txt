@@ -24,6 +24,7 @@ target_link_libraries(${target} PUBLIC  Messages
                                         PubSub
                                         AutopilotAlgorithm
                                         DebugTools
+                                        Serialization
                                         )
 
 add_subdirectory(Algorithm)
