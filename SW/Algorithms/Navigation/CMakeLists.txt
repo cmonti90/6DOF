@@ -26,6 +26,7 @@ target_link_libraries(${target} PUBLIC  Messages
                                         NavigationAlgorithm
                                         DebugTools
                                         Clock
+                                        Serialization
                                         )
 
 add_subdirectory(Algorithm)

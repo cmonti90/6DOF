@@ -7,6 +7,8 @@
 #include "ImuMsg.h"
 #include "NavMsg.h"
 
+#include "NavDataSerialization.h"
+
 namespace NavTypes
 {
     struct InData : Intf::MessageContainer<
@@ -15,7 +17,7 @@ namespace NavTypes
     {};
 
     struct OutData : Intf::MessageContainer<
-        OutputPayload<NavMsg>
+        OutputPayload<NavMsg, Serialize>
     >
     {};
 }
