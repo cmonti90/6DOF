@@ -4,12 +4,12 @@
 
 #include "eom.h"
 
-EomComponent::EomComponent(std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::Component_Label name)
-    : PubSub::SimComponent(queueMngr, 1000, name),
-      pAlg(new eom()),
-      inData_(new EomTypes::InData()),
-      outData_(new EomTypes::OutData()),
-      counter_(0u)
+EomComponent::EomComponent ( std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::Component_Label name )
+    : PubSub::SimComponent ( queueMngr, 1000, name )
+    , pAlg      ( new eom() )
+    , inData_   ( new EomTypes::InData() )
+    , outData_  ( new EomTypes::OutData() )
+    , counter_  ( 0u )
 {
 }
 
@@ -17,74 +17,76 @@ EomComponent::~EomComponent()
 {
 }
 
-void EomComponent::initialize(void)
+void EomComponent::initialize ( void )
 {
     inData_->initialize();
     outData_->initialize();
 
-    subscribe<AeroMsg>(*inData_);
-    subscribe<EngineMsg>(*inData_);
-    subscribe<GravityMsg>(*inData_);
-    subscribe<MassPropMsg>(*inData_);
+    subscribe<AeroMsg>( *inData_ );
+    subscribe<EngineMsg>( *inData_ );
+    subscribe<GravityMsg>( *inData_ );
+    subscribe<MassPropMsg>( *inData_ );
 
     pAlg->initialize();
     counter_ = 0u;
 }
 
-void EomComponent::update(void)
+void EomComponent::update ( void )
 {
-
     PubSub::Message_Label label;
-    PubSub::MessageStatus status = peek(label);
+    PubSub::MessageStatus status = peek ( label );
 
-    while (status == PubSub::MessageStatus::MESSAGE_AVAILABLE)
+    while ( status == PubSub::MessageStatus::MESSAGE_AVAILABLE )
     {
-        switch (label)
+        switch ( label )
         {
-        case AeroMsg::MESSAGE_LABEL:
-            receive<AeroMsg>(*inData_);
+            case AeroMsg::MESSAGE_LABEL:
 
-            pAlg->addForces(inData_->PayloadDeserializer<AeroData>::forceBody);
-            pAlg->addMoments(inData_->PayloadDeserializer<AeroData>::momentBody);
+                receive<AeroMsg>( *inData_ );
 
-            break;
+                pAlg->addForces( inData_->PayloadDeserializer<AeroData>::forceBody );
+                pAlg->addMoments( inData_->PayloadDeserializer<AeroData>::momentBody );
 
-        case EngineMsg::MESSAGE_LABEL:
-            receive<EngineMsg>(*inData_);
+                break;
 
-            pAlg->addForces(inData_->PayloadDeserializer<EngineData>::forceBody);
-            pAlg->addMoments(inData_->PayloadDeserializer<EngineData>::momentBody);
+            case EngineMsg::MESSAGE_LABEL:
+                receive<EngineMsg>( *inData_ );
 
-            break;
+                pAlg->addForces( inData_->PayloadDeserializer<EngineData>::forceBody );
+                pAlg->addMoments( inData_->PayloadDeserializer<EngineData>::momentBody );
 
-        case GravityMsg::MESSAGE_LABEL:
-            receive<GravityMsg>(*inData_);
+                break;
 
-            pAlg->addForces(inData_->PayloadDeserializer<GravityData>::forceBody);
+            case GravityMsg::MESSAGE_LABEL:
+                receive<GravityMsg>( *inData_ );
 
-            break;
+                pAlg->addForces( inData_->PayloadDeserializer<GravityData>::forceBody );
 
-        case MassPropMsg::MESSAGE_LABEL:
-            receive<MassPropMsg>(*inData_);
+                break;
 
-            break;
+            case MassPropMsg::MESSAGE_LABEL:
+                receive<MassPropMsg>( *inData_ );
 
-        default:
-            removeTopMessage();
-            break;
+                break;
+
+            default:
+                removeTopMessage();
+                break;
         }
 
-        status = peek(label);
+        status = peek( label );
     }
 
-    pAlg->exec(*inData_, *outData_);
+    pAlg->exec( *inData_, *outData_ );
 
-    send<EomMsg>(*outData_);
+    inData_->reset();
+
+    send<EomMsg>( *outData_ );
 
     counter_++;
 }
 
-void EomComponent::finalize(void)
+void EomComponent::finalize( void )
 {
     pAlg->finalize();
 }

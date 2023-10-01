@@ -14,9 +14,9 @@ struct MassPropData
     {
         mass = 0.0;
 
-        for (unsigned int i{0u}; i < 3u; i++)
+        for ( unsigned int i{0u}; i < 3u; i++ )
         {
-            for (unsigned int j{0u}; j < 3u; j++)
+            for ( unsigned int j{0u}; j < 3u; j++ )
             {
                 I_raw[i][j] = 0.0;
             }
@@ -31,6 +31,6 @@ struct MassPropData
     }
 };
 
-MESSAGE_PAYLOAD(MassPropMsg, MassPropData, MassPropMsgId)
+MESSAGE_PAYLOAD ( MassPropMsg, MassPropData, MassPropMsgId )
 
 #endif /* A8451F51_1CD9_49A9_B6C8_C86EEE36E4EF */

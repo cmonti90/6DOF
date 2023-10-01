@@ -18,6 +18,7 @@ target_link_libraries(${target} PRIVATE MassProperties
                                         Autopilot
                                         Engine
                                         ControlSurfaces
+                                        GRAMComponent
                                         IMU
                                         Clock
                                         PubSub

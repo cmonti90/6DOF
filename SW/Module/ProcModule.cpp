@@ -7,6 +7,7 @@
 #include "MassPropertiesComponent.h"
 #include "EngineComponent.h"
 #include "ControlSurfacesComponent.h"
+#include "GRAMComponent.h"
 #include "AeroComponent.h"
 #include "EomComponent.h"
 #include "ImuComponent.h"
@@ -17,21 +18,23 @@
 
 #include <iostream>
 
-ProcModule::ProcModule() : Module(),
-pRtcClock( new TimePt::RtcClock( m_time ) ),
-navThread(),
-guidanceThread(),
-autopilotThread(),
-pGravityComponent( new GravityComponent( m_queueMngr ) ),
-pMassPropComponent( new MassPropertiesComponent( m_queueMngr ) ),
-pEngineComponent( new EngineComponent( m_queueMngr ) ),
-pCtrlSurfComponent( new ControlSurfacesComponent( m_queueMngr ) ),
-pEomComponent( new EomComponent( m_queueMngr ) ),
-pImuComponent( new ImuComponent( m_queueMngr ) ),
-pAeroComponent( new AeroComponent( m_queueMngr ) ),
-pNavigationComponent( new NavigationComponent( m_queueMngr, pRtcClock ) ),
-pGuidanceComponent( new GuidanceComponent( m_queueMngr ) ),
-pAutopilotComponent( new AutopilotComponent( m_queueMngr ) )
+ProcModule::ProcModule()
+    : Module()
+    , pRtcClock           ( new TimePt::RtcClock( m_time ) )
+    , navThread           ()
+    , guidanceThread      ()
+    , autopilotThread     ()
+    , pGravityComponent   ( new GravityComponent        ( m_queueMngr ) )
+    , pMassPropComponent  ( new MassPropertiesComponent ( m_queueMngr ) )
+    , pEngineComponent    ( new EngineComponent         ( m_queueMngr ) )
+    , pCtrlSurfComponent  ( new ControlSurfacesComponent( m_queueMngr ) )
+    , pGRAMComponent      ( new GRAMComponent           ( m_queueMngr ) )
+    , pEomComponent       ( new EomComponent            ( m_queueMngr ) )
+    , pImuComponent       ( new ImuComponent            ( m_queueMngr ) )
+    , pAeroComponent      ( new AeroComponent           ( m_queueMngr ) )
+    , pNavigationComponent( new NavigationComponent     ( m_queueMngr, pRtcClock ) )
+    , pGuidanceComponent  ( new GuidanceComponent       ( m_queueMngr ) )
+    , pAutopilotComponent ( new AutopilotComponent      ( m_queueMngr ) )
 {
 }
 
@@ -52,6 +55,7 @@ void ProcModule::launch()
 
     addSimComp( pEngineComponent.get() );
     addSimComp( pCtrlSurfComponent.get() );
+    addSimComp( pGRAMComponent.get() );
     addSimComp( pAeroComponent.get() );
     addSimComp( pMassPropComponent.get() );
     addSimComp( pGravityComponent.get() );
@@ -63,7 +67,7 @@ void ProcModule::launch()
 
     int i = 0;
 
-    for (i = 0; i < 5; i++)
+    for ( i = 0; i < 30000; i++ )
     {
         start();
     }

@@ -15,6 +15,7 @@ class GravityComponent;
 class MassPropertiesComponent;
 class EngineComponent;
 class ControlSurfacesComponent;
+class GRAMComponent;
 class AeroComponent;
 class EomComponent;
 class ImuComponent;
@@ -43,6 +44,7 @@ private:
     std::unique_ptr<MassPropertiesComponent> pMassPropComponent;
     std::unique_ptr<EngineComponent> pEngineComponent;
     std::unique_ptr<ControlSurfacesComponent> pCtrlSurfComponent;
+    std::unique_ptr<GRAMComponent> pGRAMComponent;
     std::unique_ptr<EomComponent> pEomComponent;
     std::unique_ptr<AeroComponent> pAeroComponent;
     std::unique_ptr<ImuComponent> pImuComponent;

@@ -8,17 +8,17 @@
 
 struct DeserializedEomData
 {
-    DeserializedEomData() : windVelBody(0.0),
-                            velBody(0.0),
-                            accelBody(0.0),
-                            posEci(0.0),
-                            velEci(0.0),
-                            posEcef(0.0),
-                            velEcef(0.0),
-                            eulerAngs(0.0),
-                            eulerAngRates(0.0),
-                            bodyFromNed(0.0),
-                            bodyFromWind(0.0)
+    DeserializedEomData() : windVelBody( 0.0 ),
+        velBody( 0.0 ),
+        accelBody( 0.0 ),
+        posEci( 0.0 ),
+        velEci( 0.0 ),
+        posEcef( 0.0 ),
+        velEcef( 0.0 ),
+        eulerAngs( 0.0 ),
+        eulerAngRates( 0.0 ),
+        bodyFromNed( 0.0 ),
+        bodyFromWind( 0.0 )
     {
     }
 
@@ -70,9 +70,9 @@ struct PayloadSerializer<EomData> : DeserializedEomData
     {
     }
 
-    void serialize(EomData &payload) const
+    void serialize( EomData& payload ) const
     {
-        for (unsigned int i = 0; i < 3; i++)
+        for ( unsigned int i = 0; i < 3; i++ )
         {
             payload.windVelBody_raw[i] = windVelBody[i];
             payload.velBody_raw[i] = velBody[i];
@@ -87,7 +87,7 @@ struct PayloadSerializer<EomData> : DeserializedEomData
             payload.eulerAngs_raw[i] = eulerAngs[i];
             payload.eulerAngRates_raw[i] = eulerAngRates[i];
 
-            for (unsigned int j{0u}; j < 3u; j++)
+            for ( unsigned int j{0u}; j < 3u; j++ )
             {
                 payload.bodyFromNed_raw[i][j] = bodyFromNed[i][j];
                 payload.bodyFromWind_raw[i][j] = bodyFromWind[i][j];
@@ -103,7 +103,7 @@ struct PayloadDeserializer<EomData> : DeserializedEomData
     {
     }
 
-    void deserialize(const EomData &payload)
+    void deserialize( const EomData& payload )
     {
         windVelBody = payload.windVelBody_raw;
         velBody = payload.velBody_raw;

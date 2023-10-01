@@ -19,17 +19,17 @@
 
 namespace EomTypes
 {
-    struct InData : Intf::MessageContainer<
+    struct InData : Intf::MessageContainer <
         InputPayload<AeroMsg, Deserialize, Persistent>,
         InputPayload<EngineMsg, Deserialize>,
         InputPayload<GravityMsg, Deserialize>,
         InputPayload<MassPropMsg, Deserialize, Persistent>
-    >
+        >
     {};
 
-    struct OutData : Intf::MessageContainer<
+    struct OutData : Intf::MessageContainer <
         OutputPayload<EomMsg, Serialize>
-    >
+        >
     {};
 }
 

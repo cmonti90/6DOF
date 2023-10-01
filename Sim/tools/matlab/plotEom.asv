@@ -1,0 +1,31 @@
+clear;close all;clc;
+
+dataDir = "/home/cmonti/Documents/Coding/Projects/6DOF/Sim/run/output/0";
+fName = "eom.dat";
+
+data = load(fullfile(dataDir, fName));
+
+idx.time = 1;
+idx.posEci = 2:4;
+idx.eulerAngs = 5:8;
+
+nfig = 0;
+
+nfig = nfig + 1;
+h(nfig) = figure(nfig);
+set(h(nfig), 'name', 'EulerAngles');
+
+subplot(311)
+hold on;grid on;
+plot(data(:, idx.time), data(:, idx.eulerAngs) * 180/pi)
+xlabel('Time (sec)'); ylabel('Roll (deg)')
+
+subplot(312)
+hold on;grid on;
+plot(data(:, idx.time), data(:, idx.eulerAngs) * 180/pi)
+xlabel('Time (sec)'); ylabel('Pitch (deg)')
+
+subplot(313)
+hold on;grid on;
+plot(data(:, idx.time), data(:, idx.eulerAngs(3)) * 180/pi)
+xlabel('Time (sec)'); ylabel('Yaw (deg)')

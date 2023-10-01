@@ -8,6 +8,7 @@ enum MessageIds : int
     CtrlSurfMsgId,
     EngineMsgId,
     EomMsgId,
+    GRAMMsgId,
     GravityMsgId,
     GuidanceMsgId,
     ImuMsgId,

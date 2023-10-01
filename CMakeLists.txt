@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(Inverted_Pendulum)
+project(6DOF_Sim VERSION 1.0
+                DESCRIPTION "6DOF Sim"
+                LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -9,9 +11,11 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS=ON)
 
 list(APPEND CMAKE_PREFIX_PATH $ENV{MATHLIB_DIR})
 list(APPEND CMAKE_PREFIX_PATH $ENV{PUBSUBLIB_DIR})
+list(APPEND CMAKE_PREFIX_PATH $ENV{GRAMEARTH_DIR})
 
 find_package(mathlib CONFIG REQUIRED)
 find_package(PubSub CONFIG REQUIRED)
+find_package(GRAM_Earth CONFIG REQUIRED)
 
 add_subdirectory("SW")
 add_subdirectory("Sim")
