@@ -126,7 +126,7 @@ class eom
         void updateStates();
 
         FILE* fEom;
-        bool logOutput{false};
+        bool logOutput{true};
 };
 
 #endif

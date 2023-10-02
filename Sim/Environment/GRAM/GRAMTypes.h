@@ -6,17 +6,14 @@
 #include "Decorators.h"
 
 #include "EomMsg.h"
-#include "MassPropMsg.h"
 #include "GRAMMsg.h"
 
 #include "EomDataSerialization.h"
-#include "MassPropDataSerialization.h"
 #include "GRAMDataSerialization.h"
 
 namespace GRAMTypes
 {
     struct InData : Intf::MessageContainer <
-        InputPayload<MassPropMsg, Deserialize, Persistent>,
         InputPayload<EomMsg, Deserialize, Persistent>
         >
     {};

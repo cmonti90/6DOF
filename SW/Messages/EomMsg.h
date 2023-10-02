@@ -29,6 +29,10 @@ struct EomData
     double angleOfSideslipDot;
 
     double altSeaLevel;
+    double altGeodetic;
+
+    double lat;
+    double lon;
 
     double bodyFromNed_raw[3][3];
     double bodyFromWind_raw[3][3];
@@ -42,6 +46,10 @@ struct EomData
         angleOfSideslipDot = 0.0;
 
         altSeaLevel = 0.0;
+        altGeodetic = 0.0;
+
+        lat = 0.0;
+        lon = 0.0;
 
         for (unsigned int i{0u}; i < 3u; i++)
         {
@@ -81,6 +89,9 @@ struct EomData
           angleOfAttackDot(),
           angleOfSideslipDot(),
           altSeaLevel(),
+          altGeodetic(),
+          lat(),
+          lon(),
           bodyFromNed_raw(),
           bodyFromWind_raw()
     {

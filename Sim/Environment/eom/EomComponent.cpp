@@ -24,6 +24,7 @@ void EomComponent::initialize ( void )
 
     subscribe<AeroMsg>( *inData_ );
     subscribe<EngineMsg>( *inData_ );
+    subscribe<GRAMMsg>( *inData_ );
     subscribe<GravityMsg>( *inData_ );
     subscribe<MassPropMsg>( *inData_ );
 
@@ -57,6 +58,11 @@ void EomComponent::update ( void )
 
                 break;
 
+            case GRAMMsg::MESSAGE_LABEL:
+                receive<GRAMMsg>( *inData_ );
+
+                break;
+
             case GravityMsg::MESSAGE_LABEL:
                 receive<GravityMsg>( *inData_ );
 
@@ -79,10 +85,11 @@ void EomComponent::update ( void )
 
     pAlg->exec( *inData_, *outData_ );
 
-    inData_->reset();
 
     send<EomMsg>( *outData_ );
 
+    inData_->reset();
+    outData_->reset();
     counter_++;
 }
 

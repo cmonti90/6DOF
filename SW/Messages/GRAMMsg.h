@@ -7,24 +7,37 @@
 
 struct GRAMData
 {
-    double forceBody_raw[3];
-    double momentBody_raw[3];
+    double density;
+    double pressure;
+    double temperature;
+
+    double ewWind;
+    double nsWind;
+    double vertWind;
 
     void Default()
     {
-        for (int i = 0; i < 3; i++)
-        {
-            forceBody_raw[i] = 0.0;
-            momentBody_raw[i] = 0.0;
-        }
+        density = 0.0;
+        pressure = 0.0;
+        temperature = 0.0;
+
+        ewWind = 0.0;
+        nsWind = 0.0;
+        vertWind = 0.0;
     }
 
-    GRAMData() : forceBody_raw(), momentBody_raw()
+    GRAMData()
+    : density()
+    , pressure()
+    , temperature()
+    , ewWind()
+    , nsWind()
+    , vertWind()
     {
         Default();
     }
 };
 
-MESSAGE_PAYLOAD(GRAMMsg, GRAMData, GRAMMsgId)
+MESSAGE_PAYLOAD( GRAMMsg, GRAMData, GRAMMsgId )
 
 #endif /* D9E6A0CB_3DA1_4BA9_A51B_80A2E9FD2C7B */

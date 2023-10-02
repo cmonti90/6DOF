@@ -6,65 +6,53 @@
 #include "Decorators.h"
 #include "Vector.h"
 
-template <>
-struct PayloadSerializer<GRAMData>
+struct GRAMDataSerialized
 {
-    PayloadSerializer() : forceBody(0.0),
-                          momentBody(0.0)
+    GRAMDataSerialized() : windNed(0.0)
     {
     }
 
     virtual void initialize()
     {
-        forceBody = 0.0;
-        momentBody = 0.0;
+        windNed = 0.0;
+    }
+
+    virtual void reset()
+    {
+        initialize();
+    }
+
+    myMath::Vector3d windNed;
+};
+
+template <>
+struct PayloadSerializer<GRAMData> : GRAMDataSerialized
+{
+    PayloadSerializer() : GRAMDataSerialized()
+    {
     }
 
     void serialize(GRAMData &payload) const
     {
-        for (unsigned int i = 0; i < 3; i++)
-        {
-            payload.forceBody_raw[i] = forceBody[i];
-            payload.momentBody_raw[i] = momentBody[i];
-        }
+            payload.nsWind = windNed[0];
+            payload.ewWind = windNed[1];
+            payload.vertWind = -windNed[2];
     }
-
-    virtual void reset()
-    {
-        initialize();
-    }
-
-    myMath::Vector3d forceBody;
-    myMath::Vector3d momentBody;
 };
 
 template <>
-struct PayloadDeserializer<GRAMData>
+struct PayloadDeserializer<GRAMData> : GRAMDataSerialized
 {
-    PayloadDeserializer() : forceBody(0.0),
-                            momentBody(0.0)
+    PayloadDeserializer() : GRAMDataSerialized()
     {
-    }
-
-    virtual void initialize()
-    {
-        forceBody = 0.0;
-        momentBody = 0.0;
     }
 
     void deserialize(const GRAMData &payload)
     {
-        forceBody = payload.forceBody_raw;
-        momentBody = payload.momentBody_raw;
+        windNed[0] = payload.nsWind;
+        windNed[1] = payload.ewWind;
+        windNed[2] = -payload.vertWind;
     }
-
-    virtual void reset()
-    {
-        initialize();
-    }
-
-    myMath::Vector3d forceBody;
-    myMath::Vector3d momentBody;
 };
 
 
