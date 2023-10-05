@@ -45,6 +45,7 @@ GRAMComponent::GRAMComponent( std::shared_ptr<PubSub::QueueMngr> queueMngr, cons
 
     // Update the atmosphere data
     earthAtmosphere_->update();
+    
 }
 
 GRAMComponent::~GRAMComponent()
@@ -101,9 +102,11 @@ void GRAMComponent::updateGRAM()
 {
     // Set the position
     position_->height = 1.0 / 1000.0; // km
+    position_->latitude = 45.0 * myMath::Constants::RAD_TO_DEG; // deg
+    position_->longitude = 60.0 * myMath::Constants::RAD_TO_DEG; // deg
     // position->height = inData_->altGeodetic / 1000.0; // km
-    position_->latitude = inData_->lat * myMath::Constants::RAD_TO_DEG; // deg
-    position_->longitude = inData_->lon * myMath::Constants::RAD_TO_DEG; // deg
+    // position_->latitude = inData_->lat * myMath::Constants::RAD_TO_DEG; // deg
+    // position_->longitude = inData_->lon * myMath::Constants::RAD_TO_DEG; // deg
     position_->elapsedTime += 1.0/1000.0; // sec
     earthAtmosphere_->setPosition( *position_ );
 

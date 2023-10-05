@@ -115,6 +115,8 @@ class eom
         myMath::Vector3d angularRatesDerivative ( const double p, const double q, const double r, const EomTypes::InData& inData );
         myMath::QuaternionD quaternionDerivative ( const double p, const double q, const double r, myMath::QuaternionD q0 );
 
+        myMath::Matrix4d QuaterionRKrotationMatrix (const double dt, const double scalar, const myMath::Vector3d& rotRates);
+
         void rungeKutta4thOrder ( const EomTypes::InData& inData );
 
         void update();

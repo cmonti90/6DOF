@@ -1,4 +1,4 @@
-clear;clc; close all;
+clear;clc;
 
 ang1 = 20 * pi / 180;
 ang2 = 0 * pi / 180;
@@ -15,76 +15,40 @@ Rx1 = [1 0 0;
     0 cos(axyz) sin(axyz);
     0 -sin(axyz) cos(axyz)];
 
-Rx1 = subs(Rx1, axyz, a0);
+Rx1 = subs(Rx1, axyz, a2);
 
 % Rx2 = [1 0 0;
 %     0 cos(a2) sin(a2);
 %     0 -sin(a2) cos(a2)];
 
-Ry1 = [cos(axyz) 0 -sin(axyz);
+Ry1 = [cos(axyz) 0 sin(axyz);
     0 1 0;
-    sin(axyz) 0 cos(axyz)];
+    -sin(axyz) 0 cos(axyz)];
 
-Ry1 = subs(Ry1, axyz, a2);
+Ry1 = subs(Ry1, axyz, a1);
 
-% Ry2 = [cos(a2) 0 -sin(a2);
+% Ry2 = [cos(a2) 0 sin(a2);
 %     0 1 0;
-%     sin(a2) 0 cos(a2)];
+%     -sin(a2) 0 cos(a2)];
 
 Rz1 = [cos(axyz) sin(axyz) 0;
     -sin(axyz) cos(axyz) 0;
     0 0 1];
 
-Rz1 = subs(Rz1, axyz, a1);
+Rz1 = subs(Rz1, axyz, a0);
 
 % Rz2 = [cos(a2) sin(a2) 0;
 %     -sin(a2) cos(a2) 0;
 %     0 0 1];
 
-R = Ry1 * Rz1 * Rx1
+R = Rx1 * Ry1 * Rz1
 
 R = subs(R, [a1 a2], [pi/2 0])
 
 [eul(1), eul(2), eul(3)] = dcm2angle(DCM, rottype);
 eul*180/pi
 
-% eq1 = R(1, 1) == phi;
-% eq2 = R(1, 2) == pitch;
-% 
-% [A0, A1] = solve([eq1, eq2], [a0, a2])
 
+pos = [1, 2, 3]*1300.0;
 
-
-% fprintf("\n")
-% for i = 1:3
-%     for j = 1:3
-%         str_std = strrep(strrep(string(R(i, j)), 'cos', 'std::cos'), 'sin', 'std::sin');
-%         str_vars = strrep(strrep(strrep(str_std, 'a0', 'this->vec[0]'), 'a1', 'this->vec[1]'), 'a2', 'this->vec[2]');
-%         fprintf("tmp[%i][%i] = %s;\n", i-1, j-1, str_vars)
-%     end
-%     fprintf("\n")
-% end
-
-% quat1 = quaternion(eul2quat([ang1, 0, 0], 'XYZ'))
-% quat2 = quaternion(eul2quat([0, ang2, 0], 'XYZ'))
-% quat3 = quaternion(eul2quat([0, 0, ang3], 'XYZ'))
-
-% quat = eul2quat([ang1, ang2, ang3], rottype);
-% 
-% quat2 = eul2quat([10*pi/180,  0*pi/180, 0*pi/180], rottype);
-% 
-% quat3 = quaternion(quat) * quaternion(quat2)
-% 
-% dcm = quat2dcm(quat3)
-% 
-% [eul(1), eul(2), eul(3)] = dcm2angle(dcm, outrottype, 'Robust');
-% eul = eul * 180/pi
-% 
-% dcm = eul2rotm(eul * pi/180, outrottype)
-% 
-% [eul(1), eul(2), eul(3)] = dcm2angle(dcm, outrottype, 'Robust');
-% eul = eul * 180/pi
-
-% eul = quat2eul(quat3, rottype)*180/pi
-% 
-% dcm = eul2rotm(eul * pi/180, rottype)
+ecef2lla(pos)
