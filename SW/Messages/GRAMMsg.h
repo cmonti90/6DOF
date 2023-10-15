@@ -15,6 +15,8 @@ struct GRAMData
     double nsWind;
     double vertWind;
 
+    double speedOfSound;
+
     void Default()
     {
         density = 0.0;
@@ -24,6 +26,8 @@ struct GRAMData
         ewWind = 0.0;
         nsWind = 0.0;
         vertWind = 0.0;
+
+        speedOfSound = 0.0;
     }
 
     GRAMData()
@@ -33,6 +37,7 @@ struct GRAMData
     , ewWind()
     , nsWind()
     , vertWind()
+    , speedOfSound()
     {
         Default();
     }

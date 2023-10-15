@@ -1,5 +1,4 @@
 import os
-import sys
 import argparse
 
 
@@ -18,10 +17,12 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    outputDir = os.path.join(baseOutputdir, args.outputDir)
+    outputDir = os.path.abspath(os.path.join(baseOutputdir, args.outputDir))
 
     if not os.path.isdir(outputDir):
         os.makedirs(outputDir)
+
+    print("Output directory: " + outputDir)
 
     os.chdir(outputDir)
 

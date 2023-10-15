@@ -25,7 +25,7 @@ target_link_libraries(${target} PUBLIC  Messages
                                         PubSub
                                         NavigationAlgorithm
                                         DebugTools
-                                        Clock
+                                        Utility
                                         Serialization
                                         )
 

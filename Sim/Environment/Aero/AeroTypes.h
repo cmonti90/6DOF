@@ -7,15 +7,19 @@
 #include "AeroMsg.h"
 #include "CtrlSurfMsg.h"
 #include "EomMsg.h"
+#include "GRAMMsg.h"
 
 #include "AeroDataSerialization.h"
 #include "EomDataSerialization.h"
+#include "GravityDataSerialization.h"
+#include "GRAMDataSerialization.h"
 
 namespace AeroTypes
 {
     struct InData : Intf::MessageContainer<
         InputPayload<EomMsg, Deserialize>,
-        InputPayload<CtrlSurfMsg>
+        InputPayload<CtrlSurfMsg, Persistent>,
+        InputPayload<GRAMMsg, Deserialize>
     >
     {};
 

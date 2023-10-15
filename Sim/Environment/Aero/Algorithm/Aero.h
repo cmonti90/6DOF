@@ -73,6 +73,8 @@ protected:
     Coef elev;
     Coef rudder;
 
+    Coef aeroCoefs;
+
     double C_Df;
     double C_Lf;
     double C_Yf;
@@ -111,10 +113,7 @@ protected:
 
     double velT;
     double dynamicPressure;
-    double airDensity;
     double altSeaLevel;
-    double speedOfSound;
-    double airTempK;
     double mach;
 
     void updateCoefficients(const AeroTypes::InData& inData);

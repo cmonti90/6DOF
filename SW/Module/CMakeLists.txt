@@ -20,6 +20,6 @@ target_link_libraries(${target} PRIVATE MassProperties
                                         ControlSurfaces
                                         GRAMComponent
                                         IMU
-                                        Clock
+                                        Utility
                                         PubSub
                                         )

@@ -1,6 +1,8 @@
 
 #include "NavigationAlgorithm.h"
 
+#include "Units.h"
+
 NavigationAlgorithm::NavigationAlgorithm()
 {
 }

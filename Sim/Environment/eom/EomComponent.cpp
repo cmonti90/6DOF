@@ -4,8 +4,8 @@
 
 #include "eom.h"
 
-EomComponent::EomComponent ( std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::Component_Label name )
-    : PubSub::SimComponent ( queueMngr, 1000, name )
+EomComponent::EomComponent( std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::Component_Label name )
+    : PubSub::SimComponent( queueMngr, 1000, name )
     , pAlg      ( new eom() )
     , inData_   ( new EomTypes::InData() )
     , outData_  ( new EomTypes::OutData() )
@@ -17,25 +17,25 @@ EomComponent::~EomComponent()
 {
 }
 
-void EomComponent::initialize ( void )
+void EomComponent::initialize( void )
 {
-    inData_->initialize();
+    inData_ ->initialize();
     outData_->initialize();
 
-    subscribe<AeroMsg>( *inData_ );
-    subscribe<EngineMsg>( *inData_ );
-    subscribe<GRAMMsg>( *inData_ );
-    subscribe<GravityMsg>( *inData_ );
-    subscribe<MassPropMsg>( *inData_ );
+    subscribe< AeroMsg     >( *inData_ );
+    subscribe< EngineMsg   >( *inData_ );
+    subscribe< GRAMMsg     >( *inData_ );
+    subscribe< GravityMsg  >( *inData_ );
+    subscribe< MassPropMsg >( *inData_ );
 
     pAlg->initialize();
     counter_ = 0u;
 }
 
-void EomComponent::update ( void )
+void EomComponent::update( void )
 {
     PubSub::Message_Label label;
-    PubSub::MessageStatus status = peek ( label );
+    PubSub::MessageStatus status = peek( label );
 
     while ( status == PubSub::MessageStatus::MESSAGE_AVAILABLE )
     {

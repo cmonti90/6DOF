@@ -15,4 +15,5 @@ target_link_libraries(${target} PRIVATE mathlib
                                         eomIntf
                                         EarthModels
                                         Messages
+                                        Utility
                                         )

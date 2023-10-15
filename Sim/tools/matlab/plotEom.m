@@ -1,6 +1,6 @@
 clear;close all;clc;
 
-dataDir = "/home/cmonti/Documents/Coding/Projects/6DOF/Sim/run/output/pitch";
+dataDir = "/home/cmonti/Documents/Coding/Projects/6DOF/Sim/run/output/all";
 fName = "eom.dat";
 
 data = load(fullfile(dataDir, fName));
@@ -23,19 +23,19 @@ set(h(nfig), 'name', 'PositionECI');
 
 subplot(311)
 hold on;grid on;
-plot(data(:, idx.time), data(:, idx.posEci(1)))
-xlabel('Time (sec)'); ylabel('X (m)')
+plot(data(:, idx.time), data(:, idx.posEci(1)) - data(1, idx.posEci(1)))
+xlabel('Time (sec)'); ylabel('\DeltaX (m)')
 title("Position ECI")
 
 subplot(312)
 hold on;grid on;
-plot(data(:, idx.time), data(:, idx.posEci(2)))
-xlabel('Time (sec)'); ylabel('Y (m)')
+plot(data(:, idx.time), data(:, idx.posEci(2)) - data(1, idx.posEci(2)))
+xlabel('Time (sec)'); ylabel('\DeltaY (m)')
 
 subplot(313)
 hold on;grid on;
-plot(data(:, idx.time), data(:, idx.posEci(3)))
-xlabel('Time (sec)'); ylabel('Z (m)')
+plot(data(:, idx.time), data(:, idx.posEci(3)) - data(1, idx.posEci(3)))
+xlabel('Time (sec)'); ylabel('\DeltaZ (m)')
 
 
 % Euler Angles

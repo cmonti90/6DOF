@@ -136,4 +136,6 @@ void GRAMComponent::BuildOutput()
     outData_->nsWind = atmosphereState_->nsWind;
     outData_->ewWind = atmosphereState_->ewWind;
     outData_->vertWind = atmosphereState_->verticalWind;
+
+    outData_->speedOfSound = atmosphereState_->speedOfSound;
 }

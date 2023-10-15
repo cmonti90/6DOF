@@ -11,45 +11,31 @@ DCM = angle2dcm(ang1 , ang2, ang3, rottype)
 
 syms axyz a0 a1 a2
 % 
-Rx1 = [1 0 0;
+Rx = [1 0 0;
     0 cos(axyz) sin(axyz);
     0 -sin(axyz) cos(axyz)];
 
-Rx1 = subs(Rx1, axyz, a2);
-
-% Rx2 = [1 0 0;
-%     0 cos(a2) sin(a2);
-%     0 -sin(a2) cos(a2)];
-
-Ry1 = [cos(axyz) 0 sin(axyz);
+Ry = [cos(axyz) 0 -sin(axyz);
     0 1 0;
-    -sin(axyz) 0 cos(axyz)];
+    sin(axyz) 0 cos(axyz)];
 
-Ry1 = subs(Ry1, axyz, a1);
-
-% Ry2 = [cos(a2) 0 sin(a2);
-%     0 1 0;
-%     -sin(a2) 0 cos(a2)];
-
-Rz1 = [cos(axyz) sin(axyz) 0;
+Rz = [cos(axyz) sin(axyz) 0;
     -sin(axyz) cos(axyz) 0;
     0 0 1];
 
-Rz1 = subs(Rz1, axyz, a0);
+Rx2 = subs(Rx, axyz, a2);
+Ry2 = subs(Ry, axyz, a2);
+Rz2 = subs(Rz, axyz, a2);
 
-% Rz2 = [cos(a2) sin(a2) 0;
-%     -sin(a2) cos(a2) 0;
-%     0 0 1];
+%%
 
-R = Rx1 * Ry1 * Rz1
+Rx1 = subs(Rx, axyz, a1);
+Ry1 = subs(Ry, axyz, a2);
+Rz1 = subs(Rz, axyz, a0);
 
-R1 = subs(R, [a0], [-pi])
-R2 = subs(R, [a0], [0])
+R = Ry1 * Rx1 * Rz1
 
-[eul(1), eul(2), eul(3)] = dcm2angle(DCM, rottype);
-eul*180/pi
+R_a1_0 = subs(R, [a1 a2], [pi/2 0])
 
-
-pos = [1, 2, 3]*1300.0;
-
-ecef2lla(pos)
+% [eul(1), eul(2), eul(3)] = dcm2angle(DCM, rottype);
+% eul*180/pi

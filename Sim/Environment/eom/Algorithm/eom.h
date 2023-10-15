@@ -105,6 +105,8 @@ class eom
         myMath::DCMd enuFromNed;
         myMath::DCMd enuFromEcef;
 
+        myMath::Vector3d originEnuInEcef;
+
         double altSeaLevel;
         double altGeodetic;
 

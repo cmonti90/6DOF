@@ -3,6 +3,8 @@
 #include "WGS84.h"
 #include "PhysicalProperties.h"
 
+#include "Units.h"
+
 #include <math.h>
 #include <iostream>
 
@@ -28,9 +30,9 @@ void eom::initialize()
     netForceBody = 0.0;
     netMomentBody = 0.0;
 
-    posEci[0] = 5.0e6; // m
-    posEci[1] = 5.0e6; // m
-    posEci[2] = 5.0e6; // m
+    posEci[0] = 5.0e3_km;
+    posEci[1] = 5.0e3_km;
+    posEci[2] = 5.0e3_km;
 
     velBody[0] = 0.0; // m/sec
     velBody[1] = 0.0;
@@ -191,9 +193,13 @@ void eom::rungeKutta4thOrder( const EomTypes::InData& inData )
 
     myMath::Vector3d dAngBodyRates;
 
-    angRatesBody[0] = 0.0 * myMath::Constants::DEG_TO_RAD;
+    velBody[X] = 10.0;
+    velBody[Y] = 10.0;
+    velBody[Z] = 10.0;
+
+    angRatesBody[0] = -50.0 * myMath::Constants::DEG_TO_RAD;
     angRatesBody[1] = 10.0 * myMath::Constants::DEG_TO_RAD;
-    angRatesBody[2] = 0.0 * myMath::Constants::DEG_TO_RAD;
+    angRatesBody[2] = 15.0 * myMath::Constants::DEG_TO_RAD;
 
     dt = 1.0 / 1000.0;
 

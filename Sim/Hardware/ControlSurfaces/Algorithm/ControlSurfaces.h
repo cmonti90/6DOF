@@ -3,6 +3,10 @@
 
 #include "ControlSurfacesTypes.h"
 
+#include <memory>
+
+class Actuation;
+
 class CtrlSurfs
 {
 public:
@@ -14,11 +18,20 @@ public:
     void finalize(void);
 
 protected:
-    double aileronDefl[2];
-    double elevatorDefl;
-    double rudderDefl;
-
     void BuildOutput(CtrlSurfTypes::OutData& outData);
+
+    Actuation* aileronL;
+    Actuation* aileronR;
+    Actuation* elevator;
+    Actuation* rudder;
+
+    double t;
+    double dt;
+
+    FILE* fAct;
+    bool logOutput;
+
+    double sigSign;
 
 };
 

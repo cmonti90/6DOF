@@ -1,8 +1,10 @@
 set(target CntrlSurfAlgorithm)
 
-set(SOURCES ControlSurfaces.cpp)
+set(SOURCES ControlSurfaces.cpp
+            Actuation.cpp)
 
-set(HEADERS ControlSurfaces.h)
+set(HEADERS ControlSurfaces.h
+            Actuation.h)
 
 add_library(${target} ${SOURCES})
 
@@ -14,4 +16,5 @@ target_link_libraries(${target} PUBLIC  Messages
                                         PubSub
                                         AircraftProperties
                                         ControlSurfacesIntf
+                                        Utility
                                         )

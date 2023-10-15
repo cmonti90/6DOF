@@ -7,48 +7,24 @@
 
 struct AutopilotData
 {
-    double aileronDefl[2];
-    double elevatorDefl;
-    double rudderDefl;
+    double aileronCmd[2];
+    double elevatorCmd;
+    double rudderCmd;
 
     void Default()
     {
         for (unsigned int i{0u}; i < 2u; ++i)
         {
-            aileronDefl[i] = 0.0;
+            aileronCmd[i] = 0.0;
         }
 
-        elevatorDefl = 0.0;
-        rudderDefl = 0.0;
+        elevatorCmd = 0.0;
+        rudderCmd = 0.0;
     }
 
-    AutopilotData& operator=( const AutopilotData& other )
-    {
-        for (unsigned int i{0u}; i < 2u; ++i)
-        {
-            aileronDefl[i] = other.aileronDefl[i];
-        }
-
-        elevatorDefl = other.elevatorDefl;
-        rudderDefl = other.rudderDefl;
-
-        return *this;
-    }
-
-    AutopilotData() : aileronDefl(), elevatorDefl(), rudderDefl()
+    AutopilotData() : aileronCmd(), elevatorCmd(), rudderCmd()
     {
         Default();
-    }
-
-    AutopilotData( const AutopilotData& other ) : aileronDefl(), elevatorDefl(), rudderDefl()
-    {
-        for (unsigned int i{0u}; i < 2u; ++i)
-        {
-            aileronDefl[i] = other.aileronDefl[i];
-        }
-
-        elevatorDefl = other.elevatorDefl;
-        rudderDefl = other.rudderDefl;
     }
 };
 
