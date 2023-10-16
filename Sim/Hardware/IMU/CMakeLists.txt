@@ -25,6 +25,7 @@ target_link_libraries(${target} PUBLIC  Messages
                                         PubSub
                                         ImuAlgorithm
                                         Serialization
+                                        Utility
                                         )
 
 add_subdirectory(Algorithm)

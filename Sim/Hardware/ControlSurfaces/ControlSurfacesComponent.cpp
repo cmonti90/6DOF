@@ -4,12 +4,13 @@
 
 #include "ControlSurfaces.h"
 
-ControlSurfacesComponent::ControlSurfacesComponent( std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::Component_Label name )
-    : PubSub::SimComponent( queueMngr, 1000, name ),
-    pAlg( new CtrlSurfs() ),
-    inData_( new CtrlSurfTypes::InData() ),
-    outData_( new CtrlSurfTypes::OutData() ),
-    counter_( 0u )
+ControlSurfacesComponent::ControlSurfacesComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr, std::shared_ptr<TimePt::RtcClock>& sysClock, const PubSub::Component_Label name )
+    : PubSub::SimComponent( queueMngr, 1000, name )
+    , pAlg     ( new CtrlSurfs() )
+    , inData_  ( new CtrlSurfTypes::InData() )
+    , outData_ ( new CtrlSurfTypes::OutData() )
+    , sysClock_( sysClock )
+    , counter_ ( 0u )
 {
 }
 
@@ -22,7 +23,7 @@ void ControlSurfacesComponent::initialize( void )
     inData_->initialize();
     outData_->initialize();
 
-    subscribe<AutopilotMsg>(*inData_);
+    subscribe<AutopilotMsg>( *inData_ );
 
     pAlg->initialize();
     counter_ = 0u;
@@ -34,25 +35,25 @@ void ControlSurfacesComponent::update( void )
     PubSub::Message_Label label;
     PubSub::MessageStatus status = peek( label );
 
-    while (status == PubSub::MessageStatus::MESSAGE_AVAILABLE)
+    while ( status == PubSub::MessageStatus::MESSAGE_AVAILABLE )
     {
-        switch (label)
+        switch ( label )
         {
-        case AutopilotMsg::MESSAGE_LABEL:
-            receive<AutopilotMsg>(*inData_ );
-            break;
+            case AutopilotMsg::MESSAGE_LABEL:
+                receive<AutopilotMsg>( *inData_ );
+                break;
 
-        default:
-            removeTopMessage();
-            break;
+            default:
+                removeTopMessage();
+                break;
         }
 
         status = peek( label );
     }
 
-    pAlg->exec(*inData_, *outData_);
+    pAlg->exec( *inData_, *outData_ );
 
-    send<CtrlSurfMsg>(*outData_);
+    send<CtrlSurfMsg>( *outData_ );
 
     counter_++;
 }

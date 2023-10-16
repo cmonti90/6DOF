@@ -26,6 +26,7 @@ target_link_libraries(${target} PUBLIC  Messages
                                         GuidanceAlgorithm
                                         DebugTools
                                         Serialization
+                                        Utility
                                         )
 
 add_subdirectory(Algorithm)

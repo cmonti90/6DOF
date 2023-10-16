@@ -2,15 +2,17 @@
 #include "GuidanceComponent.h"
 #include "GuidanceTypes.h"
 #include "GuidanceAlgorithm.h"
+#include "RtcClock.h"
 #include "TryCatch.h"
 
 #include <iostream>
 
-GuidanceComponent::GuidanceComponent(std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::Component_Label name)
+GuidanceComponent::GuidanceComponent(std::shared_ptr<PubSub::QueueMngr>& queueMngr, std::shared_ptr<TimePt::RtcClock>& sysClock, const PubSub::Component_Label name)
     : PubSub::Component(queueMngr, name),
       pAlg(new GuidanceAlgorithm()),
       inData_(new GuidanceTypes::InData()),
       outData_(new GuidanceTypes::OutData())
+    , sysClock_( sysClock )
 {
 }
 

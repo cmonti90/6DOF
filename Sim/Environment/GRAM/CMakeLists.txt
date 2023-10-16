@@ -17,4 +17,5 @@ target_link_libraries(${target} PRIVATE GRAM_Earth
                                         PubSub
                                         Serialization
                                         DebugTools
+                                        Utility
                                         )

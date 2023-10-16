@@ -4,7 +4,7 @@
 
 #include "MassProperties.h"
 
-MassPropertiesComponent::MassPropertiesComponent(std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::Component_Label name)
+MassPropertiesComponent::MassPropertiesComponent(std::shared_ptr<PubSub::QueueMngr>& queueMngr, const PubSub::Component_Label name)
     : PubSub::SimComponent(queueMngr, 1000, name),
       pAlg(new MassProperties()),
       inData_(new MassPropTypes::InData()),

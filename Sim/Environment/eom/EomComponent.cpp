@@ -3,12 +3,14 @@
 #include "EomTypes.h"
 
 #include "eom.h"
+#include "RtcClock.h"
 
-EomComponent::EomComponent( std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::Component_Label name )
+EomComponent::EomComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr, std::shared_ptr<TimePt::RtcClock>& sysClock, const PubSub::Component_Label name )
     : PubSub::SimComponent( queueMngr, 1000, name )
     , pAlg      ( new eom() )
     , inData_   ( new EomTypes::InData() )
     , outData_  ( new EomTypes::OutData() )
+    , sysClock_ ( sysClock ) 
     , counter_  ( 0u )
 {
 }

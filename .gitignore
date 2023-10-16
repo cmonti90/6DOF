@@ -4,3 +4,6 @@ build/*
 *.orig
 .buildit.build
 *.asv
+slprj/*
+*.slxc
+*.autosave

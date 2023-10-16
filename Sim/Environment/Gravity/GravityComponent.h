@@ -16,7 +16,7 @@ class Gravity;
 class GravityComponent : public PubSub::SimComponent
 {
 public:
-    GravityComponent( std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::Component_Label name = "GravityComponent" );
+    GravityComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr, const PubSub::Component_Label name = "GravityComponent" );
     virtual ~GravityComponent();
 
     void initialize( void ) override;

@@ -5,6 +5,11 @@
 
 #include <memory>
 
+namespace TimePt
+{
+    class RtcClock;
+}
+
 namespace AeroTypes
 {
     struct InData;
@@ -16,7 +21,7 @@ class Aero;
 class AeroComponent : public PubSub::SimComponent
 {
 public:
-    AeroComponent( std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::Component_Label name = "AeroComponent" );
+    AeroComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr, std::shared_ptr<TimePt::RtcClock>& sysClock, const PubSub::Component_Label name = "AeroComponent" );
     virtual ~AeroComponent();
 
     void initialize( void ) override;
@@ -29,6 +34,8 @@ private:
 
     std::unique_ptr<AeroTypes::InData> inData_;
     std::unique_ptr<AeroTypes::OutData> outData_;
+
+    std::shared_ptr<TimePt::RtcClock> sysClock_;
 
 };
 

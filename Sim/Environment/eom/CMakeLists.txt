@@ -28,6 +28,7 @@ target_link_libraries(${target} PUBLIC  Messages
                                         PubSub
                                         eomAlgorithm
                                         Serialization
+                                        Utility
                                         )
 
 add_subdirectory(Algorithm)

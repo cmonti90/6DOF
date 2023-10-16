@@ -3,13 +3,15 @@
 #include "AeroTypes.h"
 
 #include "Aero.h"
+#include "RtcClock.h"
 
-AeroComponent::AeroComponent( std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::Component_Label name )
-    : PubSub::SimComponent( queueMngr, 1000, name ),
-      pAlg      ( new Aero() ),
-      inData_   ( new AeroTypes::InData() ),
-      outData_  ( new AeroTypes::OutData() ),
-      counter_  ( 0u )
+AeroComponent::AeroComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr, std::shared_ptr<TimePt::RtcClock>& sysClock, const PubSub::Component_Label name )
+    : PubSub::SimComponent( queueMngr, 1000, name )
+    , pAlg      ( new Aero() )
+    , inData_   ( new AeroTypes::InData() )
+    , outData_  ( new AeroTypes::OutData() )
+    , sysClock_( sysClock )
+    , counter_  ( 0u )
 {
 }
 

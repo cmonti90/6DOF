@@ -6,6 +6,11 @@
 
 #include <memory>
 
+namespace TimePt
+{
+    class RtcClock;
+}
+
 namespace GuidanceTypes
 {
     struct InData;
@@ -17,7 +22,7 @@ class GuidanceAlgorithm;
 class GuidanceComponent : public PubSub::Component
 {
 public:
-    GuidanceComponent(std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::Component_Label name = "GuidanceComponent");
+    GuidanceComponent(std::shared_ptr<PubSub::QueueMngr>& queueMngr, std::shared_ptr<TimePt::RtcClock>& sysClock, const PubSub::Component_Label name = "GuidanceComponent");
     virtual ~GuidanceComponent();
 
     void initialize(void) override;
@@ -30,6 +35,7 @@ private:
     std::unique_ptr<GuidanceTypes::InData> inData_;
     std::unique_ptr<GuidanceTypes::OutData> outData_;
 
+    std::shared_ptr<TimePt::RtcClock> sysClock_;
 };
 
 #endif /* GUIDANCECOMPONENT_H */

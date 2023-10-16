@@ -2,15 +2,17 @@
 #include "NavigationComponent.h"
 #include "NavigationTypes.h"
 #include "NavigationAlgorithm.h"
+#include "RtcClock.h"
 #include "TryCatch.h"
 
-NavigationComponent::NavigationComponent(std::shared_ptr<PubSub::QueueMngr> queueMngr,
-                                         const std::shared_ptr<TimePt::RtcClock> rtcClock,
+NavigationComponent::NavigationComponent(std::shared_ptr<PubSub::QueueMngr>& queueMngr,
+                                         const std::shared_ptr<TimePt::RtcClock>& sysClock,
                                          const PubSub::Component_Label name)
-    : PubSub::Component(queueMngr, name),
-      pAlg(new NavigationAlgorithm()),
-      inData_(new NavTypes::InData()),
-      outData_(new NavTypes::OutData())
+    : PubSub::Component(queueMngr, name)
+    , pAlg(new NavigationAlgorithm())
+    , inData_(new NavTypes::InData())
+    , outData_(new NavTypes::OutData())
+    , sysClock_( sysClock )
 {
 }
 

@@ -6,6 +6,11 @@
 
 #include <memory>
 
+namespace TimePt
+{
+    class RtcClock;
+}
+
 namespace AutopilotTypes
 {
     struct InData;
@@ -16,19 +21,21 @@ class AutopilotAlgorithm;
 
 class AutopilotComponent : public PubSub::Component
 {
-public:
-    AutopilotComponent(std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::Component_Label name = "AutopilotComponent");
+  public:
+    AutopilotComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr, std::shared_ptr<TimePt::RtcClock>& sysClock, const PubSub::Component_Label name = "AutopilotComponent" );
     virtual ~AutopilotComponent();
 
-    void initialize(void) override;
-    void update(void) override;
-    void finalize(void) override;
+    void initialize( void ) override;
+    void update( void ) override;
+    void finalize( void ) override;
 
-private:
+  private:
     std::unique_ptr<AutopilotAlgorithm> pAlg;
 
     std::unique_ptr<AutopilotTypes::InData> inData_;
     std::unique_ptr<AutopilotTypes::OutData> outData_;
+
+    std::shared_ptr<TimePt::RtcClock> sysClock_;
 
 };
 

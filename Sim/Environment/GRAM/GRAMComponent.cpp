@@ -5,13 +5,15 @@
 #include "EarthAtmosphere.h"
 
 #include "SpiceLoader.h"
+#include "RtcClock.h"
 
 #include <iomanip>
 
-GRAMComponent::GRAMComponent( std::shared_ptr<PubSub::QueueMngr> queueMngr, const PubSub::Component_Label name )
+GRAMComponent::GRAMComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr, std::shared_ptr<TimePt::RtcClock>& sysClock, const PubSub::Component_Label name )
     : PubSub::SimComponent  ( queueMngr, 1000, name )
     , inData_               ( new GRAMTypes::InData() )
     , outData_              ( new GRAMTypes::OutData() )
+    , sysClock_             ( sysClock )
     , earthAtmosphere_      ( new GRAM::EarthAtmosphere() )
     , position_             ( new GRAM::Position() )
     , atmosphereState_      ( new GRAM::AtmosphereState() )

@@ -20,8 +20,8 @@ namespace TimePt
 class NavigationComponent : public PubSub::Component
 {
 public:
-    NavigationComponent(std::shared_ptr<PubSub::QueueMngr> queueMngr,
-                        const std::shared_ptr<TimePt::RtcClock> rtcClock,
+    NavigationComponent(std::shared_ptr<PubSub::QueueMngr>& queueMngr,
+                        const std::shared_ptr<TimePt::RtcClock>& sysClock,
                         const PubSub::Component_Label name = "NavigationComponent");
     virtual ~NavigationComponent();
 
@@ -34,6 +34,8 @@ private:
 
     std::unique_ptr<NavTypes::InData> inData_;
     std::unique_ptr<NavTypes::OutData> outData_;
+
+    std::shared_ptr<TimePt::RtcClock> sysClock_;
 };
 
 #endif /* A6ADAB6A_3052_4300_85E1_E2ADB7292594 */

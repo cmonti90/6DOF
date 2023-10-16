@@ -24,6 +24,7 @@ target_link_libraries(${target} PUBLIC  Messages
                                 PRIVATE mathlib
                                         PubSub
                                         CntrlSurfAlgorithm
+                                        Utility
                                         )
 
 add_subdirectory(Algorithm)
