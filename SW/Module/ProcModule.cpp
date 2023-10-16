@@ -67,7 +67,7 @@ void ProcModule::launch()
 
     int i = 0;
 
-    for ( i = 0; i < 30000; i++ )
+    for ( i = 0; i < 5000; i++ )
     {
         start();
     }

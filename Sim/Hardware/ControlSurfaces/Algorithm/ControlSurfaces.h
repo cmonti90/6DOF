@@ -25,14 +25,6 @@ protected:
     Actuation* elevator;
     Actuation* rudder;
 
-    double t;
-    double dt;
-
-    FILE* fAct;
-    bool logOutput;
-
-    double sigSign;
-
 };
 
 #endif /* CONTROL_SURFACES_H */

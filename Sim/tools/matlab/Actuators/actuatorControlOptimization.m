@@ -4,26 +4,29 @@ optimizeGains = 0;
 runModel = 1;
 plotFigs = 1;
 
-global Kp Ki Kd dampCoef Iaxis;
+switchController = 1;
 
-Kp = 654.2698;
-Ki = 191.1087;
-Kd = 39.3151;
+global Kp Ki Kd N;
+
+Kp = 7469.1259;
+Ki = 75079.5092;
+Kd = 52.6578;
+N = 1735.6444;
 
 dampCoef = 5.0;
 Iaxis = 0.05;
 
 t0 = 0.0;
-tfinal = 1.99;
+tfinal = 30;
 dt = 0.001;
 
-inpAmp = 50*pi/180;
+inpAmp = 5*pi/180;
 inpPeriod = 2;
 inpPulseWidth = 50;
-inpPhaseDelay = 1;
+inpPhaseDelay = 0;
 
 if optimizeGains
-    searchOutput = fmincon(@costFunc, [Kp; Ki; Kd], [], [], [], [], [0;0;0]);
+    searchOutput = fmincon(@costFunc, [Kp; Ki; Kd; N], [], [], [], [], [0;0;0;0]);
 end
 
 

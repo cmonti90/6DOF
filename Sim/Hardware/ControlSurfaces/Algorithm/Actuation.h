@@ -8,6 +8,7 @@ struct PID
     double p;
     double i;
     double d;
+    double filterCoef;
 
     PID()  = default;
     ~PID() = default;
@@ -21,18 +22,20 @@ class Actuation
     virtual ~Actuation();
 
     void initialize();
-    void update( double cmd );
+    void update( const double cmd );
     void finalize();
 
-    void setPID( double p, double i, double d );
-    void setIaxis( double inert );
-    void setDampingCoeff( double damping );
+    void setPID( const double p, const double i, const double d, const double filterCoef );
+    void setIaxis( const double inert );
+    void setDampingCoeff( const double damping );
 
     double getDeflection() const;
+    double getControllerCmd() const;
 
   protected:
-    double controller();
-    void stateDynamics( double cmd );
+    void Controller();
+    double stateDynamics( const double cmd, const double thetaDot );
+    void RungeKutta4thOrder( const double cmd );
 
     double Iaxis;
     double dampingCoeff;
@@ -40,11 +43,14 @@ class Actuation
 
     double stateErr;
     double stateErr_prev;
+    double stateErr_prev2;
 
     PID pid;
     double integrativeError;
 
-
+    double PIDcmd;
+    double PIDcmd_prev;
+    double PIDcmd_prev2;
 
   private:
     Actuation( const Actuation& )             = delete;

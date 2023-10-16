@@ -193,14 +193,6 @@ void eom::rungeKutta4thOrder( const EomTypes::InData& inData )
 
     myMath::Vector3d dAngBodyRates;
 
-    velBody[X] = 10.0;
-    velBody[Y] = 10.0;
-    velBody[Z] = 10.0;
-
-    angRatesBody[0] = -50.0 * myMath::Constants::DEG_TO_RAD;
-    angRatesBody[1] = 10.0 * myMath::Constants::DEG_TO_RAD;
-    angRatesBody[2] = 15.0 * myMath::Constants::DEG_TO_RAD;
-
     dt = 1.0 / 1000.0;
 
     accelBody[X] = udot( velBody[Y], velBody[Z], angRatesBody[PITCH], angRatesBody[YAW], inData );
@@ -235,9 +227,9 @@ void eom::rungeKutta4thOrder( const EomTypes::InData& inData )
     dYdot2  = dt * vdot( velBody[X] + dXdot1 / 2.0, velBody[Z] + dZdot1 / 2.0, angRatesBody[ROLL] + dAngBodyRates1[0] / 2.0, angRatesBody[YAW] + dAngBodyRates1[2] / 2.0, inData  );
     dZdot2  = dt * wdot( velBody[X] + dXdot1 / 2.0, velBody[Y] + dYdot1 / 2.0, angRatesBody[ROLL] + dAngBodyRates1[0] / 2.0, angRatesBody[PITCH] + dAngBodyRates1[1] / 2.0, inData );
 
-    dX2     = dt * ( velBody[X] + dX1 / 2.0 );
-    dY2     = dt * ( velBody[Y] + dY1 / 2.0 );
-    dZ2     = dt * ( velBody[Z] + dZ1 / 2.0 );
+    dX2     = dt * ( velBody[X] + dXdot1 / 2.0 );
+    dY2     = dt * ( velBody[Y] + dYdot1 / 2.0 );
+    dZ2     = dt * ( velBody[Z] + dZdot1 / 2.0 );
 
     dAngBodyRates = angularRatesDerivative( angRatesBody[ROLL] + dAngBodyRates1[0] / 2.0, angRatesBody[PITCH] + dAngBodyRates1[1] / 2.0, angRatesBody[YAW] + dAngBodyRates1[2] / 2.0, inData );
 
@@ -252,9 +244,9 @@ void eom::rungeKutta4thOrder( const EomTypes::InData& inData )
     dYdot3  = dt * vdot( velBody[X] + dXdot2 / 2.0, velBody[Z] + dZdot2 / 2.0, angRatesBody[ROLL] + dAngBodyRates2[0] / 2.0, angRatesBody[YAW] + dAngBodyRates2[2] / 2.0, inData );
     dZdot3  = dt * wdot( velBody[X] + dXdot2 / 2.0, velBody[Y] + dYdot2 / 2.0, angRatesBody[ROLL] + dAngBodyRates2[0] / 2.0, angRatesBody[PITCH] + dAngBodyRates2[1] / 2.0, inData );
 
-    dX3     = dt * ( velBody[X] + dX2 / 2.0 );
-    dY3     = dt * ( velBody[Y] + dY2 / 2.0 );
-    dZ3     = dt * ( velBody[Z] + dZ2 / 2.0 );
+    dX3     = dt * ( velBody[X] + dXdot2 / 2.0 );
+    dY3     = dt * ( velBody[Y] + dYdot2 / 2.0 );
+    dZ3     = dt * ( velBody[Z] + dZdot2 / 2.0 );
 
     dAngBodyRates = angularRatesDerivative( angRatesBody[ROLL] + dAngBodyRates2[0] / 2.0, angRatesBody[PITCH] + dAngBodyRates2[1] / 2.0, angRatesBody[YAW] + dAngBodyRates2[2] / 2.0, inData );
 
@@ -269,9 +261,9 @@ void eom::rungeKutta4thOrder( const EomTypes::InData& inData )
     dYdot4  = dt * vdot( velBody[X] + dXdot3, velBody[Z] + dZdot3, angRatesBody[ROLL] + dAngBodyRates3[0], angRatesBody[YAW] + dAngBodyRates3[2], inData );
     dZdot4  = dt * wdot( velBody[X] + dXdot3, velBody[Y] + dYdot3, angRatesBody[ROLL] + dAngBodyRates3[0], angRatesBody[PITCH] + dAngBodyRates3[1], inData );
 
-    dX4     = dt * ( velBody[X] + dX3 );
-    dY4     = dt * ( velBody[Y] + dY3 );
-    dZ4     = dt * ( velBody[Z] + dZ3 );
+    dX4     = dt * ( velBody[X] + dXdot3 );
+    dY4     = dt * ( velBody[Y] + dYdot3 );
+    dZ4     = dt * ( velBody[Z] + dZdot3 );
 
     dAngBodyRates = angularRatesDerivative( angRatesBody[ROLL] + dAngBodyRates3[0], angRatesBody[PITCH] + dAngBodyRates3[1], angRatesBody[YAW] + dAngBodyRates3[2], inData );
 
