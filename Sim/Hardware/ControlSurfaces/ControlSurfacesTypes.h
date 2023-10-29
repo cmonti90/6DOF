@@ -3,6 +3,7 @@
 
 #include "MessageContainer.h"
 #include "Payload.h"
+#include "Decorators.h"
 
 #include "AutopilotMsg.h"
 #include "CtrlSurfMsg.h"
@@ -10,12 +11,12 @@
 namespace CtrlSurfTypes
 {
     struct InData : Intf::MessageContainer<
-        InputPayload<AutopilotMsg>
+        InputPayload< AutopilotMsg, Persistent >
     >
     {};
 
     struct OutData : Intf::MessageContainer<
-        OutputPayload<CtrlSurfMsg>
+        OutputPayload< CtrlSurfMsg >
     >
     {};
 }

@@ -21,15 +21,15 @@ class GuidanceAlgorithm;
 
 class GuidanceComponent : public PubSub::Component
 {
-public:
-    GuidanceComponent(std::shared_ptr<PubSub::QueueMngr>& queueMngr, std::shared_ptr<TimePt::RtcClock>& sysClock, const PubSub::Component_Label name = "GuidanceComponent");
+  public:
+    GuidanceComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr, const std::shared_ptr<TimePt::RtcClock>& sysClock, const PubSub::Component_Label name = "GuidanceComponent" );
     virtual ~GuidanceComponent();
 
-    void initialize(void) override;
-    void update(void) override;
-    void finalize(void) override;
+    void initialize( void ) override;
+    void update( void ) override;
+    void finalize( void ) override;
 
-private:
+  private:
     std::unique_ptr<GuidanceAlgorithm> pAlg;
 
     std::unique_ptr<GuidanceTypes::InData> inData_;

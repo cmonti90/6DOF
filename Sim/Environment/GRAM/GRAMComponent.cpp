@@ -9,7 +9,9 @@
 
 #include <iomanip>
 
-GRAMComponent::GRAMComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr, std::shared_ptr<TimePt::RtcClock>& sysClock, const PubSub::Component_Label name )
+GRAMComponent::GRAMComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr,
+                              const std::shared_ptr<TimePt::RtcClock>& sysClock,
+                              const PubSub::Component_Label name )
     : PubSub::SimComponent  ( queueMngr, 1000, name )
     , inData_               ( new GRAMTypes::InData() )
     , outData_              ( new GRAMTypes::OutData() )
@@ -47,7 +49,7 @@ GRAMComponent::GRAMComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr, std
 
     // Update the atmosphere data
     earthAtmosphere_->update();
-    
+
 }
 
 GRAMComponent::~GRAMComponent()
@@ -109,7 +111,7 @@ void GRAMComponent::updateGRAM()
     // position->height = inData_->altGeodetic / 1000.0; // km
     // position_->latitude = inData_->lat * myMath::Constants::RAD_TO_DEG; // deg
     // position_->longitude = inData_->lon * myMath::Constants::RAD_TO_DEG; // deg
-    position_->elapsedTime += 1.0/1000.0; // sec
+    position_->elapsedTime += 1.0 / 1000.0; // sec
     earthAtmosphere_->setPosition( *position_ );
 
     // Update the atmosphere data

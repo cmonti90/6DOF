@@ -1,13 +1,13 @@
 #include "ControlSurfaces.h"
 
-#include "Actuation.h"
+#include "Actuator.h"
 #include "Units.h"
 
 CtrlSurfs::CtrlSurfs()
-    : aileronL( new Actuation( 0.0, 0.050, 5.0 ) )
-    , aileronR( new Actuation( 0.0, 0.050, 5.0 ) )
-    , elevator( new Actuation( 0.0, 0.050, 5.0 ) )
-    , rudder  ( new Actuation( 0.0, 0.050, 5.0 ) )
+    : aileronL( new Actuator( 0.0, 0.050, 5.0 ) )
+    , aileronR( new Actuator( 0.0, 0.050, 5.0 ) )
+    , elevator( new Actuator( 0.0, 0.050, 5.0 ) )
+    , rudder  ( new Actuator( 0.0, 0.050, 5.0 ) )
 {
     aileronL->setPID( 7469.1259, 75079.5091, 52.6578, 1735.6444 );
     aileronR->setPID( 7469.1259, 75079.5091, 52.6578, 1735.6444 );

@@ -16,16 +16,16 @@
 
 namespace AeroTypes
 {
-    struct InData : Intf::MessageContainer<
-        InputPayload<EomMsg, Deserialize>,
-        InputPayload<CtrlSurfMsg, Persistent>,
-        InputPayload<GRAMMsg, Deserialize>
-    >
+    struct InData : Intf::MessageContainer <
+        InputPayload< EomMsg,      Deserialize             >,
+        InputPayload< CtrlSurfMsg,              Persistent >,
+        InputPayload< GRAMMsg,     Deserialize             >
+        >
     {};
 
-    struct OutData : Intf::MessageContainer<
-        OutputPayload<AeroMsg, Serialize>
-    >
+    struct OutData : Intf::MessageContainer <
+        OutputPayload< AeroMsg, Serialize >
+        >
     {};
 }
 

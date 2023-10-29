@@ -1,10 +1,10 @@
-set(target CntrlSurfAlgorithm)
+set(target CtrlSurfAlgorithm)
 
 set(SOURCES ControlSurfaces.cpp
-            Actuation.cpp)
+            Actuator.cpp)
 
 set(HEADERS ControlSurfaces.h
-            Actuation.h)
+            Actuator.h)
 
 add_library(${target} ${SOURCES})
 

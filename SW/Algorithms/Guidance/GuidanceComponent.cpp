@@ -7,12 +7,14 @@
 
 #include <iostream>
 
-GuidanceComponent::GuidanceComponent(std::shared_ptr<PubSub::QueueMngr>& queueMngr, std::shared_ptr<TimePt::RtcClock>& sysClock, const PubSub::Component_Label name)
-    : PubSub::Component(queueMngr, name),
-      pAlg(new GuidanceAlgorithm()),
-      inData_(new GuidanceTypes::InData()),
-      outData_(new GuidanceTypes::OutData())
-    , sysClock_( sysClock )
+GuidanceComponent::GuidanceComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr,
+                                      const std::shared_ptr<TimePt::RtcClock>& sysClock,
+                                      const PubSub::Component_Label name )
+    : PubSub::Component ( queueMngr, name )
+    , pAlg              ( new GuidanceAlgorithm() )
+    , inData_           ( new GuidanceTypes::InData() )
+    , outData_          ( new GuidanceTypes::OutData() )
+    , sysClock_         ( sysClock )
 {
 }
 
@@ -20,46 +22,48 @@ GuidanceComponent::~GuidanceComponent()
 {
 }
 
-void GuidanceComponent::initialize(void)
+void GuidanceComponent::initialize( void )
 {
-    inData_->initialize();
+    inData_ ->initialize();
     outData_->initialize();
 
-    subscribe<NavMsg>(*inData_, PubSub::Message_Type::ACTIVE);
+    subscribe< NavMsg >( *inData_, PubSub::Message_Type::ACTIVE );
 
     pAlg->initialize();
 }
 
-void GuidanceComponent::update(void)
+void GuidanceComponent::update( void )
 {
     BEGIN_CHECKED_EXCEPTION()
     {
         inData_->reset();
-        
+
         PubSub::Message_Label label;
-        PubSub::MessageStatus status = peek(label);
+        PubSub::MessageStatus status = peek( label );
 
-        while (status == PubSub::MessageStatus::MESSAGE_AVAILABLE)
+        while ( status == PubSub::MessageStatus::MESSAGE_AVAILABLE )
         {
-            switch (label)
+            switch ( label )
             {
-            case NavMsg::MESSAGE_LABEL:
-                receive<NavMsg>(*inData_);
+                case NavMsg::MESSAGE_LABEL:
 
-                break;
+                    receive< NavMsg >( *inData_ );
 
-            default:
-                removeTopMessage();
-                break;
+                    break;
+
+                default:
+                
+                    removeTopMessage();
+                    break;
             }
 
-            status = peek(label);
+            status = peek( label );
         }
     }
     END_CHECKED_EXCEPTION()
 }
 
-void GuidanceComponent::finalize(void)
+void GuidanceComponent::finalize( void )
 {
     pAlg->finalize();
 }

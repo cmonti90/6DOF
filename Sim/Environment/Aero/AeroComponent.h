@@ -21,7 +21,7 @@ class Aero;
 class AeroComponent : public PubSub::SimComponent
 {
 public:
-    AeroComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr, std::shared_ptr<TimePt::RtcClock>& sysClock, const PubSub::Component_Label name = "AeroComponent" );
+    AeroComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr, const std::shared_ptr<TimePt::RtcClock>& sysClock, const PubSub::Component_Label name = "AeroComponent" );
     virtual ~AeroComponent();
 
     void initialize( void ) override;

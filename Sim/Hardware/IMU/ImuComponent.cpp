@@ -4,7 +4,8 @@
 
 #include "Imu.h"
 
-ImuComponent::ImuComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr, std::shared_ptr<TimePt::RtcClock>& sysClock, const PubSub::Component_Label name )
+ImuComponent::ImuComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr, const std::shared_ptr<TimePt::RtcClock>& sysClock,
+                            const PubSub::Component_Label name )
     : PubSub::SimComponent( queueMngr, 1000, name )
     , pAlg     ( new Imu() )
     , inData_  ( new ImuTypes::InData() )
@@ -23,7 +24,7 @@ void ImuComponent::initialize( void )
     inData_->initialize();
     outData_->initialize();
 
-    subscribe<EomMsg>( *inData_ );
+    subscribe< EomMsg >( *inData_ );
 
     pAlg->initialize();
     counter_ = 0u;
@@ -40,11 +41,15 @@ void ImuComponent::update( void )
         switch ( label )
         {
             case EomMsg::MESSAGE_LABEL:
-                receive<EomMsg>( *inData_ );
+
+                receive< EomMsg >( *inData_ );
+                
                 break;
 
             default:
+
                 removeTopMessage();
+
                 break;
         }
 
@@ -53,7 +58,7 @@ void ImuComponent::update( void )
 
     pAlg->exec( *inData_, *outData_ );
 
-    send<ImuMsg>( *outData_ );
+    send< ImuMsg >( *outData_ );
 
     counter_++;
 }

@@ -14,12 +14,12 @@ struct PID
     ~PID() = default;
 };
 
-class Actuation
+class Actuator
 {
   public:
-    Actuation();
-    Actuation( const myMath::Vector3d& initAngDeflStates, const double inert = 0.0, const double damping = 0.0 );
-    virtual ~Actuation();
+    Actuator();
+    Actuator( const myMath::Vector3d& initAngDeflStates, const double inert = 0.0, const double damping = 0.0 );
+    virtual ~Actuator();
 
     void initialize();
     void update( const double cmd );
@@ -53,8 +53,8 @@ class Actuation
     double PIDcmd_prev2;
 
   private:
-    Actuation( const Actuation& )             = delete;
-    Actuation& operator=( const Actuation& )  = delete;
+    Actuator( const Actuator& )             = delete;
+    Actuator& operator=( const Actuator& )  = delete;
 };
 
 #endif /* AED62BC2_E07D_42C8_A7C5_EFB39DB3F087 */

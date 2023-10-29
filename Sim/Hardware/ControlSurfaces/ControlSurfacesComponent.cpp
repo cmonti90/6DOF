@@ -4,7 +4,7 @@
 
 #include "ControlSurfaces.h"
 
-ControlSurfacesComponent::ControlSurfacesComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr, std::shared_ptr<TimePt::RtcClock>& sysClock, const PubSub::Component_Label name )
+ControlSurfacesComponent::ControlSurfacesComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr, const std::shared_ptr<TimePt::RtcClock>& sysClock, const PubSub::Component_Label name )
     : PubSub::SimComponent( queueMngr, 1000, name )
     , pAlg     ( new CtrlSurfs() )
     , inData_  ( new CtrlSurfTypes::InData() )

@@ -6,24 +6,24 @@
 
 class Gravity
 {
-protected:
+  protected:
 
-public:
+  public:
     Gravity();
     ~Gravity();
 
-    void initialize(void);
-    void exec(const GravityTypes::InData& inData, GravityTypes::OutData& outData);
-    void finalize(void);
+    void initialize( void );
+    void exec( const GravityTypes::InData& inData, GravityTypes::OutData& outData );
+    void finalize( void );
 
-protected:
+  protected:
     myMath::Vector3d gravForceNed;
 
-    void BuildOutput(const GravityTypes::InData& inData, GravityTypes::OutData& outData);
+    void BuildOutput( const GravityTypes::InData& inData, GravityTypes::OutData& outData );
 
-private:
-    Gravity& operator=(const Gravity& orig) = delete;
-    Gravity(const Gravity& orig) = delete;
+  private:
+    Gravity& operator=( const Gravity& orig ) = delete;
+    Gravity( const Gravity& orig ) = delete;
 };
 
 #endif /* GRAVITY_H */

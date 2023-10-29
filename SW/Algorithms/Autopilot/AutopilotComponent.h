@@ -22,7 +22,7 @@ class AutopilotAlgorithm;
 class AutopilotComponent : public PubSub::Component
 {
   public:
-    AutopilotComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr, std::shared_ptr<TimePt::RtcClock>& sysClock, const PubSub::Component_Label name = "AutopilotComponent" );
+    AutopilotComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr, const std::shared_ptr<TimePt::RtcClock>& sysClock, const PubSub::Component_Label name = "AutopilotComponent" );
     virtual ~AutopilotComponent();
 
     void initialize( void ) override;

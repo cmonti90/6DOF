@@ -27,7 +27,7 @@ namespace GRAMTypes
 class GRAMComponent : public PubSub::SimComponent
 {
   public:
-    GRAMComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr, std::shared_ptr<TimePt::RtcClock>& sysClock, const PubSub::Component_Label name = "GRAMComponent" );
+    GRAMComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr, const std::shared_ptr<TimePt::RtcClock>& sysClock, const PubSub::Component_Label name = "GRAMComponent" );
     virtual ~GRAMComponent();
 
     void initialize( void ) override;

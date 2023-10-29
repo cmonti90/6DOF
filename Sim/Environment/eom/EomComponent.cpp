@@ -5,12 +5,14 @@
 #include "eom.h"
 #include "RtcClock.h"
 
-EomComponent::EomComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr, std::shared_ptr<TimePt::RtcClock>& sysClock, const PubSub::Component_Label name )
+EomComponent::EomComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr,
+                            const std::shared_ptr<TimePt::RtcClock>& sysClock,
+                            const PubSub::Component_Label name )
     : PubSub::SimComponent( queueMngr, 1000, name )
     , pAlg      ( new eom() )
     , inData_   ( new EomTypes::InData() )
     , outData_  ( new EomTypes::OutData() )
-    , sysClock_ ( sysClock ) 
+    , sysClock_ ( sysClock )
     , counter_  ( 0u )
 {
 }
@@ -45,30 +47,30 @@ void EomComponent::update( void )
         {
             case AeroMsg::MESSAGE_LABEL:
 
-                receive<AeroMsg>( *inData_ );
+                receive< AeroMsg >( *inData_ );
 
-                pAlg->addForces( inData_->PayloadDeserializer<AeroData>::forceBody );
-                pAlg->addMoments( inData_->PayloadDeserializer<AeroData>::momentBody );
+                pAlg->addForces ( inData_->PayloadDeserializer< AeroData >::forceBody  );
+                pAlg->addMoments( inData_->PayloadDeserializer< AeroData >::momentBody );
 
                 break;
 
             case EngineMsg::MESSAGE_LABEL:
-                receive<EngineMsg>( *inData_ );
+                receive< EngineMsg >( *inData_ );
 
-                pAlg->addForces( inData_->PayloadDeserializer<EngineData>::forceBody );
-                pAlg->addMoments( inData_->PayloadDeserializer<EngineData>::momentBody );
+                pAlg->addForces ( inData_->PayloadDeserializer< EngineData >::forceBody  );
+                pAlg->addMoments( inData_->PayloadDeserializer< EngineData >::momentBody );
 
                 break;
 
             case GRAMMsg::MESSAGE_LABEL:
-                receive<GRAMMsg>( *inData_ );
+                receive< GRAMMsg >( *inData_ );
 
                 break;
 
             case GravityMsg::MESSAGE_LABEL:
-                receive<GravityMsg>( *inData_ );
+                receive< GravityMsg >( *inData_ );
 
-                pAlg->addForces( inData_->PayloadDeserializer<GravityData>::forceBody );
+                pAlg->addForces( inData_->PayloadDeserializer< GravityData >::forceBody );
 
                 break;
 
@@ -90,7 +92,7 @@ void EomComponent::update( void )
 
     send<EomMsg>( *outData_ );
 
-    inData_->reset();
+    inData_ ->reset();
     outData_->reset();
     counter_++;
 }

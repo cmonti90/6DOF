@@ -1,7 +1,7 @@
 
-#include "Actuation.h"
+#include "Actuator.h"
 
-Actuation::Actuation()
+Actuator::Actuator()
     : Iaxis             ( 0.0 )
     , dampingCoeff      ( 0.0 )
     , angDeflStates     ( 0.0 )
@@ -16,7 +16,7 @@ Actuation::Actuation()
 {
 }
 
-Actuation::Actuation( const myMath::Vector3d& initAngDeflStates, const double inert, const double damping )
+Actuator::Actuator( const myMath::Vector3d& initAngDeflStates, const double inert, const double damping )
     : Iaxis             ( inert )
     , dampingCoeff      ( damping )
     , angDeflStates     ( initAngDeflStates )
@@ -31,15 +31,15 @@ Actuation::Actuation( const myMath::Vector3d& initAngDeflStates, const double in
 {
 }
 
-Actuation::~Actuation()
+Actuator::~Actuator()
 {
 }
 
-void Actuation::initialize()
+void Actuator::initialize()
 {
 }
 
-void Actuation::update( const double cmd )
+void Actuator::update( const double cmd )
 {
     stateErr_prev2 = stateErr_prev;
     stateErr_prev = stateErr;
@@ -52,11 +52,11 @@ void Actuation::update( const double cmd )
     RungeKutta4thOrder( PIDcmd );
 }
 
-void Actuation::finalize()
+void Actuator::finalize()
 {
 }
 
-void Actuation::setPID( const double p, const double i, const double d, double filterCoef )
+void Actuator::setPID( const double p, const double i, const double d, double filterCoef )
 {
     pid.p = p;
     pid.i = i;
@@ -64,27 +64,27 @@ void Actuation::setPID( const double p, const double i, const double d, double f
     pid.filterCoef = filterCoef;
 }
 
-void Actuation::setIaxis( const double inert )
+void Actuator::setIaxis( const double inert )
 {
     Iaxis = inert;
 }
 
-void Actuation::setDampingCoeff( const double damping )
+void Actuator::setDampingCoeff( const double damping )
 {
     dampingCoeff = damping;
 }
 
-double Actuation::getDeflection() const
+double Actuator::getDeflection() const
 {
     return angDeflStates[0];
 }
 
-double Actuation::getControllerCmd() const
+double Actuator::getControllerCmd() const
 {
     return PIDcmd;
 }
 
-void Actuation::Controller()
+void Actuator::Controller()
 {
     double newCmd = 0.0;
     const double dt = 0.001;
@@ -103,12 +103,12 @@ void Actuation::Controller()
 
 }
 
-double Actuation::stateDynamics( const double cmd, const double thetaDot )
+double Actuator::stateDynamics( const double cmd, const double thetaDot )
 {
     return (( cmd - dampingCoeff * thetaDot ) / Iaxis);
 }
 
-void Actuation::RungeKutta4thOrder( const double cmd )
+void Actuator::RungeKutta4thOrder( const double cmd )
 {
     const double dt = 0.001;
 

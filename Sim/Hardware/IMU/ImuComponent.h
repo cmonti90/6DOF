@@ -21,7 +21,7 @@ class Imu;
 class ImuComponent : public PubSub::SimComponent
 {
 public:
-    ImuComponent(std::shared_ptr<PubSub::QueueMngr>& queueMngr, std::shared_ptr<TimePt::RtcClock>& sysClock, const PubSub::Component_Label name = "ImuComponent");
+    ImuComponent(std::shared_ptr<PubSub::QueueMngr>& queueMngr, const std::shared_ptr<TimePt::RtcClock>& sysClock, const PubSub::Component_Label name = "ImuComponent");
     virtual ~ImuComponent();
 
     void initialize(void) override;

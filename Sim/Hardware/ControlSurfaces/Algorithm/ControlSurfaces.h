@@ -5,7 +5,7 @@
 
 #include <memory>
 
-class Actuation;
+class Actuator;
 
 class CtrlSurfs
 {
@@ -20,10 +20,10 @@ public:
 protected:
     void BuildOutput(CtrlSurfTypes::OutData& outData);
 
-    Actuation* aileronL;
-    Actuation* aileronR;
-    Actuation* elevator;
-    Actuation* rudder;
+    Actuator* aileronL;
+    Actuator* aileronR;
+    Actuator* elevator;
+    Actuator* rudder;
 
 };
 

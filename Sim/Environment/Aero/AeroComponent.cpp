@@ -5,12 +5,14 @@
 #include "Aero.h"
 #include "RtcClock.h"
 
-AeroComponent::AeroComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr, std::shared_ptr<TimePt::RtcClock>& sysClock, const PubSub::Component_Label name )
+AeroComponent::AeroComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr,
+                              const std::shared_ptr<TimePt::RtcClock>& sysClock,
+                              const PubSub::Component_Label name )
     : PubSub::SimComponent( queueMngr, 1000, name )
     , pAlg      ( new Aero() )
     , inData_   ( new AeroTypes::InData() )
     , outData_  ( new AeroTypes::OutData() )
-    , sysClock_( sysClock )
+    , sysClock_ ( sysClock )
     , counter_  ( 0u )
 {
 }
@@ -32,11 +34,8 @@ void AeroComponent::initialize( void )
     counter_ = 0u;
 }
 
-#include <iostream>
-
 void AeroComponent::update()
 {
-
     PubSub::Message_Label label;
     PubSub::MessageStatus status = peek( label );
 
@@ -45,16 +44,21 @@ void AeroComponent::update()
         switch ( label )
         {
             case EomMsg::MESSAGE_LABEL:
-                receive<EomMsg>( *inData_ );
+                
+                receive< EomMsg >( *inData_ );
 
                 break;
 
             case CtrlSurfMsg::MESSAGE_LABEL:
-                receive<CtrlSurfMsg>( *inData_ );
+                
+                receive< CtrlSurfMsg >( *inData_ );
+                
                 break;
 
             default:
+                
                 removeTopMessage();
+                
                 break;
         }
 
