@@ -16,7 +16,9 @@ void Gravity::initialize()
 
 void Gravity::exec( const GravityTypes::InData& inData, GravityTypes::OutData& outData )
 {
-    gravForceNed = inData.mass * myMath::Constants::GRAVITY_ACCEL;
+    gravForceNed[0] = 0.0;
+    gravForceNed[1] = 0.0;
+    gravForceNed[2] = inData.mass * myMath::Constants::GRAVITY_ACCEL;
 
     BuildOutput( inData, outData );
 }

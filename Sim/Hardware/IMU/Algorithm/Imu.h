@@ -16,9 +16,9 @@ public:
     void finalize(void);
 
 protected:
-    myMath::Vector3d accelImu;
-    myMath::Vector3d gyroImu;
-    myMath::Vector3d magImu;
+    myMath::Vector3d deltaVel;
+    myMath::Vector3d gyro;
+    myMath::Vector3d mag;
 
 
     void BuildOutput(ImuTypes::OutData& outData);

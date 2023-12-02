@@ -15,13 +15,13 @@
 namespace GravityTypes
 {
     struct InData : Intf::MessageContainer <
-        InputPayload<EomMsg, Deserialize>,
-        InputPayload<MassPropMsg, Deserialize>
+        InputPayload< EomMsg     , Deserialize >,
+        InputPayload< MassPropMsg, Deserialize >
         >
     {};
 
     struct OutData : Intf::MessageContainer <
-        OutputPayload<GravityMsg, Serialize>
+        OutputPayload< GravityMsg, Serialize >
         >
     {};
 }

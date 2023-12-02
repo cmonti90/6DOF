@@ -24,11 +24,11 @@ GRAMComponent::GRAMComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr,
 {
     GRAM::EarthInputParameters inputParameters;
 
-    inputParameters.spicePath = "/home/cmonti/Documents/NASA_SW_Downloads/GRAM/GRAM_Suite_1.5.1/SPICE";
-    inputParameters.spiceLsk = "/lsk/naif0012.tls";
-    inputParameters.spicePck = "/pck/pck00011.tpc";
+    inputParameters.spicePath  = "/home/cmonti/Documents/NASA_SW_Downloads/GRAM/GRAM_Suite_1.5.1/SPICE";
+    inputParameters.spiceLsk   = "/lsk/naif0012.tls";
+    inputParameters.spicePck   = "/pck/pck00011.tpc";
     inputParameters.spiceEarth = "/spk/planets/de440_GRAM.bsp";
-    inputParameters.dataPath = "/home/cmonti/Documents/NASA_SW_Downloads/GRAM/GRAM_Suite_1.5.1/Earth/data";
+    inputParameters.dataPath   = "/home/cmonti/Documents/NASA_SW_Downloads/GRAM/GRAM_Suite_1.5.1/Earth/data";
 
     earthAtmosphere_->setInputParameters( inputParameters );
 

@@ -9,8 +9,6 @@ if __name__ == '__main__':
 
     baseOutputdir = fileDir + "/../run/output"
 
-    buildMode = "Release"
-
     parser = argparse.ArgumentParser(description='Run the simulation')
     parser.add_argument('-o', '--output', dest='outputDir', action='store', help='Output directory', default="0")
     parser.add_argument('-d', '--debug', dest='debug', action='store_true', help='Run with gdb', default=False)
