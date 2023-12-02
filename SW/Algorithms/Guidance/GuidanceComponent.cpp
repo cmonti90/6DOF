@@ -7,6 +7,15 @@
 
 #include <iostream>
 
+
+//////////////////////////////////////////////////////
+/// @note   Name: Constructor
+/// @brief  Constructor
+/// @param  Queue manager
+/// @param  System clock
+/// @param  Component name
+/// @return None
+//////////////////////////////////////////////////////
 GuidanceComponent::GuidanceComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr,
                                       const std::shared_ptr<TimePt::RtcClock>& sysClock,
                                       const PubSub::Component_Label name )
@@ -18,20 +27,48 @@ GuidanceComponent::GuidanceComponent( std::shared_ptr<PubSub::QueueMngr>& queueM
 {
 }
 
+
+//////////////////////////////////////////////////////
+/// @note   Name: Destructor
+/// @brief  Destructor
+/// @param  None
+/// @return None
+//////////////////////////////////////////////////////
 GuidanceComponent::~GuidanceComponent()
 {
 }
 
+
+//////////////////////////////////////////////////////
+/// @note   Name: initialize
+/// @brief  initialize data structures, algorithms, and
+///         subscribe to messages
+/// @param  None
+/// @return None
+//////////////////////////////////////////////////////
 void GuidanceComponent::initialize( void )
 {
-    inData_ ->initialize();
-    outData_->initialize();
+    BEGIN_CHECKED_EXCEPTION()
+    {
+        inData_ ->initialize();
+        outData_->initialize();
 
-    subscribe< NavMsg >( *inData_, PubSub::Message_Type::ACTIVE );
+        subscribe< NavMsg >( *inData_, PubSub::Message_Type::ACTIVE );
 
-    pAlg->initialize();
+        pAlg->initialize();
+    }
+    END_CHECKED_EXCEPTION()
 }
 
+
+//////////////////////////////////////////////////////
+/// @note   Name: update
+/// @brief  Receive messages, execute algorithms
+///         and send messages. Runs when component
+///         receives an active message
+/// @param  None
+/// @return None
+//////////////////////////////////////////////////////
 void GuidanceComponent::update( void )
 {
     BEGIN_CHECKED_EXCEPTION()
@@ -52,7 +89,7 @@ void GuidanceComponent::update( void )
                     break;
 
                 default:
-                
+
                     removeTopMessage();
                     break;
             }
@@ -63,7 +100,18 @@ void GuidanceComponent::update( void )
     END_CHECKED_EXCEPTION()
 }
 
+
+//////////////////////////////////////////////////////
+/// @note   Name: finalize
+/// @brief  Runs at simulation end
+/// @param  None
+/// @return None
+//////////////////////////////////////////////////////
 void GuidanceComponent::finalize( void )
 {
-    pAlg->finalize();
+    BEGIN_CHECKED_EXCEPTION()
+    {
+        pAlg->finalize();
+    }
+    END_CHECKED_EXCEPTION()
 }
