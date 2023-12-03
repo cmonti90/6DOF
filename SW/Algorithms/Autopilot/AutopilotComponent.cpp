@@ -8,11 +8,12 @@
 AutopilotComponent::AutopilotComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr,
                                         const std::shared_ptr<TimePt::RtcClock>& sysClock,
                                         const PubSub::Component_Label name )
-    : PubSub::Component( queueMngr, name )
-    , pAlg( new AutopilotAlgorithm() )
-    , inData_( new AutopilotTypes::InData() )
-    , outData_( new AutopilotTypes::OutData() )
-    , sysClock_( sysClock )
+    : PubSub::Component ( queueMngr, name )
+    , endpoint_         ( queueMngr )
+    , pAlg              ( new AutopilotAlgorithm() )
+    , inData_           ( new AutopilotTypes::InData() )
+    , outData_          ( new AutopilotTypes::OutData() )
+    , sysClock_         ( sysClock )
 {
 }
 
@@ -20,14 +21,25 @@ AutopilotComponent::~AutopilotComponent()
 {
 }
 
+//////////////////////////////////////////////////////
+/// @note   Name: associateEvent
+/// @brief  Associate event to active component
+/// @param  None
+/// @return None
+//////////////////////////////////////////////////////
+bool AutopilotComponent::associateEvent() const
+{
+    return endpoint_.hasActiveMessage();
+}
+
 void AutopilotComponent::initialize( void )
 {
     inData_ ->initialize();
     outData_->initialize();
 
-    subscribe< GuidanceMsg >( *inData_, PubSub::Message_Type::ACTIVE );
+    endpoint_.subscribe< GuidanceMsg >( *inData_, PubSub::Message_Type::ACTIVE );
 
-    subscribe< NavMsg      >( *inData_, PubSub::Message_Type::PASSIVE );
+    endpoint_.subscribe< NavMsg      >( *inData_, PubSub::Message_Type::PASSIVE );
 
     pAlg->initialize();
 }
@@ -37,7 +49,7 @@ void AutopilotComponent::update( void )
     BEGIN_CHECKED_EXCEPTION()
     {
         PubSub::Message_Label label;
-        PubSub::MessageStatus status = peek( label );
+        PubSub::MessageStatus status = endpoint_.peek( label );
 
         while ( status == PubSub::MessageStatus::MESSAGE_AVAILABLE )
         {
@@ -45,24 +57,24 @@ void AutopilotComponent::update( void )
             {
                 case GuidanceMsg::MESSAGE_LABEL:
 
-                    receive< GuidanceMsg >( *inData_ );
+                    endpoint_.receive< GuidanceMsg >( *inData_ );
 
                     break;
 
                 case NavMsg::MESSAGE_LABEL:
 
-                    receive< NavMsg >( *inData_ );
+                    endpoint_.receive< NavMsg >( *inData_ );
 
                     break;
 
                 default:
 
-                    removeTopMessage();
+                    endpoint_.removeTopMessage();
 
                     break;
             }
 
-            status = peek( label );
+            status = endpoint_.peek( label );
         }
     }
     END_CHECKED_EXCEPTION()

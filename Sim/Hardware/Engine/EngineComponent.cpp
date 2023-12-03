@@ -6,6 +6,7 @@
 
 EngineComponent::EngineComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr, const PubSub::Component_Label name )
     : PubSub::SimComponent( queueMngr, 1000, name )
+    , endpoint_ ( queueMngr )
     , pAlg      ( new engine() )
     , inData_   ( new EngineTypes::InData() )
     , outData_  ( new EngineTypes::OutData() )
@@ -22,7 +23,7 @@ void EngineComponent::initialize( void )
     inData_ ->initialize();
     outData_->initialize();
 
-    subscribe< AutopilotMsg >( *inData_ );
+    endpoint_.subscribe< AutopilotMsg >( *inData_ );
 
     pAlg->initialize();
     counter_ = 0u;
@@ -32,7 +33,7 @@ void EngineComponent::update( void )
 {
 
     PubSub::Message_Label label;
-    PubSub::MessageStatus status = peek( label );
+    PubSub::MessageStatus status = endpoint_.peek( label );
 
     while ( status == PubSub::MessageStatus::MESSAGE_AVAILABLE )
     {
@@ -40,23 +41,23 @@ void EngineComponent::update( void )
         {
             case AutopilotMsg::MESSAGE_LABEL:
 
-                receive< AutopilotMsg >( *inData_ );
+                endpoint_.receive< AutopilotMsg >( *inData_ );
 
                 break;
 
             default:
 
-                removeTopMessage();
+                endpoint_.removeTopMessage();
 
                 break;
         }
 
-        status = peek( label );
+        status = endpoint_.peek( label );
     }
 
     pAlg->exec( *inData_, *outData_ );
 
-    send< EngineMsg >( *outData_ );
+    endpoint_.send< EngineMsg >( *outData_ );
 
     counter_++;
 }

@@ -3,6 +3,8 @@
 
 #include "SimComponent.h"
 
+#include "PayloadEndpoint.h"
+
 #include <memory>
 
 namespace GravityTypes
@@ -24,6 +26,8 @@ public:
     void finalize( void ) override;
 
 private:
+    PubSub::PayloadEndpoint endpoint_;
+    
     std::unique_ptr<Gravity> pAlg;
     unsigned int counter_;
 

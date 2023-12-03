@@ -20,6 +20,7 @@ GuidanceComponent::GuidanceComponent( std::shared_ptr<PubSub::QueueMngr>& queueM
                                       const std::shared_ptr<TimePt::RtcClock>& sysClock,
                                       const PubSub::Component_Label name )
     : PubSub::Component ( queueMngr, name )
+    , endpoint_         ( queueMngr )
     , pAlg              ( new GuidanceAlgorithm() )
     , inData_           ( new GuidanceTypes::InData() )
     , outData_          ( new GuidanceTypes::OutData() )
@@ -40,6 +41,18 @@ GuidanceComponent::~GuidanceComponent()
 
 
 //////////////////////////////////////////////////////
+/// @note   Name: associateEvent
+/// @brief  Associate event to active component
+/// @param  None
+/// @return None
+//////////////////////////////////////////////////////
+bool GuidanceComponent::associateEvent() const
+{
+    return endpoint_.hasActiveMessage();
+}
+
+
+//////////////////////////////////////////////////////
 /// @note   Name: initialize
 /// @brief  initialize data structures, algorithms, and
 ///         subscribe to messages
@@ -53,7 +66,7 @@ void GuidanceComponent::initialize( void )
         inData_ ->initialize();
         outData_->initialize();
 
-        subscribe< NavMsg >( *inData_, PubSub::Message_Type::ACTIVE );
+        endpoint_.subscribe< NavMsg >( *inData_, PubSub::Message_Type::ACTIVE );
 
         pAlg->initialize();
     }
@@ -76,7 +89,7 @@ void GuidanceComponent::update( void )
         inData_->reset();
 
         PubSub::Message_Label label;
-        PubSub::MessageStatus status = peek( label );
+        PubSub::MessageStatus status = endpoint_.peek( label );
 
         while ( status == PubSub::MessageStatus::MESSAGE_AVAILABLE )
         {
@@ -84,17 +97,18 @@ void GuidanceComponent::update( void )
             {
                 case NavMsg::MESSAGE_LABEL:
 
-                    receive< NavMsg >( *inData_ );
+                    endpoint_.receive< NavMsg >( *inData_ );
 
                     break;
 
                 default:
 
-                    removeTopMessage();
+                    endpoint_.removeTopMessage();
+                    
                     break;
             }
 
-            status = peek( label );
+            status = endpoint_.peek( label );
         }
     }
     END_CHECKED_EXCEPTION()

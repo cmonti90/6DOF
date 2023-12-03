@@ -3,6 +3,8 @@
 
 #include "SimComponent.h"
 
+#include "PayloadEndpoint.h"
+
 #include <memory>
 
 namespace MassPropTypes
@@ -24,6 +26,8 @@ public:
     void finalize(void) override;
 
 private:
+    PubSub::PayloadEndpoint endpoint_;
+    
     std::unique_ptr<MassProperties> pAlg;
 
     std::unique_ptr<MassPropTypes::InData> inData_;

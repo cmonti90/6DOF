@@ -4,6 +4,8 @@
 
 #include "Component.h"
 
+#include "PayloadEndpoint.h"
+
 #include <memory>
 
 namespace TimePt
@@ -29,7 +31,12 @@ class GuidanceComponent : public PubSub::Component
     void update( void ) override;
     void finalize( void ) override;
 
+  protected:
+    bool associateEvent() const override;
+
   private:
+    PubSub::PayloadEndpoint endpoint_;
+
     std::unique_ptr<GuidanceAlgorithm> pAlg;
 
     std::unique_ptr<GuidanceTypes::InData> inData_;

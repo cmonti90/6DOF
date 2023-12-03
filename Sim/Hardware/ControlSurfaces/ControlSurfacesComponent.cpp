@@ -4,13 +4,17 @@
 
 #include "ControlSurfaces.h"
 
-ControlSurfacesComponent::ControlSurfacesComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr, const std::shared_ptr<TimePt::RtcClock>& sysClock, const PubSub::Component_Label name )
-    : PubSub::SimComponent( queueMngr, 1000, name )
-    , pAlg     ( new CtrlSurfs() )
-    , inData_  ( new CtrlSurfTypes::InData() )
-    , outData_ ( new CtrlSurfTypes::OutData() )
-    , sysClock_( sysClock )
-    , counter_ ( 0u )
+ControlSurfacesComponent::ControlSurfacesComponent(
+    std::shared_ptr<PubSub::QueueMngr>& queueMngr,
+    const std::shared_ptr<TimePt::RtcClock>& sysClock,
+    const PubSub::Component_Label name )
+    : PubSub::SimComponent  ( queueMngr, 1000, name )
+    , endpoint_             ( queueMngr )
+    , pAlg                  ( new CtrlSurfs() )
+    , inData_               ( new CtrlSurfTypes::InData() )
+    , outData_              ( new CtrlSurfTypes::OutData() )
+    , sysClock_             ( sysClock )
+    , counter_              ( 0u )
 {
 }
 
@@ -23,7 +27,7 @@ void ControlSurfacesComponent::initialize( void )
     inData_->initialize();
     outData_->initialize();
 
-    subscribe<AutopilotMsg>( *inData_ );
+    endpoint_.subscribe< AutopilotMsg >( *inData_ );
 
     pAlg->initialize();
     counter_ = 0u;
@@ -33,27 +37,31 @@ void ControlSurfacesComponent::update( void )
 {
 
     PubSub::Message_Label label;
-    PubSub::MessageStatus status = peek( label );
+    PubSub::MessageStatus status = endpoint_.peek( label );
 
     while ( status == PubSub::MessageStatus::MESSAGE_AVAILABLE )
     {
         switch ( label )
         {
             case AutopilotMsg::MESSAGE_LABEL:
-                receive<AutopilotMsg>( *inData_ );
+
+                endpoint_.receive< AutopilotMsg >( *inData_ );
+
                 break;
 
             default:
-                removeTopMessage();
+
+                endpoint_.removeTopMessage();
+
                 break;
         }
 
-        status = peek( label );
+        status = endpoint_.peek( label );
     }
 
     pAlg->exec( *inData_, *outData_ );
 
-    send<CtrlSurfMsg>( *outData_ );
+    endpoint_.send< CtrlSurfMsg >( *outData_ );
 
     counter_++;
 }

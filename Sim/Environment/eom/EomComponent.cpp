@@ -9,6 +9,7 @@ EomComponent::EomComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr,
                             const std::shared_ptr<TimePt::RtcClock>& sysClock,
                             const PubSub::Component_Label name )
     : PubSub::SimComponent( queueMngr, 1000, name )
+    , endpoint_ ( queueMngr )
     , pAlg      ( new eom() )
     , inData_   ( new EomTypes::InData() )
     , outData_  ( new EomTypes::OutData() )
@@ -26,11 +27,11 @@ void EomComponent::initialize( void )
     inData_ ->initialize();
     outData_->initialize();
 
-    subscribe< AeroMsg     >( *inData_ );
-    subscribe< EngineMsg   >( *inData_ );
-    subscribe< GRAMMsg     >( *inData_ );
-    subscribe< GravityMsg  >( *inData_ );
-    subscribe< MassPropMsg >( *inData_ );
+    endpoint_.subscribe< AeroMsg     >( *inData_ );
+    endpoint_.subscribe< EngineMsg   >( *inData_ );
+    endpoint_.subscribe< GRAMMsg     >( *inData_ );
+    endpoint_.subscribe< GravityMsg  >( *inData_ );
+    endpoint_.subscribe< MassPropMsg >( *inData_ );
 
     pAlg->initialize();
     counter_ = 0u;
@@ -39,7 +40,7 @@ void EomComponent::initialize( void )
 void EomComponent::update( void )
 {
     PubSub::Message_Label label;
-    PubSub::MessageStatus status = peek( label );
+    PubSub::MessageStatus status = endpoint_.peek( label );
 
     while ( status == PubSub::MessageStatus::MESSAGE_AVAILABLE )
     {
@@ -47,7 +48,7 @@ void EomComponent::update( void )
         {
             case AeroMsg::MESSAGE_LABEL:
 
-                receive< AeroMsg >( *inData_ );
+                endpoint_.receive< AeroMsg >( *inData_ );
 
                 pAlg->addForces ( inData_->PayloadDeserializer< AeroData >::forceBody  );
                 pAlg->addMoments( inData_->PayloadDeserializer< AeroData >::momentBody );
@@ -55,7 +56,7 @@ void EomComponent::update( void )
                 break;
 
             case EngineMsg::MESSAGE_LABEL:
-                receive< EngineMsg >( *inData_ );
+                endpoint_.receive< EngineMsg >( *inData_ );
 
                 pAlg->addForces ( inData_->PayloadDeserializer< EngineData >::forceBody  );
                 pAlg->addMoments( inData_->PayloadDeserializer< EngineData >::momentBody );
@@ -63,34 +64,34 @@ void EomComponent::update( void )
                 break;
 
             case GRAMMsg::MESSAGE_LABEL:
-                receive< GRAMMsg >( *inData_ );
+                endpoint_.receive< GRAMMsg >( *inData_ );
 
                 break;
 
             case GravityMsg::MESSAGE_LABEL:
-                receive< GravityMsg >( *inData_ );
+                endpoint_.receive< GravityMsg >( *inData_ );
 
                 pAlg->addForces( inData_->PayloadDeserializer< GravityData >::forceBody );
 
                 break;
 
             case MassPropMsg::MESSAGE_LABEL:
-                receive<MassPropMsg>( *inData_ );
+                endpoint_.receive<MassPropMsg>( *inData_ );
 
                 break;
 
             default:
-                removeTopMessage();
+                endpoint_.removeTopMessage();
                 break;
         }
 
-        status = peek( label );
+        status = endpoint_.peek( label );
     }
 
     pAlg->exec( *inData_, *outData_ );
 
 
-    send<EomMsg>( *outData_ );
+    endpoint_.send<EomMsg>( *outData_ );
 
     inData_ ->reset();
     outData_->reset();

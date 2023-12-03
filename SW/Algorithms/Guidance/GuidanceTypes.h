@@ -8,15 +8,17 @@
 #include "NavMsg.h"
 #include "GuidanceMsg.h"
 
+#include "NavDataSerialization.h"
+
 namespace GuidanceTypes
 {
     struct InData : Intf::MessageContainer<
-        InputPayload<NavMsg>
+        InputPayload< NavMsg, Deserialize >
     >
     {};
 
     struct OutData : Intf::MessageContainer<
-        OutputPayload<GuidanceMsg>
+        OutputPayload< GuidanceMsg >
     >
     {};
 }

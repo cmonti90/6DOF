@@ -13,6 +13,7 @@ GRAMComponent::GRAMComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr,
                               const std::shared_ptr<TimePt::RtcClock>& sysClock,
                               const PubSub::Component_Label name )
     : PubSub::SimComponent  ( queueMngr, 1000, name )
+    , endpoint_             ( queueMngr )
     , inData_               ( new GRAMTypes::InData() )
     , outData_              ( new GRAMTypes::OutData() )
     , sysClock_             ( sysClock )
@@ -61,7 +62,7 @@ void GRAMComponent::initialize ( void )
     inData_->initialize();
     outData_->initialize();
 
-    subscribe<EomMsg>( *inData_ );
+    endpoint_.subscribe< EomMsg >( *inData_ );
 
     counter_ = 0u;
 }
@@ -69,29 +70,29 @@ void GRAMComponent::initialize ( void )
 void GRAMComponent::update ( void )
 {
     PubSub::Message_Label label;
-    PubSub::MessageStatus status = peek ( label );
+    PubSub::MessageStatus status = endpoint_.peek ( label );
 
     while ( status == PubSub::MessageStatus::MESSAGE_AVAILABLE )
     {
         switch ( label )
         {
             case EomMsg::MESSAGE_LABEL:
-                receive<EomMsg>( *inData_ );
+                endpoint_.receive< EomMsg >( *inData_ );
 
                 break;
 
             default:
-                removeTopMessage();
+                endpoint_.removeTopMessage();
                 break;
         }
 
-        status = peek( label );
+        status = endpoint_.peek( label );
     }
 
     updateGRAM();
     BuildOutput();
 
-    send<GRAMMsg>( *outData_ );
+    endpoint_.send< GRAMMsg >( *outData_ );
 
     inData_->reset();
     outData_->reset();

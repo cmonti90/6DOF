@@ -4,6 +4,8 @@
 
 #include "Component.h"
 
+#include "PayloadEndpoint.h"
+
 #include <memory>
 
 namespace TimePt
@@ -22,14 +24,21 @@ class AutopilotAlgorithm;
 class AutopilotComponent : public PubSub::Component
 {
   public:
-    AutopilotComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr, const std::shared_ptr<TimePt::RtcClock>& sysClock, const PubSub::Component_Label name = "AutopilotComponent" );
+    AutopilotComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr,
+                        const std::shared_ptr<TimePt::RtcClock>& sysClock,
+                        const PubSub::Component_Label name = "AutopilotComponent" );
     virtual ~AutopilotComponent();
 
     void initialize( void ) override;
     void update( void ) override;
     void finalize( void ) override;
 
+  protected:
+    bool associateEvent() const override;
+
   private:
+    PubSub::PayloadEndpoint endpoint_;
+
     std::unique_ptr<AutopilotAlgorithm> pAlg;
 
     std::unique_ptr<AutopilotTypes::InData> inData_;

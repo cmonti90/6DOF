@@ -3,6 +3,8 @@
 
 #include "SimComponent.h"
 
+#include "PayloadEndpoint.h"
+
 #include <memory>
 
 namespace TimePt
@@ -29,6 +31,8 @@ public:
     void finalize(void) override;
 
 private:
+    PubSub::PayloadEndpoint endpoint_;
+    
     std::unique_ptr<Imu> pAlg;
 
     std::unique_ptr<ImuTypes::InData> inData_;

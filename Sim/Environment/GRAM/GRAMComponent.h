@@ -3,6 +3,8 @@
 
 #include "SimComponent.h"
 
+#include "PayloadEndpoint.h"
+
 #include <memory>
 
 namespace TimePt
@@ -35,6 +37,7 @@ class GRAMComponent : public PubSub::SimComponent
     void finalize( void ) override;
 
   protected:
+    PubSub::PayloadEndpoint endpoint_;
 
     std::unique_ptr<GRAMTypes::InData> inData_;
     std::unique_ptr<GRAMTypes::OutData> outData_;

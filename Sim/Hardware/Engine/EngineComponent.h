@@ -3,6 +3,8 @@
 
 #include "SimComponent.h"
 
+#include "PayloadEndpoint.h"
+
 #include <memory>
 
 namespace EngineTypes
@@ -24,6 +26,8 @@ public:
     void finalize(void) override;
 
 private:
+    PubSub::PayloadEndpoint endpoint_;
+    
     std::unique_ptr<engine> pAlg;
 
     std::unique_ptr<EngineTypes::InData> inData_;

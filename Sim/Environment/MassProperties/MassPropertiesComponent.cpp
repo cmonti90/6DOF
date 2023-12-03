@@ -5,11 +5,12 @@
 #include "MassProperties.h"
 
 MassPropertiesComponent::MassPropertiesComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr, const PubSub::Component_Label name )
-    : PubSub::SimComponent( queueMngr, 1000, name )
-    , pAlg( new MassProperties() )
-    , inData_( new MassPropTypes::InData() )
-    , outData_( new MassPropTypes::OutData() )
-    , counter_( 0u )
+    : PubSub::SimComponent  ( queueMngr, 1000, name )
+    , endpoint_             ( queueMngr )
+    , pAlg                  ( new MassProperties() )
+    , inData_               ( new MassPropTypes::InData() )
+    , outData_              ( new MassPropTypes::OutData() )
+    , counter_              ( 0u )
 {
 }
 
@@ -22,7 +23,7 @@ void MassPropertiesComponent::initialize( void )
     inData_->initialize();
     outData_->initialize();
 
-    subscribe<EngineMsg>( *inData_ );
+    endpoint_.subscribe< EngineMsg >( *inData_ );
 
     pAlg->initialize();
     counter_ = 0u;
@@ -32,27 +33,27 @@ void MassPropertiesComponent::update( void )
 {
 
     PubSub::Message_Label label;
-    PubSub::MessageStatus status = peek( label );
+    PubSub::MessageStatus status = endpoint_.peek( label );
 
     while ( status == PubSub::MessageStatus::MESSAGE_AVAILABLE )
     {
         switch ( label )
         {
             case EngineMsg::MESSAGE_LABEL:
-                receive<EngineMsg>( *inData_ );
+                endpoint_.receive< EngineMsg >( *inData_ );
                 break;
 
             default:
-                removeTopMessage();
+                endpoint_.removeTopMessage();
                 break;
         }
 
-        status = peek( label );
+        status = endpoint_.peek( label );
     }
 
     pAlg->exec( *inData_, *outData_ );
 
-    send<MassPropMsg>( *outData_ );
+    endpoint_.send< MassPropMsg >( *outData_ );
 
     counter_++;
 }
