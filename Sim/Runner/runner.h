@@ -1,12 +1,12 @@
 #ifndef RUNNER_H
 #define RUNNER_H
 
-#include "ProcModule.h"
+#include "6DOFSimulation.h"
 
 class runner
 {
 public:
-    ProcModule pProcModule_;
+    SixDOFSimulation sim_;
 };
 
 runner wrapper;

@@ -10,16 +10,6 @@ namespace TimePt
     class RtcClock;
 }
 
-// Simulation Component forward declarations
-class GravityComponent;
-class MassPropertiesComponent;
-class EngineComponent;
-class ControlSurfacesComponent;
-class GRAMComponent;
-class AeroComponent;
-class EomComponent;
-class ImuComponent;
-
 // SW Component forward declarations
 class NavigationComponent;
 class GuidanceComponent;
@@ -28,7 +18,7 @@ class AutopilotComponent;
 class ProcModule : public PubSub::Module
 {
 public:
-    ProcModule();
+    ProcModule(  std::shared_ptr< PubSub::QueueMngr >& queueMngr );
     virtual ~ProcModule();
 
     void launch();
@@ -39,15 +29,6 @@ private:
     PubSub::Thread navThread;
     PubSub::Thread guidanceThread;
     PubSub::Thread autopilotThread;
-
-    std::unique_ptr<GravityComponent> pGravityComponent;
-    std::unique_ptr<MassPropertiesComponent> pMassPropComponent;
-    std::unique_ptr<EngineComponent> pEngineComponent;
-    std::unique_ptr<ControlSurfacesComponent> pCtrlSurfComponent;
-    std::unique_ptr<GRAMComponent> pGRAMComponent;
-    std::unique_ptr<EomComponent> pEomComponent;
-    std::unique_ptr<AeroComponent> pAeroComponent;
-    std::unique_ptr<ImuComponent> pImuComponent;
 
     std::unique_ptr<NavigationComponent> pNavigationComponent;
     std::unique_ptr<GuidanceComponent> pGuidanceComponent;
