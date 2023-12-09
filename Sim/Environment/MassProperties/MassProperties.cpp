@@ -1,8 +1,12 @@
 #include "MassProperties.h"
 
+#include "Engine.h"
+
 #include <math.h>
 
-MassProperties::MassProperties()
+MassProperties::MassProperties( const double runRate, const std::string name )
+    : SimLib::Model( runRate, name )
+    , pEng_( nullptr )
 {
 }
 
@@ -10,13 +14,28 @@ MassProperties::~MassProperties()
 {
 }
 
-void MassProperties::initialize(void)
+SimLib::ReferenceRequest MassProperties::requestReferences() const
+{
+    SimLib::ReferenceRequest refReq;
+
+    refReq.requestReference( "Engine" );
+
+    return refReq;
+}
+
+void MassProperties::getReferenceRequest( SimLib::ReferenceRequest& refReq )
+{
+    pEng_ = reinterpret_cast< Engine* >( refReq.getReference( "Engine" ) );
+}
+
+void MassProperties::initialize( void )
 {
 
 }
 
-void MassProperties::exec(const MassPropTypes::InData &inData, MassPropTypes::OutData &outData)
+void MassProperties::update()
 {
+    /*
     outData.mass = 5000.0; // kg
 
     outData.I[0][0] = 250.0; // kg*m^2, Ixx
@@ -30,7 +49,7 @@ void MassProperties::exec(const MassPropTypes::InData &inData, MassPropTypes::Ou
     outData.I[2][0] = outData.I[0][2]; // kg*m^2, Izx
     outData.I[2][1] = outData.I[1][2]; // kg*m^2, Izy
     outData.I[2][2] = 1000.0;          // kg*m^2, Izz
-
+    */
 }
 
 void MassProperties::finalize()

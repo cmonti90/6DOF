@@ -1,6 +1,8 @@
 #include "IMU.h"
 #include "eom.h"
 
+#include "IMUTypes.h"
+
 #include <math.h>
 #include <iostream>
 

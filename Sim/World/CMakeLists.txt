@@ -11,13 +11,16 @@ add_library(${target} ${SOURCES})
 target_include_directories(${target}    PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR}
                                                 )
 
-target_link_libraries(${target} PUBLIC  
-                                PRIVATE SimLib
-                                        Messages
+target_link_libraries(${target} PRIVATE SimLib
                                         procModule
+                                        Aero
+                                        ControlSurfaces
+                                        EarthGRAM
                                         Engine
-                                        IMU
                                         eom
+                                        IMU
+                                        MassProperties
+                                        
                                         )
 
 
@@ -37,7 +40,6 @@ add_library(${target} ${SOURCES})
 target_include_directories(${target}    PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR}
                                                 )
 
-target_link_libraries(${target} PUBLIC  
-                                PRIVATE SimLib
+target_link_libraries(${target} PRIVATE SimLib
                                         Entities
                                         )

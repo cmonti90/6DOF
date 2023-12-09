@@ -11,13 +11,11 @@ class ProcModule;
 // Forward declare Models/HwIntfs
 class eom;
 class IMU;
-// class Aero;
+class Aero;
 class Engine;
-// class EarthGRAM;
-// class MassProps;
-// class Gravity;
-// class ControlSurfaces;
-
+class EarthGRAM;
+class MassProperties;
+class ControlSurfaces;
 
 
 class AircraftEntity : public SimLib::Entity
@@ -37,12 +35,11 @@ class AircraftEntity : public SimLib::Entity
     // Models/HwIntfs
     std::unique_ptr< eom >            pEom;
     std::unique_ptr< IMU >            pImu;
-    // std::unique_ptr< Aero >           pAero;
+    std::unique_ptr< Aero >           pAero;
     std::unique_ptr< Engine >         pEngine;
-    // std::unique_ptr< EarthGRAM >      pEarthGram;
-    // std::unique_ptr< MassProps >      pMassProps;
-    // std::unique_ptr< Gravity >        pGravity;
-    // std::unique_ptr< ControlSurfaces> pControlSurfaces;
+    std::unique_ptr< EarthGRAM >      pEarthGram;
+    std::unique_ptr< MassProperties > pMassProps;
+    std::unique_ptr< ControlSurfaces> pControlSurfaces;
 
 };
 

@@ -1,10 +1,9 @@
 
-set(target GRAMComponent)
+set(target EarthGRAM)
 
-set(SOURCES     GRAMComponent.cpp)
+set(SOURCES     EarthGRAM.cpp)
 
-set(HEADERS     GRAMComponent.h
-                GRAMTypes.h)
+set(HEADERS     EarthGRAM.h)
 
 add_library(${target} ${SOURCES})
 
@@ -12,10 +11,9 @@ target_include_directories(${target}    PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR}
                                                 )
 
 target_link_libraries(${target} PRIVATE GRAM_Earth
-                                        Messages
+                                        SimLib
                                         mathlib
-                                        PubSub
-                                        Serialization
+                                        eom
                                         DebugTools
                                         Utility
                                         )

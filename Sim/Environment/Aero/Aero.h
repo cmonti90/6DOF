@@ -1,22 +1,21 @@
 #ifndef AERO_H
 #define AERO_H
 
+#include "Model.h"
 #include "mathlib.h"
-#include "AeroTypes.h"
 
-class Aero
+class eom;
+class EarthGRAM;
+// class ControlSurfaces;
+
+class Aero : public SimLib::Model
 {
-protected:
 
-public:
-    Aero();
-    ~Aero();
+  public:
+    Aero( const double runRate, const std::string name = "Aero" );
+    virtual ~Aero();
 
-    void initialize(void);
-    void exec(const AeroTypes::InData& inData, AeroTypes::OutData& outData);
-    void finalize(void);
-
-protected:
+  protected:
 
     myMath::Vector3d aeroForceBody;
     myMath::Vector3d aeroMomentBody;
@@ -75,27 +74,6 @@ protected:
 
     Coef aeroCoefs;
 
-    double C_Df;
-    double C_Lf;
-    double C_Yf;
-    double C_lf;
-    double C_mf;
-    double C_nf;
-
-    double C_Dht;
-    double C_Lht;
-    double C_Yht;
-    double C_lht;
-    double C_mht;
-    double C_nht;
-
-    double C_Dvt;
-    double C_Lvt;
-    double C_Yvt;
-    double C_lvt;
-    double C_mvt;
-    double C_nvt;
-
     // Aerodynamic forces
     double F_D;
     double F_L;
@@ -116,22 +94,35 @@ protected:
     double altSeaLevel;
     double mach;
 
-    void updateCoefficients(const AeroTypes::InData& inData);
-    void updateWingCoefficients(const AeroTypes::InData& inData);
-    void updateFuselageCoefficients(const AeroTypes::InData& inData);
-    void updateHorizontalTailCoefficients(const AeroTypes::InData& inData);
-    void updateVerticalTailCoefficients(const AeroTypes::InData& inData);
-    void updateAileronCoefficients(const AeroTypes::InData& inData);
-    void updateElevatorCoefficients(const AeroTypes::InData& inData);
-    void updateRudderCoefficients(const AeroTypes::InData& inData);
+    void updateCoefficients();
+    void updateWingCoefficients();
+    void updateFuselageCoefficients();
+    void updateHorizontalTailCoefficients();
+    void updateVerticalTailCoefficients();
+    void updateAileronCoefficients();
+    void updateElevatorCoefficients();
+    void updateRudderCoefficients();
     void computeAeroForces();
     void computeAeroMoments();
 
-    void BuildOutput(AeroTypes::OutData& outData);
 
-private:
-    Aero& operator=(const Aero& orig) = delete;
-    Aero(const Aero& orig) = delete;
+  private:
+
+
+    void initialize() override;
+    void update() override;
+    void finalize() override;
+
+    virtual void getReferenceRequest( SimLib::ReferenceRequest& refReq ) override;
+
+    virtual SimLib::ReferenceRequest requestReferences() const override;
+
+    eom* pEom_;
+    EarthGRAM* pEarthGRAM_;
+    // ControlSurfaces* pControlSurfaces_;
+
+    Aero& operator=( const Aero& orig ) = delete;
+    Aero( const Aero& orig ) = delete;
 };
 
 #endif /* AERO_H */

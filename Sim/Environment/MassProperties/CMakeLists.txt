@@ -1,31 +1,15 @@
-
-set(target MassPropertiesIntf)
-add_library(${target} INTERFACE)
-target_include_directories(${target}    INTERFACE  ${CMAKE_CURRENT_SOURCE_DIR} )
-target_link_libraries(${target} INTERFACE Messages
-                                          Serialization)
-
-
-######################################
-
-
 set(target MassProperties)
 
-set(SOURCES     MassPropertiesComponent.cpp)
+set(SOURCES MassProperties.cpp)
 
-set(HEADERS     MassPropertiesComponent.h
-                MassPropertiesTypes.h)
+set(HEADERS MassProperties.h)
 
 add_library(${target} ${SOURCES})
 
 target_include_directories(${target}    PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR}
                                                 )
 
-target_link_libraries(${target} PUBLIC  Messages
-                                PRIVATE mathlib
-                                        PubSub
-                                        MassPropertiesAlgorithm
-                                        Serialization
+target_link_libraries(${target} PRIVATE mathlib
+                                        SimLib
+                                        Engine
                                         )
-
-add_subdirectory(Algorithm)

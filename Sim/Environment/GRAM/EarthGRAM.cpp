@@ -1,27 +1,25 @@
 
-#include "GRAMComponent.h"
-#include "GRAMTypes.h"
+#include "EarthGRAM.h"
 
 #include "EarthAtmosphere.h"
 
 #include "SpiceLoader.h"
-#include "RtcClock.h"
+
+#include "eom.h"
 
 #include <iomanip>
 
-GRAMComponent::GRAMComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr,
-                              const std::shared_ptr<TimePt::RtcClock>& sysClock,
-                              const PubSub::Component_Label name )
-    : PubSub::SimComponent  ( queueMngr, 1000, name )
-    , endpoint_             ( queueMngr )
-    , inData_               ( new GRAMTypes::InData() )
-    , outData_              ( new GRAMTypes::OutData() )
-    , sysClock_             ( sysClock )
-    , earthAtmosphere_      ( new GRAM::EarthAtmosphere() )
-    , position_             ( new GRAM::Position() )
-    , atmosphereState_      ( new GRAM::AtmosphereState() )
-    , ephemerisState_       ( new GRAM::EphemerisState() )
-    , counter_              ( 0u )
+#include "mathlib.h"
+
+EarthGRAM::EarthGRAM( const double runRate,
+                      const std::string name )
+    : SimLib::Model     ( runRate, name )
+    , earthAtmosphere_  ( new GRAM::EarthAtmosphere() )
+    , position_         ( new GRAM::Position() )
+    , atmosphereState_  ( new GRAM::AtmosphereState() )
+    , ephemerisState_   ( new GRAM::EphemerisState() )
+    , counter_          ( 0u )
+    , pEom_             ( nullptr )
 {
     GRAM::EarthInputParameters inputParameters;
 
@@ -53,57 +51,43 @@ GRAMComponent::GRAMComponent( std::shared_ptr<PubSub::QueueMngr>& queueMngr,
 
 }
 
-GRAMComponent::~GRAMComponent()
+EarthGRAM::~EarthGRAM()
 {
 }
 
-void GRAMComponent::initialize ( void )
+SimLib::ReferenceRequest EarthGRAM::requestReferences() const
 {
-    inData_->initialize();
-    outData_->initialize();
+    SimLib::ReferenceRequest refReq;
 
-    endpoint_.subscribe< EomMsg >( *inData_ );
+    refReq.requestReference( "eom" );
+
+    return refReq;
+}
+
+void EarthGRAM::getReferenceRequest( SimLib::ReferenceRequest& refReq )
+{
+    pEom_ = reinterpret_cast< eom* >( refReq.getReference( "eom" ) );
+}
+
+void EarthGRAM::initialize ( void )
+{
 
     counter_ = 0u;
 }
 
-void GRAMComponent::update ( void )
+void EarthGRAM::update ( void )
 {
-    PubSub::Message_Label label;
-    PubSub::MessageStatus status = endpoint_.peek ( label );
-
-    while ( status == PubSub::MessageStatus::MESSAGE_AVAILABLE )
-    {
-        switch ( label )
-        {
-            case EomMsg::MESSAGE_LABEL:
-                endpoint_.receive< EomMsg >( *inData_ );
-
-                break;
-
-            default:
-                endpoint_.removeTopMessage();
-                break;
-        }
-
-        status = endpoint_.peek( label );
-    }
 
     updateGRAM();
-    BuildOutput();
 
-    endpoint_.send< GRAMMsg >( *outData_ );
-
-    inData_->reset();
-    outData_->reset();
     counter_++;
 }
 
-void GRAMComponent::finalize( void )
+void EarthGRAM::finalize( void )
 {
 }
 
-void GRAMComponent::updateGRAM()
+void EarthGRAM::updateGRAM()
 {
     // Set the position
     position_->height = 1.0 / 1000.0; // km
@@ -130,17 +114,4 @@ void GRAMComponent::updateGRAM()
     // std::cout << "Solar Time: " << ephem.solarTime << std::endl;
     // std::cout << "Longitude of the Sun: " << std::setprecision( 9 ) << ephem.longitudeSun << std::endl;
     // std::cout << std::endl;
-}
-
-void GRAMComponent::BuildOutput()
-{
-    outData_->density = atmosphereState_->density;
-    outData_->pressure = atmosphereState_->pressure;
-    outData_->temperature = atmosphereState_->temperature;
-
-    outData_->nsWind = atmosphereState_->nsWind;
-    outData_->ewWind = atmosphereState_->ewWind;
-    outData_->vertWind = atmosphereState_->verticalWind;
-
-    outData_->speedOfSound = atmosphereState_->speedOfSound;
 }

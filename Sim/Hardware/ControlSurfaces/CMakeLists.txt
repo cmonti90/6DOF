@@ -1,30 +1,20 @@
-set(target ControlSurfacesIntf)
-add_library(${target} INTERFACE)
-target_include_directories(${target}    INTERFACE  ${CMAKE_CURRENT_SOURCE_DIR} )
-target_link_libraries(${target} INTERFACE Messages
-                                          Serialization)
-
-
-######################################
-
-
 set(target ControlSurfaces)
 
-set(SOURCES     ControlSurfacesComponent.cpp)
+set(SOURCES ControlSurfaces.cpp
+            Actuator.cpp)
 
-set(HEADERS     ControlSurfacesComponent.h
-                ControlSurfacesTypes.h)
+set(HEADERS ControlSurfaces.h
+            ControlSurfaceTypes.h
+            Actuator.h)
 
 add_library(${target} ${SOURCES})
 
 target_include_directories(${target}    PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR}
                                                 )
 
-target_link_libraries(${target} PUBLIC  Messages
-                                PRIVATE mathlib
-                                        PubSub
-                                        CtrlSurfAlgorithm
+target_link_libraries(${target} PRIVATE mathlib
+                                        SimLib
+                                        Messages
+                                        AircraftProperties
                                         Utility
                                         )
-
-add_subdirectory(Algorithm)

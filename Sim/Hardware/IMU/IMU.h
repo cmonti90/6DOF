@@ -3,12 +3,15 @@
 
 #include "HwIntf.h"
 
-#include "IMUTypes.h"
-
 #include "Vector.h"
 #include "PayloadEndpoint.h"
 
 class eom;
+
+namespace IMUTypes
+{
+    struct OutData;
+}
 
 class IMU : public SimLib::HwIntf
 {
