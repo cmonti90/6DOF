@@ -1,31 +1,17 @@
-set(target ImuIntf)
-add_library(${target} INTERFACE)
-target_include_directories(${target}    INTERFACE  ${CMAKE_CURRENT_SOURCE_DIR} )
-target_link_libraries(${target} INTERFACE Messages
-                                          Serialization)
-
-
-######################################
-
-
 set(target IMU)
 
-set(SOURCES     ImuComponent.cpp)
+set(SOURCES IMU.cpp)
 
-set(HEADERS     ImuComponent.h
-                ImuTypes.h)
+set(HEADERS IMU.h
+            IMUTypes.h)
 
 add_library(${target} ${SOURCES})
 
 target_include_directories(${target}    PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR}
                                                 )
 
-target_link_libraries(${target} PUBLIC  Messages
-                                PRIVATE mathlib
+target_link_libraries(${target} PRIVATE SimLib
                                         PubSub
-                                        ImuAlgorithm
-                                        Serialization
-                                        Utility
+                                        mathlib
+                                        Messages
                                         )
-
-add_subdirectory(Algorithm)

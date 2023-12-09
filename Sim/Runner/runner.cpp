@@ -2,7 +2,7 @@
 
 int main()
 {
-        wrapper.pProcModule_.launch();
+        wrapper.sim_.go();
 
         return 1;
 }

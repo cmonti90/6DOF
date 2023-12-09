@@ -3,9 +3,11 @@
 
 #include "World.h"
 
+#include <memory>
+
 class AircraftEntity;
 
-class SixDOFSimulation : SimLib::World
+class SixDOFSimulation : public SimLib::World
 {
   public:
     SixDOFSimulation();
@@ -15,7 +17,7 @@ class SixDOFSimulation : SimLib::World
 
   private:
 
-    std::shared_ptr<AircraftEntity> pAircraftEntity;
+    std::shared_ptr< AircraftEntity > pAircraftEntity;
 };
 
 

@@ -30,9 +30,9 @@ private:
     PubSub::Thread guidanceThread;
     PubSub::Thread autopilotThread;
 
-    std::unique_ptr<NavigationComponent> pNavigationComponent;
-    std::unique_ptr<GuidanceComponent> pGuidanceComponent;
-    std::unique_ptr<AutopilotComponent> pAutopilotComponent;
+    std::unique_ptr< NavigationComponent > pNavigationComponent;
+    std::unique_ptr< GuidanceComponent >   pGuidanceComponent;
+    std::unique_ptr< AutopilotComponent >  pAutopilotComponent;
 
 };
 

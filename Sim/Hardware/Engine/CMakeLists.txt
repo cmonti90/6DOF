@@ -1,30 +1,15 @@
-set(target EngineIntf)
-add_library(${target} INTERFACE)
-target_include_directories(${target}    INTERFACE  ${CMAKE_CURRENT_SOURCE_DIR} )
-target_link_libraries(${target} INTERFACE Messages
-                                          Serialization)
-
-
-######################################
-
-
 set(target Engine)
 
-set(SOURCES     EngineComponent.cpp)
+set(SOURCES Engine.cpp)
 
-set(HEADERS     EngineComponent.h
-                EngineTypes.h)
+set(HEADERS Engine.h)
 
 add_library(${target} ${SOURCES})
 
 target_include_directories(${target}    PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR}
                                                 )
 
-target_link_libraries(${target} PUBLIC  Messages
-                                PRIVATE mathlib
-                                        PubSub
-                                        engineAlgorithm
-                                        Serialization
+target_link_libraries(${target} PUBLIC  mathlib
+                                PRIVATE SimLib
+                                        AircraftProperties
                                         )
-
-add_subdirectory(Algorithm)

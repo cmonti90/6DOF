@@ -12,7 +12,7 @@ echo "GRAMEARTH_DIR = ${GRAMEARTH_DIR}"
 export PUBSUBLIB_DIR="/home/cmonti/Documents/Coding/Libraries/PubSub/install/lib64/cmake/PubSub"
 echo "PUBSUBLIB_DIR = ${PUBSUBLIB_DIR}"
 
-export SIMLIBLIB_DIR="/home/cmonti/Documents/Coding/Libraries/PubSub/install/lib64/cmake/SimLib"
+export SIMLIBLIB_DIR="/home/cmonti/Documents/Coding/Libraries/SimLib/install/lib64/cmake/SimLib"
 echo "SIMLIBLIB_DIR = ${SIMLIBLIB_DIR}"
 
 listProjectLibDirs=()

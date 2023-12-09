@@ -1,34 +1,19 @@
-
-set(target eomIntf)
-add_library(${target} INTERFACE)
-target_include_directories(${target}    INTERFACE  ${CMAKE_CURRENT_SOURCE_DIR} )
-target_link_libraries(${target} INTERFACE  Messages
-                                           Serialization
-                                           PubSub
-                                            )
-
-
-######################################
-
-
 set(target eom)
 
-set(SOURCES     EomComponent.cpp)
+set(SOURCES eom.cpp)
 
-set(HEADERS     EomComponent.h
-                EomTypes.h)
+set(HEADERS eom.h)
 
 add_library(${target} ${SOURCES})
 
 target_include_directories(${target}    PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR}
                                                 )
 
-target_link_libraries(${target} PUBLIC  Messages
-                                PRIVATE mathlib
-                                        PubSub
-                                        eomAlgorithm
-                                        Serialization
+target_link_libraries(${target} PRIVATE SimLib
+                                        mathlib
+                                        AircraftProperties
+                                        eomIntf
+                                        EarthModels
+                                        Messages
                                         Utility
                                         )
-
-add_subdirectory(Algorithm)

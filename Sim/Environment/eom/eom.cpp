@@ -14,7 +14,8 @@
 /// @param   None
 /// @return  None
 //////////////////////////////////////////////////////
-eom::eom()
+eom::eom( const double runRate, const std::string str )
+    : Model( runRate, str )
 {
     if ( logOutput )
     {
@@ -46,9 +47,9 @@ void eom::initialize()
     netForceBody = 0.0;
     netMomentBody = 0.0;
 
-    posEci[0] = 5.0e3_km;
-    posEci[1] = 5.0e3_km;
-    posEci[2] = 5.0e3_km;
+    posEci[0] = 5.0e3_km; // m
+    posEci[1] = 5.0e3_km; // m
+    posEci[2] = 5.0e3_km; // m
 
     velBody[0] = 0.0; // m/sec
     velBody[1] = 0.0;
@@ -82,14 +83,13 @@ void eom::initialize()
 }
 
 //////////////////////////////////////////////////////
-/// @note   Name: exec
-/// @brief  Execution function to integrate the
-///         equations of motion
+/// @note   Name: update
+/// @brief  Integrate the equations of motion
 /// @param  EOM input data structure
 /// @param  EOM output data structure
 /// @return None
 //////////////////////////////////////////////////////
-void eom::exec( const EomTypes::InData& inData, EomTypes::OutData& outData )
+void eom::update()
 {
     t += dt;
     counter++;

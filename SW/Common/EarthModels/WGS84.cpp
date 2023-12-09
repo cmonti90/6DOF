@@ -8,7 +8,7 @@ namespace WGS84
     void EcefToLla( const myMath::Vector3d& posEcef, double& lat, double& lon, double& alt )
     {
         // WGS84 constants
-        const double ecc2 = myMath::SQ( 8.1819190842622e-2 ); // first eccentricity
+        const double ecc2 = myMath::SQ( 8.1819190842622e-2 ); // first eccentricity squared
         const double b = myMath::Constants::EARTH_EQUITORIAL_RADIUS * std::sqrt( ( 1.0 - ecc2 ) );
         const double ep2 = myMath::SQ( myMath::Constants::EARTH_EQUITORIAL_RADIUS / b ) - 1.0; // second eccentricity squared
 

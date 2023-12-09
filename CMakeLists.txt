@@ -17,6 +17,7 @@ list(APPEND CMAKE_PREFIX_PATH $ENV{SIMLIBLIB_DIR})
 find_package(mathlib CONFIG REQUIRED)
 find_package(PubSub CONFIG REQUIRED)
 find_package(GRAM_Earth CONFIG REQUIRED)
+find_package(SimLib CONFIG REQUIRED)
 
 add_subdirectory("SW")
 add_subdirectory("Sim")

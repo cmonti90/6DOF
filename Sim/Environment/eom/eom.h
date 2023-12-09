@@ -1,22 +1,25 @@
 #ifndef EOM_H
 #define EOM_H
 
+#include "Model.h"
 #include "mathlib.h"
 #include "EomTypes.h"
 
-class eom
+class eom : SimLib::Model
 {
     public:
-        eom();
+        eom( const double runRate, const std::string str = "eom" );
         ~eom();
 
-        void initialize ( void );
-        void exec ( const EomTypes::InData& inData, EomTypes::OutData& outData );
-        void finalize ( void );
+        void initialize ( void ) override;
+        void update     ()       override;
+        void finalize   ( void ) override;
 
         // Setters
         void addForces ( const myMath::Vector3d& force );
         void addMoments ( const myMath::Vector3d& moment );
+
+        // Getters
 
     protected:
         void BuildOutput ( EomTypes::OutData& outData );

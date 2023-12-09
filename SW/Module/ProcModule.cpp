@@ -11,13 +11,13 @@
 
 ProcModule::ProcModule( std::shared_ptr< PubSub::QueueMngr >& queueMngr )
     : Module( queueMngr )
-    , pRtcClock           ( new TimePt::RtcClock( m_time ) )
+    , pRtcClock           ( new TimePt::RtcClock    ( m_time ) )
     , navThread           ()
     , guidanceThread      ()
     , autopilotThread     ()
-    , pNavigationComponent( new NavigationComponent     ( queueMngr, pRtcClock ) )
-    , pGuidanceComponent  ( new GuidanceComponent       ( queueMngr, pRtcClock ) )
-    , pAutopilotComponent ( new AutopilotComponent      ( queueMngr, pRtcClock ) )
+    , pNavigationComponent( new NavigationComponent ( queueMngr, pRtcClock ) )
+    , pGuidanceComponent  ( new GuidanceComponent   ( queueMngr, pRtcClock ) )
+    , pAutopilotComponent ( new AutopilotComponent  ( queueMngr, pRtcClock ) )
 {
 }
 
