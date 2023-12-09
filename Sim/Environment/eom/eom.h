@@ -5,24 +5,23 @@
 #include "mathlib.h"
 #include "EomTypes.h"
 
-class eom : SimLib::Model
+class eom : public SimLib::Model
 {
     public:
-        eom( const double runRate, const std::string str = "eom" );
-        ~eom();
+        eom( const double runRate, const std::string name = "eom" );
+        virtual ~eom();
+
+        // Getters
+        double getAltitudeSeaLevel() const
+        {
+            return altSeaLevel;
+        }
+
+    protected:
 
         void initialize ( void ) override;
         void update     ()       override;
         void finalize   ( void ) override;
-
-        // Setters
-        void addForces ( const myMath::Vector3d& force );
-        void addMoments ( const myMath::Vector3d& moment );
-
-        // Getters
-
-    protected:
-        void BuildOutput ( EomTypes::OutData& outData );
 
         enum : unsigned int
         {
@@ -113,18 +112,17 @@ class eom : SimLib::Model
         double altSeaLevel;
         double altGeodetic;
 
-        double udot ( const double v, const double w, const double q, const double r, const EomTypes::InData& inData );
-        double vdot ( const double u, const double w, const double p, const double r, const EomTypes::InData& inData );
-        double wdot ( const double u, const double v, const double p, const double q, const EomTypes::InData& inData );
+        double udot ( const double v, const double w, const double q, const double r );
+        double vdot ( const double u, const double w, const double p, const double r );
+        double wdot ( const double u, const double v, const double p, const double q );
 
-        myMath::Vector3d angularRatesDerivative ( const double p, const double q, const double r, const EomTypes::InData& inData );
+        myMath::Vector3d angularRatesDerivative ( const double p, const double q, const double r );
         myMath::QuaternionD quaternionDerivative ( const double p, const double q, const double r, myMath::QuaternionD q0 );
 
         myMath::Matrix4d QuaterionRKrotationMatrix (const double dt, const double scalar, const myMath::Vector3d& rotRates);
 
-        void rungeKutta4thOrder ( const EomTypes::InData& inData );
+        void rungeKutta4thOrder();
 
-        void update();
         void updateEcef();
         void updateNed();
         void updateBody();

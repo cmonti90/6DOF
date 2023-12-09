@@ -14,14 +14,15 @@
 /// @param   None
 /// @return  None
 //////////////////////////////////////////////////////
-eom::eom( const double runRate, const std::string str )
-    : Model( runRate, str )
+eom::eom( const double runRate, const std::string name )
+    : Model( runRate, name )
 {
     if ( logOutput )
     {
         fEom = fopen( "eom.dat", "w" );
     }
 }
+
 
 //////////////////////////////////////////////////////
 /// @brief   Destructor
@@ -31,6 +32,7 @@ eom::eom( const double runRate, const std::string str )
 eom::~eom()
 {
 }
+
 
 //////////////////////////////////////////////////////
 /// @brief   initialize EOM object
@@ -79,14 +81,18 @@ void eom::initialize()
 
     q_nedToBody = myMath::QuaternionD::Identity();
 
+    altSeaLevel = 1.0;
+
     update();
 }
 
+
 //////////////////////////////////////////////////////
 /// @note   Name: update
-/// @brief  Integrate the equations of motion
-/// @param  EOM input data structure
-/// @param  EOM output data structure
+/// @brief  Integrate the equations of motion and
+///         update coordinate systems and states in
+///         all coordinate systems
+/// @param  None
 /// @return None
 //////////////////////////////////////////////////////
 void eom::update()
@@ -97,11 +103,14 @@ void eom::update()
     netForceBody = 0.0;
     netMomentBody = 0.0;
 
-    rungeKutta4thOrder( inData );
+    rungeKutta4thOrder();
 
-    update();
-
-    BuildOutput( outData );
+    updateEcef();
+    updateNed();
+    updateBody();
+    updateAeroAngles();
+    updateWind();
+    updateStates();
 
     if ( logOutput )
     {
@@ -115,7 +124,12 @@ void eom::update()
     netMomentBody = 0.0;
     t_prev = t;
 
+    altSeaLevel *= 2.0;
+
+    std::cout << "eom::altSeaLevel = " << altSeaLevel << std::endl;
+
 }
+
 
 //////////////////////////////////////////////////////
 /// @note   Name: finalize
@@ -131,56 +145,41 @@ void eom::finalize()
     }
 }
 
-//////////////////////////////////////////////////////
-/// @note   Name: BuildOutput
-/// @brief  Pick out data for output
-/// @param  EOM output data structure
-/// @return None
-//////////////////////////////////////////////////////
-void eom::BuildOutput( EomTypes::OutData& outData )
-{
-    outData.windVelBody = windVelBody;
-    outData.velBody = velBody;
-    outData.accelBody = accelBody;
 
-    outData.posEci = posEci;
-    outData.velEci = velEci;
+// //////////////////////////////////////////////////////
+// /// @note   Name: BuildOutput
+// /// @brief  Pick out data for output
+// /// @param  EOM output data structure
+// /// @return None
+// //////////////////////////////////////////////////////
+// void eom::BuildOutput( EomTypes::OutData& outData )
+// {
+//     outData.windVelBody = windVelBody;
+//     outData.velBody = velBody;
+//     outData.accelBody = accelBody;
 
-    outData.posEcef = posEcef;
-    outData.velEcef = velEcef;
+//     outData.posEci = posEci;
+//     outData.velEci = velEci;
 
-    outData.eulerAngs = eulerAngles;
-    outData.eulerAngRates = angRatesBody;
+//     outData.posEcef = posEcef;
+//     outData.velEcef = velEcef;
 
-    outData.angleOfAttack = angleOfAttack;
-    outData.angleOfSideslip = angleOfSideslip;
+//     outData.eulerAngs = eulerAngles;
+//     outData.eulerAngRates = angRatesBody;
 
-    outData.bodyFromNed = bodyFromNed;
-    outData.bodyFromWind = bodyFromWind;
+//     outData.angleOfAttack = angleOfAttack;
+//     outData.angleOfSideslip = angleOfSideslip;
 
-    outData.altSeaLevel = altSeaLevel;
-    outData.altGeodetic = altGeodetic;
+//     outData.bodyFromNed = bodyFromNed;
+//     outData.bodyFromWind = bodyFromWind;
 
-    outData.lat = lat_geodetic;
-    outData.lon = lon_geodetic;
-}
+//     outData.altSeaLevel = altSeaLevel;
+//     outData.altGeodetic = altGeodetic;
 
-//////////////////////////////////////////////////////
-/// @note   Name: update
-/// @brief  Update coordinate systems and states in
-///         all coordinate systems
-/// @param  None
-/// @return None
-//////////////////////////////////////////////////////
-void eom::update()
-{
-    updateEcef();
-    updateNed();
-    updateBody();
-    updateAeroAngles();
-    updateWind();
-    updateStates();
-}
+//     outData.lat = lat_geodetic;
+//     outData.lon = lon_geodetic;
+// }
+
 
 //////////////////////////////////////////////////////
 /// @note   Name: updateStates
@@ -202,6 +201,7 @@ void eom::updateStates()
     velNed = enuFromNed * velEnu;
 }
 
+
 //////////////////////////////////////////////////////
 /// @note   Name: updateStates
 /// @brief  Implementation of the Rung-Kutta 4th order
@@ -212,7 +212,7 @@ void eom::updateStates()
 /// @param  EOM input data structure
 /// @return None
 //////////////////////////////////////////////////////
-void eom::rungeKutta4thOrder( const EomTypes::InData& inData )
+void eom::rungeKutta4thOrder()
 {
     dt = 1.0 / 1000.0;
 
@@ -224,22 +224,22 @@ void eom::rungeKutta4thOrder( const EomTypes::InData& inData )
     myMath::Vector3d dAngBodyRatesDot;
 
     // Instantaneous accelerations
-    accelBody[X]            = udot( velBody[Y], velBody[Z], angRatesBody[PITCH], angRatesBody[YAW], inData );
-    accelBody[Y]            = vdot( velBody[X], velBody[Z], angRatesBody[ROLL], angRatesBody[YAW], inData );
-    accelBody[Z]            = wdot( velBody[X], velBody[Y], angRatesBody[ROLL], angRatesBody[PITCH], inData );
+    accelBody[X]            = udot( velBody[Y], velBody[Z], angRatesBody[PITCH], angRatesBody[YAW] );
+    accelBody[Y]            = vdot( velBody[X], velBody[Z], angRatesBody[ROLL], angRatesBody[YAW] );
+    accelBody[Z]            = wdot( velBody[X], velBody[Y], angRatesBody[ROLL], angRatesBody[PITCH] );
 
-    angAccelBody            = angularRatesDerivative( angRatesBody[ROLL], angRatesBody[PITCH], angRatesBody[YAW], inData );
+    angAccelBody            = angularRatesDerivative( angRatesBody[ROLL], angRatesBody[PITCH], angRatesBody[YAW] );
 
     // k1
-    dVelBody[0][X]          = dt * udot( velBody[Y], velBody[Z], angRatesBody[PITCH], angRatesBody[YAW], inData );
-    dVelBody[0][Y]          = dt * vdot( velBody[X], velBody[Z], angRatesBody[ROLL], angRatesBody[YAW], inData );
-    dVelBody[0][Z]          = dt * wdot( velBody[X], velBody[Y], angRatesBody[ROLL], angRatesBody[PITCH], inData );
+    dVelBody[0][X]          = dt * udot( velBody[Y], velBody[Z], angRatesBody[PITCH], angRatesBody[YAW] );
+    dVelBody[0][Y]          = dt * vdot( velBody[X], velBody[Z], angRatesBody[ROLL], angRatesBody[YAW] );
+    dVelBody[0][Z]          = dt * wdot( velBody[X], velBody[Y], angRatesBody[ROLL], angRatesBody[PITCH] );
 
     dPosBody[0][X]          = dt * velBody[X];
     dPosBody[0][Y]          = dt * velBody[Y];
     dPosBody[0][Z]          = dt * velBody[Z];
 
-    dAngBodyRatesDot        = angularRatesDerivative( angRatesBody[ROLL], angRatesBody[PITCH], angRatesBody[YAW], inData );
+    dAngBodyRatesDot        = angularRatesDerivative( angRatesBody[ROLL], angRatesBody[PITCH], angRatesBody[YAW] );
 
     dAngBodyRates[0][ROLL]  = dt * dAngBodyRatesDot[ROLL];
     dAngBodyRates[0][PITCH] = dt * dAngBodyRatesDot[PITCH];
@@ -251,15 +251,15 @@ void eom::rungeKutta4thOrder( const EomTypes::InData& inData )
 
 
     // k2
-    dVelBody[1][X]          = dt * udot( velBody[Y] + dVelBody[0][Y] / 2.0, velBody[Z] + dVelBody[0][Z] / 2.0, angRatesBody[PITCH] + dAngBodyRates[0][PITCH] / 2.0, angRatesBody[YAW]   + dAngBodyRates[0][YAW]   / 2.0, inData );
-    dVelBody[1][Y]          = dt * vdot( velBody[X] + dVelBody[0][X] / 2.0, velBody[Z] + dVelBody[0][Z] / 2.0, angRatesBody[ROLL]  + dAngBodyRates[0][ROLL]  / 2.0, angRatesBody[YAW]   + dAngBodyRates[0][YAW]   / 2.0, inData );
-    dVelBody[1][Z]          = dt * wdot( velBody[X] + dVelBody[0][X] / 2.0, velBody[Y] + dVelBody[0][Y] / 2.0, angRatesBody[ROLL]  + dAngBodyRates[0][ROLL]  / 2.0, angRatesBody[PITCH] + dAngBodyRates[0][PITCH] / 2.0, inData );
+    dVelBody[1][X]          = dt * udot( velBody[Y] + dVelBody[0][Y] / 2.0, velBody[Z] + dVelBody[0][Z] / 2.0, angRatesBody[PITCH] + dAngBodyRates[0][PITCH] / 2.0, angRatesBody[YAW]   + dAngBodyRates[0][YAW]   / 2.0 );
+    dVelBody[1][Y]          = dt * vdot( velBody[X] + dVelBody[0][X] / 2.0, velBody[Z] + dVelBody[0][Z] / 2.0, angRatesBody[ROLL]  + dAngBodyRates[0][ROLL]  / 2.0, angRatesBody[YAW]   + dAngBodyRates[0][YAW]   / 2.0 );
+    dVelBody[1][Z]          = dt * wdot( velBody[X] + dVelBody[0][X] / 2.0, velBody[Y] + dVelBody[0][Y] / 2.0, angRatesBody[ROLL]  + dAngBodyRates[0][ROLL]  / 2.0, angRatesBody[PITCH] + dAngBodyRates[0][PITCH] / 2.0 );
 
     dPosBody[1][X]          = dt * ( velBody[X] + dVelBody[0][X] / 2.0 );
     dPosBody[1][Y]          = dt * ( velBody[Y] + dVelBody[0][Y] / 2.0 );
     dPosBody[1][Z]          = dt * ( velBody[Z] + dVelBody[0][Z] / 2.0 );
 
-    dAngBodyRatesDot        = angularRatesDerivative( angRatesBody[ROLL] + dAngBodyRates[0][ROLL] / 2.0, angRatesBody[PITCH] + dAngBodyRates[0][PITCH] / 2.0, angRatesBody[YAW] + dAngBodyRates[0][YAW] / 2.0, inData );
+    dAngBodyRatesDot        = angularRatesDerivative( angRatesBody[ROLL] + dAngBodyRates[0][ROLL] / 2.0, angRatesBody[PITCH] + dAngBodyRates[0][PITCH] / 2.0, angRatesBody[YAW] + dAngBodyRates[0][YAW] / 2.0 );
 
     dAngBodyRates[1][ROLL]  = dt * dAngBodyRatesDot[ROLL];
     dAngBodyRates[1][PITCH] = dt * dAngBodyRatesDot[PITCH];
@@ -268,15 +268,15 @@ void eom::rungeKutta4thOrder( const EomTypes::InData& inData )
     Kq[1]                   = QuaterionRKrotationMatrix( dt, 1.0 / 3.0, angRatesBody );
 
     // k3
-    dVelBody[2][X]          = dt * udot( velBody[Y] + dVelBody[1][Y] / 2.0, velBody[Z] + dVelBody[1][Z] / 2.0, angRatesBody[PITCH] + dAngBodyRates[1][PITCH] / 2.0, angRatesBody[YAW]   + dAngBodyRates[1][YAW]   / 2.0, inData );
-    dVelBody[2][Y]          = dt * vdot( velBody[X] + dVelBody[1][X] / 2.0, velBody[Z] + dVelBody[1][Z] / 2.0, angRatesBody[ROLL]  + dAngBodyRates[1][ROLL]  / 2.0, angRatesBody[YAW]   + dAngBodyRates[1][YAW]   / 2.0, inData );
-    dVelBody[2][Z]          = dt * wdot( velBody[X] + dVelBody[1][X] / 2.0, velBody[Y] + dVelBody[1][Y] / 2.0, angRatesBody[ROLL]  + dAngBodyRates[1][ROLL]  / 2.0, angRatesBody[PITCH] + dAngBodyRates[1][PITCH] / 2.0, inData );
+    dVelBody[2][X]          = dt * udot( velBody[Y] + dVelBody[1][Y] / 2.0, velBody[Z] + dVelBody[1][Z] / 2.0, angRatesBody[PITCH] + dAngBodyRates[1][PITCH] / 2.0, angRatesBody[YAW]   + dAngBodyRates[1][YAW]   / 2.0 );
+    dVelBody[2][Y]          = dt * vdot( velBody[X] + dVelBody[1][X] / 2.0, velBody[Z] + dVelBody[1][Z] / 2.0, angRatesBody[ROLL]  + dAngBodyRates[1][ROLL]  / 2.0, angRatesBody[YAW]   + dAngBodyRates[1][YAW]   / 2.0 );
+    dVelBody[2][Z]          = dt * wdot( velBody[X] + dVelBody[1][X] / 2.0, velBody[Y] + dVelBody[1][Y] / 2.0, angRatesBody[ROLL]  + dAngBodyRates[1][ROLL]  / 2.0, angRatesBody[PITCH] + dAngBodyRates[1][PITCH] / 2.0 );
 
     dPosBody[2][X]          = dt * ( velBody[X] + dVelBody[1][X] / 2.0 );
     dPosBody[2][Y]          = dt * ( velBody[Y] + dVelBody[1][Y] / 2.0 );
     dPosBody[2][Z]          = dt * ( velBody[Z] + dVelBody[1][Z] / 2.0 );
 
-    dAngBodyRatesDot        = angularRatesDerivative( angRatesBody[ROLL] + dAngBodyRates[1][ROLL] / 2.0, angRatesBody[PITCH] + dAngBodyRates[1][PITCH] / 2.0, angRatesBody[YAW] + dAngBodyRates[1][YAW] / 2.0, inData );
+    dAngBodyRatesDot        = angularRatesDerivative( angRatesBody[ROLL] + dAngBodyRates[1][ROLL] / 2.0, angRatesBody[PITCH] + dAngBodyRates[1][PITCH] / 2.0, angRatesBody[YAW] + dAngBodyRates[1][YAW] / 2.0 );
 
     dAngBodyRates[2][ROLL]  = dt * dAngBodyRatesDot[ROLL];
     dAngBodyRates[2][PITCH] = dt * dAngBodyRatesDot[PITCH];
@@ -285,15 +285,15 @@ void eom::rungeKutta4thOrder( const EomTypes::InData& inData )
     Kq[2]                   = QuaterionRKrotationMatrix( dt, 1.0 / 3.0, angRatesBody );
 
     // k4
-    dVelBody[3][X]          = dt * udot( velBody[Y] + dVelBody[2][Y], velBody[Z] + dVelBody[2][Z], angRatesBody[PITCH] + dAngBodyRates[2][PITCH], angRatesBody[YAW]   + dAngBodyRates[2][YAW], inData );
-    dVelBody[3][Y]          = dt * vdot( velBody[X] + dVelBody[2][X], velBody[Z] + dVelBody[2][Z], angRatesBody[ROLL]  + dAngBodyRates[2][ROLL], angRatesBody[YAW]   + dAngBodyRates[2][YAW], inData );
-    dVelBody[3][Z]          = dt * wdot( velBody[X] + dVelBody[2][X], velBody[Y] + dVelBody[2][Y], angRatesBody[ROLL]  + dAngBodyRates[2][ROLL], angRatesBody[PITCH] + dAngBodyRates[2][PITCH], inData );
+    dVelBody[3][X]          = dt * udot( velBody[Y] + dVelBody[2][Y], velBody[Z] + dVelBody[2][Z], angRatesBody[PITCH] + dAngBodyRates[2][PITCH], angRatesBody[YAW]   + dAngBodyRates[2][YAW] );
+    dVelBody[3][Y]          = dt * vdot( velBody[X] + dVelBody[2][X], velBody[Z] + dVelBody[2][Z], angRatesBody[ROLL]  + dAngBodyRates[2][ROLL], angRatesBody[YAW]   + dAngBodyRates[2][YAW] );
+    dVelBody[3][Z]          = dt * wdot( velBody[X] + dVelBody[2][X], velBody[Y] + dVelBody[2][Y], angRatesBody[ROLL]  + dAngBodyRates[2][ROLL], angRatesBody[PITCH] + dAngBodyRates[2][PITCH] );
 
     dPosBody[3][X]          = dt * ( velBody[X] + dVelBody[2][X] );
     dPosBody[3][Y]          = dt * ( velBody[Y] + dVelBody[2][Y] );
     dPosBody[3][Z]          = dt * ( velBody[Z] + dVelBody[2][Z] );
 
-    dAngBodyRatesDot        = angularRatesDerivative( angRatesBody[ROLL] + dAngBodyRates[2][ROLL], angRatesBody[PITCH] + dAngBodyRates[2][PITCH], angRatesBody[YAW] + dAngBodyRates[2][YAW], inData );
+    dAngBodyRatesDot        = angularRatesDerivative( angRatesBody[ROLL] + dAngBodyRates[2][ROLL], angRatesBody[PITCH] + dAngBodyRates[2][PITCH], angRatesBody[YAW] + dAngBodyRates[2][YAW] );
 
     dAngBodyRates[3][ROLL]  = dt * dAngBodyRatesDot[ROLL];
     dAngBodyRates[3][PITCH] = dt * dAngBodyRatesDot[PITCH];
@@ -324,6 +324,7 @@ void eom::rungeKutta4thOrder( const EomTypes::InData& inData )
     eulerAngles = q_nedToBody.Inverse().ToEuler( myMath::TaitBryanOrder::ZYX );
 }
 
+
 //////////////////////////////////////////////////////
 /// @note   Name: updateEcef
 /// @brief  Update ECEF frame and states
@@ -353,8 +354,9 @@ void eom::updateEcef()
 
     posEcef     = ecefFromEci * posEci;
 
-    altSeaLevel = posEcef.Magnitude() - myMath::Constants::EARTH_SEALEVEL_RADIUS;
+    // altSeaLevel = posEcef.Magnitude() - myMath::Constants::EARTH_SEALEVEL_RADIUS;
 }
+
 
 //////////////////////////////////////////////////////
 /// @note   Name: updateNed
@@ -391,6 +393,7 @@ void eom::updateNed()
     nedFromEcef = enuFromNed.Transpose() * enuFromEcef;
 }
 
+
 //////////////////////////////////////////////////////
 /// @note   Name: updateBody
 /// @brief  Update body frame and states
@@ -405,6 +408,7 @@ void eom::updateBody()
 
     bodyFromEci  = bodyFromEcef * ecefFromEci;
 }
+
 
 //////////////////////////////////////////////////////
 /// @note   Name: updateAeroAngles
@@ -425,6 +429,7 @@ void eom::updateAeroAngles()
     angleOfAttackTotal          = std::acos( velBody[X] / velBody.Magnitude() );
     angleOfAttackTotalClockAng  = std::atan2( velBody[Y], velBody[Z] );
 }
+
 
 //////////////////////////////////////////////////////
 /// @note   Name: updateWind
@@ -454,6 +459,7 @@ void eom::updateWind()
     bodyFromWind[2][2] = cosAoA;
 }
 
+
 //////////////////////////////////////////////////////
 /// @note   Name: udot
 /// @brief  Calculate the acceleration in the X
@@ -465,10 +471,11 @@ void eom::updateWind()
 /// @param  EOM input data structure
 /// @return Acceleration in X direction in body frame
 //////////////////////////////////////////////////////
-double eom::udot( const double v, const double w, const double q, const double r, const EomTypes::InData& inData )
+double eom::udot( const double v, const double w, const double q, const double r )
 {
-    return ( r * v - q * w ) + netForceBody[X] / inData.mass;
+    return ( r * v - q * w ) + netForceBody[X] /* / inData.mass */;
 }
+
 
 //////////////////////////////////////////////////////
 /// @note   Name: vdot
@@ -481,10 +488,11 @@ double eom::udot( const double v, const double w, const double q, const double r
 /// @param  EOM input data structure
 /// @return Acceleration in Y direction in body frame
 //////////////////////////////////////////////////////
-double eom::vdot( const double u, const double w, const double p, const double r, const EomTypes::InData& inData )
+double eom::vdot( const double u, const double w, const double p, const double r )
 {
-    return ( p * w - r * u ) + netForceBody[Y] / inData.mass;
+    return ( p * w - r * u ) + netForceBody[Y] /* / inData.mass */;
 }
+
 
 //////////////////////////////////////////////////////
 /// @note   Name: wdot
@@ -497,10 +505,11 @@ double eom::vdot( const double u, const double w, const double p, const double r
 /// @param  EOM input data structure
 /// @return Acceleration in Z direction in body frame
 //////////////////////////////////////////////////////
-double eom::wdot( const double u, const double v, const double p, const double q, const EomTypes::InData& inData )
+double eom::wdot( const double u, const double v, const double p, const double q )
 {
-    return ( q * u - p * v ) + netForceBody[Z] / inData.mass;
+    return ( q * u - p * v ) + netForceBody[Z] /* / inData.mass */;
 }
+
 
 //////////////////////////////////////////////////////
 /// @note   Name: angularRatesDerivative
@@ -512,16 +521,17 @@ double eom::wdot( const double u, const double v, const double p, const double q
 /// @param  EOM input data structure
 /// @return Acceleration in Z direction in body frame
 //////////////////////////////////////////////////////
-myMath::Vector3d eom::angularRatesDerivative( const double p, const double q, const double r, const EomTypes::InData& inData )
+myMath::Vector3d eom::angularRatesDerivative( const double p, const double q, const double r )
 {
     myMath::Vector3d angularRatesDerivs;
-
+/*
     angularRatesDerivs[ROLL]  = -q * ( -p * inData.I[X][Z] - q * inData.I[Y][Z] + r * inData.I[Z][Z] ) + r * ( -p * inData.I[X][Y] + q * inData.I[Y][Y] - r * inData.I[Y][Z] ) + netMomentBody[ROLL];
     angularRatesDerivs[PITCH] =  p * ( -p * inData.I[X][Z] - q * inData.I[Y][Z] + r * inData.I[Z][Z] ) - r * (  p * inData.I[X][X] - q * inData.I[X][Y] + r * inData.I[X][Z] ) + netMomentBody[PITCH];
     angularRatesDerivs[YAW]   = -p * ( -p * inData.I[X][Y] + q * inData.I[Y][Y] - r * inData.I[Y][Z] ) + q * (  p * inData.I[X][X] - q * inData.I[X][Y] + r * inData.I[X][Z] ) + netMomentBody[YAW];
-
-    return inData.I.Inverse() * angularRatesDerivs;
+*/
+    return /* inData.I.Inverse() * */ angularRatesDerivs;
 }
+
 
 //////////////////////////////////////////////////////
 /// @note   Name: quaternionDerivative
@@ -564,6 +574,7 @@ myMath::QuaternionD eom::quaternionDerivative( const double p, const double q, c
     return q_out;
 }
 
+
 //////////////////////////////////////////////////////
 /// @note   Name: QuaterionRKrotationMatrix
 /// @brief  Calculate rotor derivative using
@@ -605,26 +616,4 @@ myMath::Matrix4d eom::QuaterionRKrotationMatrix( const double dt, const double s
                                 + omega * std::sin( 0.5 * dt * scalar * rotRates.Magnitude() ) / rotRates.Magnitude();
 
     return rotation;
-}
-
-//////////////////////////////////////////////////////
-/// @note   Name: addForces
-/// @brief  Add forces to the net force
-/// @param  Force in body frame
-/// @return None
-//////////////////////////////////////////////////////
-void eom::addForces( const myMath::Vector3d& force )
-{
-    netForceBody += force;
-}
-
-//////////////////////////////////////////////////////
-/// @note   Name: addMoments
-/// @brief  Add moments to the net force
-/// @param  Moment in body frame
-/// @return None
-//////////////////////////////////////////////////////
-void eom::addMoments( const myMath::Vector3d& moment )
-{
-    netMomentBody += moment;
 }

@@ -9,7 +9,7 @@
 class ProcModule;
 
 // Forward declare Models/HwIntfs
-// class eom;
+class eom;
 class IMU;
 // class Aero;
 class Engine;
@@ -35,7 +35,7 @@ class AircraftEntity : public SimLib::Entity
     std::unique_ptr< ProcModule > pProc;
 
     // Models/HwIntfs
-    // std::unique_ptr< eom >            pEom;
+    std::unique_ptr< eom >            pEom;
     std::unique_ptr< IMU >            pImu;
     // std::unique_ptr< Aero >           pAero;
     std::unique_ptr< Engine >         pEngine;

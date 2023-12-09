@@ -21,7 +21,7 @@ public:
     ProcModule(  std::shared_ptr< PubSub::QueueMngr >& queueMngr );
     virtual ~ProcModule();
 
-    void launch();
+    virtual void launch() override;
 
 private:
     std::shared_ptr<TimePt::RtcClock> pRtcClock;

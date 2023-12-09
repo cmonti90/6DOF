@@ -47,8 +47,6 @@ void NavigationComponent::initialize( void )
     pAlg->initialize();
 
     counter_ = 0;
-
-    std::cout << "NavigationComponent::initialize" << std::endl;
 }
 
 void NavigationComponent::update( void )
@@ -65,8 +63,6 @@ void NavigationComponent::update( void )
                 case ImuMsg::MESSAGE_LABEL:
                 
                     endpoint_.receive< ImuMsg >( *inData_ );
-
-                    std::cout << "Received IMU data" << std::endl;
 
                     break;
 

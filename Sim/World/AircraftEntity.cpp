@@ -4,6 +4,7 @@
 #include "ProcModule.h"
 
 #include "Engine.h"
+#include "eom.h"
 #include "IMU.h"
 
 #include <iostream>
@@ -11,7 +12,7 @@
 AircraftEntity::AircraftEntity( const double runRate )
     : Entity            ( runRate )
     , pProc             ( new ProcModule( m_queueMngr ) )
-    // , pEom              ( new eom       ( runRate ) )
+    , pEom              ( new eom       ( runRate ) )
     , pImu              ( new IMU       ( runRate ) )
     // , pAero             ( new ( runRate ) )
     , pEngine           ( new Engine    ( runRate ) )
@@ -28,10 +29,9 @@ AircraftEntity::~AircraftEntity()
 
 void AircraftEntity::createEntity()
 {
-    std::cout << "AircraftEntity::createEntity() called." << std::endl;
     addSwApp( pProc.get() );
 
-    // addModel( pEom.get(), 0 );
+    addModel( pEom.get(), 0 );
     addModel( pImu.get(), 10 );
     // addModel( pAero, 20 );
     addModel( pEngine.get(), 30 );

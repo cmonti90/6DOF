@@ -14,4 +14,5 @@ target_link_libraries(${target} PRIVATE SimLib
                                         PubSub
                                         mathlib
                                         Messages
+                                        eom
                                         )

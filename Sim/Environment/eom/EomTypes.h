@@ -1,6 +1,6 @@
 #ifndef E9EF5EDF_D4A9_4BE8_A659_CB7E4C2F405F
 #define E9EF5EDF_D4A9_4BE8_A659_CB7E4C2F405F
-
+/*
 #include "MessageContainer.h"
 #include "Payload.h"
 #include "Decorators.h"
@@ -21,6 +21,7 @@
 
 namespace EomTypes
 {
+
     struct InData : Intf::MessageContainer <
         InputPayload< AeroMsg    , Deserialize             >,
         InputPayload< EngineMsg  , Deserialize             >,
@@ -30,10 +31,13 @@ namespace EomTypes
         >
     {};
 
+
     struct OutData : Intf::MessageContainer <
         OutputPayload<EomMsg, Serialize>
         >
     {};
 }
+
+*/
 
 #endif /* E9EF5EDF_D4A9_4BE8_A659_CB7E4C2F405F */

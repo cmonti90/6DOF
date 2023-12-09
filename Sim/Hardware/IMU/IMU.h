@@ -8,6 +8,8 @@
 #include "Vector.h"
 #include "PayloadEndpoint.h"
 
+class eom;
+
 class IMU : public SimLib::HwIntf
 {
   public:
@@ -33,6 +35,12 @@ class IMU : public SimLib::HwIntf
     void initialize() override;
     void update() override;
     void finalize() override;
+
+    virtual void getReferenceRequest( SimLib::ReferenceRequest& refReq ) override;
+
+    virtual SimLib::ReferenceRequest requestReferences() const override;
+
+    eom* pEom_;
 
     virtual void receiveQueueMngr( std::shared_ptr< PubSub::QueueMngr >& queueMngr ) override;
 
