@@ -42,8 +42,7 @@ class EarthGRAM : public SimLib::Model
 
   private:
 
-    virtual SimLib::ReferenceRequest requestReferences() const override;
-    virtual void getReferenceRequest( SimLib::ReferenceRequest& refReq ) override;
+    virtual void requestReferences( SimLib::ReferenceRequest& refReq ) override;
 };
 
 #endif /* C9F664FD_0B86_499E_8314_7353A41B39E9 */

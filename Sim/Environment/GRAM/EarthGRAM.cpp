@@ -55,18 +55,9 @@ EarthGRAM::~EarthGRAM()
 {
 }
 
-SimLib::ReferenceRequest EarthGRAM::requestReferences() const
+void EarthGRAM::requestReferences( SimLib::ReferenceRequest& refReq )
 {
-    SimLib::ReferenceRequest refReq;
-
-    refReq.requestReference( "eom" );
-
-    return refReq;
-}
-
-void EarthGRAM::getReferenceRequest( SimLib::ReferenceRequest& refReq )
-{
-    pEom_ = reinterpret_cast< eom* >( refReq.getReference( "eom" ) );
+    refReq.requestReference( reinterpret_cast< SimLib::Model** >( &pEom_ ), "eom" );
 }
 
 void EarthGRAM::initialize ( void )

@@ -27,18 +27,9 @@ void IMU::receiveQueueMngr( std::shared_ptr< PubSub::QueueMngr >& queueMngr )
     endoint_.configure( queueMngr );
 }
 
-SimLib::ReferenceRequest IMU::requestReferences() const
+void IMU::requestReferences( SimLib::ReferenceRequest& refReq )
 {
-    SimLib::ReferenceRequest refReq;
-
-    refReq.requestReference( "eom" );
-
-    return refReq;
-}
-
-void IMU::getReferenceRequest( SimLib::ReferenceRequest& refReq )
-{
-    pEom_ = reinterpret_cast< eom* >( refReq.getReference( "eom" ) );
+    refReq.requestReference( reinterpret_cast< SimLib::Model** >( &pEom_ ), "eom" );
 }
 
 void IMU::initialize()

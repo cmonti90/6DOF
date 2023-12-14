@@ -39,9 +39,7 @@ class IMU : public SimLib::HwIntf
     void update() override;
     void finalize() override;
 
-    virtual void getReferenceRequest( SimLib::ReferenceRequest& refReq ) override;
-
-    virtual SimLib::ReferenceRequest requestReferences() const override;
+    virtual void requestReferences( SimLib::ReferenceRequest& refReq ) override;
 
     eom* pEom_;
 

@@ -27,18 +27,9 @@ void ControlSurfaces::receiveQueueMngr( std::shared_ptr< PubSub::QueueMngr >& qu
     endpoint_.configure( queueMngr );
 }
 
-SimLib::ReferenceRequest ControlSurfaces::requestReferences() const
+void ControlSurfaces::requestReferences( SimLib::ReferenceRequest& refReq )
 {
-    SimLib::ReferenceRequest refReq;
-
-    // refReq.requestReference( "eom" );
-
-    return refReq;
-}
-
-void ControlSurfaces::getReferenceRequest( SimLib::ReferenceRequest& refReq )
-{
-    // pEom_ = reinterpret_cast< eom* >( refReq.getReference( "eom" ) );
+    // refReq.requestReference( reinterpret_cast< SimLib::Model** >( &pEom_ ), "eom" );
 }
 
 void ControlSurfaces::initialize()
@@ -67,5 +58,4 @@ void ControlSurfaces::update()
     aileronR->update( swInData_->aileronCmd[1] );
     elevator->update( swInData_->elevatorCmd );
     rudder  ->update( swInData_->rudderCmd );
-
 }

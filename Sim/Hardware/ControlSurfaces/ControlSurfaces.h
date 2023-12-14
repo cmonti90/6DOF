@@ -38,9 +38,7 @@ class ControlSurfaces : public SimLib::HwIntf
 
     void receiveQueueMngr( std::shared_ptr< PubSub::QueueMngr >& queueMngr );
 
-    virtual void getReferenceRequest( SimLib::ReferenceRequest& refReq ) override;
-
-    virtual SimLib::ReferenceRequest requestReferences() const override;
+    virtual void requestReferences( SimLib::ReferenceRequest& refReq ) override;
 
     ControlSurfaces( const ControlSurfaces& ) = delete;
     ControlSurfaces& operator=( const ControlSurfaces& ) = delete;

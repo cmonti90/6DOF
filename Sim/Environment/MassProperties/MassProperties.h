@@ -19,9 +19,7 @@ class MassProperties : public SimLib::Model
     void update();
     void finalize();
 
-    virtual void getReferenceRequest( SimLib::ReferenceRequest& refReq ) override;
-
-    virtual SimLib::ReferenceRequest requestReferences() const override;
+    virtual void requestReferences( SimLib::ReferenceRequest& refReq ) override;
 
     Engine* pEng_;
 };

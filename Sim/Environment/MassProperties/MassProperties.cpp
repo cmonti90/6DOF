@@ -14,18 +14,9 @@ MassProperties::~MassProperties()
 {
 }
 
-SimLib::ReferenceRequest MassProperties::requestReferences() const
+void MassProperties::requestReferences( SimLib::ReferenceRequest& refReq )
 {
-    SimLib::ReferenceRequest refReq;
-
-    refReq.requestReference( "Engine" );
-
-    return refReq;
-}
-
-void MassProperties::getReferenceRequest( SimLib::ReferenceRequest& refReq )
-{
-    pEng_ = reinterpret_cast< Engine* >( refReq.getReference( "Engine" ) );
+    refReq.requestReference( reinterpret_cast< SimLib::Model** >( &pEng_ ), "Engine" );
 }
 
 void MassProperties::initialize( void )

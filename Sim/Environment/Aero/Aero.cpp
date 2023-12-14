@@ -44,22 +44,11 @@ Aero::~Aero()
 {
 }
 
-SimLib::ReferenceRequest Aero::requestReferences() const
+void Aero::requestReferences( SimLib::ReferenceRequest& refReq )
 {
-    SimLib::ReferenceRequest refReq;
-
-    refReq.requestReference( "eom" );
-    refReq.requestReference( "EarthGRAM" );
+    refReq.requestReference( reinterpret_cast< SimLib::Model** >( &pEom_        ), "eom" );
+    refReq.requestReference( reinterpret_cast< SimLib::Model** >( &pEarthGRAM_  ), "EarthGRAM" );
     // refReq.requestReference( "ControlSurfaces" );
-
-    return refReq;
-}
-
-void Aero::getReferenceRequest( SimLib::ReferenceRequest& refReq )
-{
-    pEom_ = reinterpret_cast< eom* >( refReq.getReference( "eom" ) );
-    pEarthGRAM_ = reinterpret_cast< EarthGRAM* >( refReq.getReference( "EarthGRAM" ) );
-    // pControlSurfaces_ = reinterpret_cast< ControlSurfaces* >( refReq.getReference( "ControlSurfaces" ) );
 }
 
 void Aero::initialize()
