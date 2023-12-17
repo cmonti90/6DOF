@@ -17,6 +17,11 @@ class Aero : public SimLib::Model
 
   protected:
 
+    void initialize() override;
+    void update() override;
+    void finalize() override;
+    virtual void requestReferences( SimLib::ReferenceRequest& refReq ) override;
+
     myMath::Vector3d aeroForceBody;
     myMath::Vector3d aeroMomentBody;
 
@@ -107,13 +112,6 @@ class Aero : public SimLib::Model
 
 
   private:
-
-
-    void initialize() override;
-    void update() override;
-    void finalize() override;
-
-    virtual void requestReferences( SimLib::ReferenceRequest& refReq ) override;
 
     eom* pEom_;
     EarthGRAM* pEarthGRAM_;

@@ -21,7 +21,7 @@ AircraftEntity::AircraftEntity( const double runRate )
     , pAero             ( new Aero              ( runRate ) )
     , pEngine           ( new Engine            ( runRate ) )
     , pEarthGram        ( new EarthGRAM         ( runRate ) )
-    , pMassProps        ( new MassProperties    ( runRate ) )
+    // , pMassProps        ( new MassProperties    ( runRate ) )
     , pControlSurfaces  ( new ControlSurfaces   ( runRate ) )
 {
 }
@@ -34,11 +34,11 @@ void AircraftEntity::createEntity()
 {
     addSwApp( pProc.get() );
 
-    addModel( pEom.get(), 0 );
-    addModel( pImu.get(), 10 );
-    addModel( pAero.get(), 20 );
-    addModel( pEngine.get(), 30 );
-    addModel( pEarthGram.get(), 40 );
-    addModel( pMassProps.get(), 50 );
-    addModel( pControlSurfaces.get(), 60 );
+    // addModel( pEom.get(), 0 );
+    // addModel( pImu.get(), 10 );
+    // addModel( pAero.get(), 20 );
+    // addModel( pEngine.get(), 30 );
+    // addModel( pEarthGram.get(), 40 );
+    // addModel( pMassProps.get(), 50 );
+    // addModel( pControlSurfaces.get(), 60 );
 }

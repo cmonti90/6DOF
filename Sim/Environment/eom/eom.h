@@ -1,137 +1,119 @@
 #ifndef EOM_H
 #define EOM_H
 
-#include "Model.h"
+#include "EOMEcef.h"
 #include "mathlib.h"
 #include "EomTypes.h"
 
-class eom : public SimLib::Model
+class MassProperties;
+
+class eom : public SimLib::EOMEcef
 {
-    public:
-        eom( const double runRate, const std::string name = "eom" );
-        virtual ~eom();
+  public:
 
-        // Getters
-        double getAltitudeSeaLevel() const
-        {
-            return altSeaLevel;
-        }
+    eom( const double runRate, const std::string name = "eom" );
+    virtual ~eom();
 
-    protected:
+    // Getters
+    double getAltitudeSeaLevel() const
+    {
+        return altSeaLevel_;
+    }
 
-        void initialize ( void ) override;
-        void update     ()       override;
-        void finalize   ( void ) override;
+  protected:
 
-        enum : unsigned int
-        {
-            X,
-            Y,
-            Z
-        };
+    void initialize() override;
+    void update    () override;
+    void finalize  () override;
+    void requestReferences( SimLib::ReferenceRequest& refReq ) override;
 
-        enum : unsigned int
-        {
-            ROLL,
-            PITCH,
-            YAW
-        };
+    double t{0.0};
+    double t_prev{0.0};
+    int counter{0};
 
-        double dt{0.0};
-        double t{0.0};
-        double t_prev{0.0};
-        int counter{0};
+    myMath::Vector3d forceEcef_;
+    myMath::Vector3d specificForceEcef_;
+    myMath::Vector3d momentEcef_;
+    myMath::Vector3d gravityEcef_;
 
-        myMath::Vector3d windVelBody;
-        double naturalWindVelBody;
+    myMath::Vector3d windVelBody_;
 
-        //
+    myMath::AngleD eulerAngles_;
 
-        myMath::Vector3d netForceBody;
-        myMath::Vector3d netMomentBody;
+    myMath::Vector3d velBody_;
+    myMath::Vector3d accelBody_;
+    myMath::Vector3d angRatesBody_;
+    myMath::Vector3d angAccelBody_;
 
-        myMath::AngleD eulerAngles;
-        myMath::Vector3d velBody;
-        myMath::Vector3d accelBody;
-        myMath::Vector3d angRatesBody;
-        myMath::Vector3d angAccelBody;
+    myMath::Vector3d posEcef_;
+    myMath::Vector3d velEcef_;
+    myMath::Vector3d accelEcef_;
 
-        myMath::Vector3d dPosEci;
+    myMath::Vector3d posEci_;
+    myMath::Vector3d velEci_;
 
-        myMath::Vector3d posEci;
-        myMath::Vector3d velEci;
+    myMath::Vector3d posEnu_;
+    myMath::Vector3d velEnu_;
 
-        myMath::Vector3d posEcef;
-        myMath::Vector3d velEcef;
+    myMath::Vector3d posNed_;
+    myMath::Vector3d velNed_;
 
-        myMath::Vector3d posEnu;
-        myMath::Vector3d velEnu;
+    double flightPathAngle_;
+    double angleOfAttack_;
+    double angleOfAttackDot_;
+    double angleOfSideslip_;
+    double angleOfSideslipDot_;
 
-        myMath::Vector3d posNed;
-        myMath::Vector3d velNed;
+    double lat_centric_;
+    double lon_centric_;
 
-        double flightPathAngle;
-        double angleOfAttackTotal;
-        double angleOfAttackTotalClockAng;
-        double angleOfAttack;
-        double angleOfAttackDot;
-        double angleOfSideslip;
-        double angleOfSideslipDot;
+    double lat_geodetic_;
+    double lon_geodetic_;
 
-        double lat_centric;
-        double lon_centric;
-
-        double lat_geodetic;
-        double lon_geodetic;
-
-        double earthRotation;
+    double earthRotation_;
 
 
-        // Quaternions
-        myMath::QuaternionD q_nedToBody;
-        myMath::QuaternionD q_ecefToNed;
-        myMath::QuaternionD q_ecefToEci;
-        myMath::QuaternionD q_ecefToBody;
-        myMath::QuaternionD q_eciToBody;
+    // Quaternions
+    myMath::QuaternionD q_nedToBody_;
+    myMath::QuaternionD q_ecefToNed_;
+    myMath::QuaternionD q_ecefToEci_;
+    myMath::QuaternionD q_ecefToBody_;
+    myMath::QuaternionD q_eciToBody_;
 
-        myMath::QuaternionD qdot_body;
+    myMath::QuaternionD qdot_body_;
 
 
-        // DCMs
-        myMath::DCMd ecefFromEci;
-        myMath::DCMd bodyFromEcef;
-        myMath::DCMd bodyFromEci;
-        myMath::DCMd bodyFromNed;
-        myMath::DCMd bodyFromWind;
-        myMath::DCMd nedFromEcef;
-        myMath::DCMd enuFromNed;
-        myMath::DCMd enuFromEcef;
+    // DCMs
+    myMath::DCMd ecefFromEci_;
+    myMath::DCMd bodyFromEcef_;
+    myMath::DCMd bodyFromEci_;
+    myMath::DCMd bodyFromNed_;
+    myMath::DCMd bodyFromWind_;
+    myMath::DCMd nedFromEcef_;
+    myMath::DCMd enuFromNed_;
+    myMath::DCMd enuFromEcef_;
 
-        myMath::Vector3d originEnuInEcef;
+    myMath::Vector3d originEnuInEcef_;
 
-        double altSeaLevel;
-        double altGeodetic;
+    double altSeaLevel_;
+    double altGeodetic_;
 
-        double udot ( const double v, const double w, const double q, const double r );
-        double vdot ( const double u, const double w, const double p, const double r );
-        double wdot ( const double u, const double v, const double p, const double q );
+    myMath::QuaternionD quaternionDerivative( const double p, const double q, const double r, myMath::QuaternionD q0 );
 
-        myMath::Vector3d angularRatesDerivative ( const double p, const double q, const double r );
-        myMath::QuaternionD quaternionDerivative ( const double p, const double q, const double r, myMath::QuaternionD q0 );
+    void updateEcef();
+    void updateNed();
+    void updateBody();
+    void updateAeroAngles();
+    void updateWind();
+    void updateStates();
 
-        myMath::Matrix4d QuaterionRKrotationMatrix (const double dt, const double scalar, const myMath::Vector3d& rotRates);
+    FILE* fEom_;
+    bool logOutput_{true};
 
-        void rungeKutta4thOrder();
+  private:
 
-        void updateEcef();
-        void updateNed();
-        void updateBody();
-        void updateAeroAngles();
-        void updateWind();
-        void updateStates();
 
-        FILE* fEom;
-        bool logOutput{true};
+    MassProperties* pMassProps_;
 };
 
 #endif

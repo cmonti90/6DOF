@@ -21,6 +21,11 @@ class ControlSurfaces : public SimLib::HwIntf
 
   protected:
 
+    virtual void initialize() override;
+    virtual void update() override;
+    virtual void finalize() override;
+    virtual void requestReferences( SimLib::ReferenceRequest& refReq ) override;
+
     PubSub::PayloadEndpoint endpoint_;
 
     std::unique_ptr< CtrlSurfTypes::InData > swInData_;
@@ -32,13 +37,7 @@ class ControlSurfaces : public SimLib::HwIntf
 
   private:
 
-    virtual void initialize() override;
-    virtual void update() override;
-    virtual void finalize() override;
-
     void receiveQueueMngr( std::shared_ptr< PubSub::QueueMngr >& queueMngr );
-
-    virtual void requestReferences( SimLib::ReferenceRequest& refReq ) override;
 
     ControlSurfaces( const ControlSurfaces& ) = delete;
     ControlSurfaces& operator=( const ControlSurfaces& ) = delete;

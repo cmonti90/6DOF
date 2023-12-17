@@ -1,4 +1,5 @@
 #include "eom.h"
+#include "MassProperties.h"
 
 #include "WGS84.h"
 #include "PhysicalProperties.h"
@@ -15,11 +16,11 @@
 /// @return  None
 //////////////////////////////////////////////////////
 eom::eom( const double runRate, const std::string name )
-    : Model( runRate, name )
+    : EOMEcef( runRate, name )
 {
-    if ( logOutput )
+    if ( logOutput_ )
     {
-        fEom = fopen( "eom.dat", "w" );
+        fEom_ = fopen( "eom.dat", "w" );
     }
 }
 
@@ -35,53 +36,59 @@ eom::~eom()
 
 
 //////////////////////////////////////////////////////
+/// @brief   requestReferences
+/// @param   None
+/// @return  None
+//////////////////////////////////////////////////////
+void eom::requestReferences( SimLib::ReferenceRequest& refReq )
+{
+    SimLib::EOMEcef::requestReferences( refReq );
+
+    refReq.requestReference( reinterpret_cast< SimLib::Model** >( &pMassProps_ ), "MassProperties" );
+}
+
+//////////////////////////////////////////////////////
 /// @brief   initialize EOM object
 /// @param   None
 /// @return  None
 //////////////////////////////////////////////////////
 void eom::initialize()
 {
-    dt = 1.0 / 1000.0;
+    windVelBody_ = 0.0;
 
-    windVelBody = 0.0;
-    naturalWindVelBody = 0.0;
+    posEcef_[0] = 5.0e3_km; // m
+    posEcef_[1] = 5.0e3_km; // m
+    posEcef_[2] = 5.0e3_km; // m
 
-    netForceBody = 0.0;
-    netMomentBody = 0.0;
+    velEcef_[0] = 0.0; // m/sec
+    velEcef_[1] = 0.0;
+    velEcef_[2] = 0.0;
 
-    posEci[0] = 5.0e3_km; // m
-    posEci[1] = 5.0e3_km; // m
-    posEci[2] = 5.0e3_km; // m
+    eulerAngles_[0] = 0.0; // rad
+    eulerAngles_[1] = 0.0;
+    eulerAngles_[2] = 0.0;
 
-    velBody[0] = 0.0; // m/sec
-    velBody[1] = 0.0;
-    velBody[2] = 0.0;
+    angRatesBody_ = 0.0; // rad/sec
 
-    eulerAngles[0] = 0.0; // rad
-    eulerAngles[1] = 0.0;
-    eulerAngles[2] = 0.0;
+    ecefFromEci_ = myMath::DCMd::Identity();
 
-    angRatesBody = 0.0; // rad/sec
+    enuFromNed_[0][0] = 0.0;
+    enuFromNed_[0][1] = 1.0;
+    enuFromNed_[0][2] = 0.0;
 
-    ecefFromEci = myMath::DCMd::Identity();
+    enuFromNed_[1][0] = 1.0;
+    enuFromNed_[1][1] = 0.0;
+    enuFromNed_[1][2] = 0.0;
 
-    enuFromNed[0][0] = 0.0;
-    enuFromNed[0][1] = 1.0;
-    enuFromNed[0][2] = 0.0;
+    enuFromNed_[2][0] = 0.0;
+    enuFromNed_[2][1] = 0.0;
+    enuFromNed_[2][2] = -1.0;
 
-    enuFromNed[1][0] = 1.0;
-    enuFromNed[1][1] = 0.0;
-    enuFromNed[1][2] = 0.0;
+    windVelBody_ = 0.0;
 
-    enuFromNed[2][0] = 0.0;
-    enuFromNed[2][1] = 0.0;
-    enuFromNed[2][2] = -1.0;
+    q_nedToBody_ = myMath::QuaternionD::Identity();
 
-    windVelBody = 0.0;
-
-    q_nedToBody = myMath::QuaternionD::Identity();
-
-    altSeaLevel = 1.0;
+    altSeaLevel_ = 1.0;
 
     update();
 }
@@ -97,13 +104,14 @@ void eom::initialize()
 //////////////////////////////////////////////////////
 void eom::update()
 {
-    t += dt;
     counter++;
 
-    netForceBody = 0.0;
-    netMomentBody = 0.0;
+    forceEcef_ = m_forceEffector->getForce();
+    specificForceEcef_ = forceEcef_ / pMassProps_->getMass();
+    momentEcef_ = m_forceEffector->getMoment();
 
-    rungeKutta4thOrder();
+    RungeKutta4thOrder( posEcef_, velEcef_, accelEcef_, angRatesBody_, angAccelBody_, pMassProps_->getRotInertia(),
+                        q_nedToBody_, specificForceEcef_, momentEcef_ );
 
     updateEcef();
     updateNed();
@@ -112,21 +120,15 @@ void eom::update()
     updateWind();
     updateStates();
 
-    if ( logOutput )
+    if ( logOutput_ )
     {
-        myMath::QuaternionD qTest = eulerAngles.ToQuaternion( myMath::TaitBryanOrder::ZYX );
-        fprintf( fEom, "%f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f\n", t, posEci[0], posEci[1], posEci[2], eulerAngles[0], eulerAngles[1], eulerAngles[2]
-                 , angRatesBody[0], angRatesBody[1], angRatesBody[2], q_nedToBody[0], q_nedToBody[1], q_nedToBody[2], q_nedToBody[3]
+        myMath::QuaternionD qTest = eulerAngles_.ToQuaternion( myMath::TaitBryanOrder::ZYX );
+        fprintf( fEom_, "%f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f\n", t, posEci_[0], posEci_[1], posEci_[2], eulerAngles_[0], eulerAngles_[1], eulerAngles_[2]
+                 , angRatesBody_[0], angRatesBody_[1], angRatesBody_[2], q_nedToBody_[0], q_nedToBody_[1], q_nedToBody_[2], q_nedToBody_[3]
                  , qTest[0], qTest[1], qTest[2], qTest[3] );
     }
 
-    netForceBody = 0.0;
-    netMomentBody = 0.0;
     t_prev = t;
-
-    altSeaLevel *= 2.0;
-
-    std::cout << "eom::altSeaLevel = " << altSeaLevel << std::endl;
 
 }
 
@@ -139,46 +141,11 @@ void eom::update()
 //////////////////////////////////////////////////////
 void eom::finalize()
 {
-    if ( logOutput )
+    if ( logOutput_ )
     {
-        fclose( fEom );
+        fclose( fEom_ );
     }
 }
-
-
-// //////////////////////////////////////////////////////
-// /// @note   Name: BuildOutput
-// /// @brief  Pick out data for output
-// /// @param  EOM output data structure
-// /// @return None
-// //////////////////////////////////////////////////////
-// void eom::BuildOutput( EomTypes::OutData& outData )
-// {
-//     outData.windVelBody = windVelBody;
-//     outData.velBody = velBody;
-//     outData.accelBody = accelBody;
-
-//     outData.posEci = posEci;
-//     outData.velEci = velEci;
-
-//     outData.posEcef = posEcef;
-//     outData.velEcef = velEcef;
-
-//     outData.eulerAngs = eulerAngles;
-//     outData.eulerAngRates = angRatesBody;
-
-//     outData.angleOfAttack = angleOfAttack;
-//     outData.angleOfSideslip = angleOfSideslip;
-
-//     outData.bodyFromNed = bodyFromNed;
-//     outData.bodyFromWind = bodyFromWind;
-
-//     outData.altSeaLevel = altSeaLevel;
-//     outData.altGeodetic = altGeodetic;
-
-//     outData.lat = lat_geodetic;
-//     outData.lon = lon_geodetic;
-// }
 
 
 //////////////////////////////////////////////////////
@@ -190,138 +157,15 @@ void eom::finalize()
 //////////////////////////////////////////////////////
 void eom::updateStates()
 {
-    velEci = bodyFromEci.Transpose() * velBody;
+    velEci_ = bodyFromEci_.Transpose() * velBody_;
 
-    velEcef = bodyFromEcef.Transpose() * velBody;
+    velEcef_ = bodyFromEcef_.Transpose() * velBody_;
 
-    posEnu = enuFromEcef * posEcef;
-    velEnu = enuFromEcef * velEcef;
+    posEnu_ = enuFromEcef_ * posEcef_;
+    velEnu_ = enuFromEcef_ * velEcef_;
 
-    posNed = enuFromNed * posEnu;
-    velNed = enuFromNed * velEnu;
-}
-
-
-//////////////////////////////////////////////////////
-/// @note   Name: updateStates
-/// @brief  Implementation of the Rung-Kutta 4th order
-///         integration method. Integration in done in
-///         the body frame; the position delta in the
-///         body frame is transformed to ECI and added
-///         to the current ECI position.
-/// @param  EOM input data structure
-/// @return None
-//////////////////////////////////////////////////////
-void eom::rungeKutta4thOrder()
-{
-    dt = 1.0 / 1000.0;
-
-    myMath::Vector3d dPosBody[4];
-    myMath::Vector3d dVelBody[4];
-
-    myMath::Matrix4d Kq[4];
-    myMath::Vector3d dAngBodyRates[4];
-    myMath::Vector3d dAngBodyRatesDot;
-
-    // Instantaneous accelerations
-    accelBody[X]            = udot( velBody[Y], velBody[Z], angRatesBody[PITCH], angRatesBody[YAW] );
-    accelBody[Y]            = vdot( velBody[X], velBody[Z], angRatesBody[ROLL], angRatesBody[YAW] );
-    accelBody[Z]            = wdot( velBody[X], velBody[Y], angRatesBody[ROLL], angRatesBody[PITCH] );
-
-    angAccelBody            = angularRatesDerivative( angRatesBody[ROLL], angRatesBody[PITCH], angRatesBody[YAW] );
-
-    // k1
-    dVelBody[0][X]          = dt * udot( velBody[Y], velBody[Z], angRatesBody[PITCH], angRatesBody[YAW] );
-    dVelBody[0][Y]          = dt * vdot( velBody[X], velBody[Z], angRatesBody[ROLL], angRatesBody[YAW] );
-    dVelBody[0][Z]          = dt * wdot( velBody[X], velBody[Y], angRatesBody[ROLL], angRatesBody[PITCH] );
-
-    dPosBody[0][X]          = dt * velBody[X];
-    dPosBody[0][Y]          = dt * velBody[Y];
-    dPosBody[0][Z]          = dt * velBody[Z];
-
-    dAngBodyRatesDot        = angularRatesDerivative( angRatesBody[ROLL], angRatesBody[PITCH], angRatesBody[YAW] );
-
-    dAngBodyRates[0][ROLL]  = dt * dAngBodyRatesDot[ROLL];
-    dAngBodyRates[0][PITCH] = dt * dAngBodyRatesDot[PITCH];
-    dAngBodyRates[0][YAW]   = dt * dAngBodyRatesDot[YAW];
-
-    qdot_body               = quaternionDerivative( angRatesBody[ROLL], angRatesBody[PITCH], angRatesBody[YAW], q_eciToBody );
-
-    Kq[0]                   = QuaterionRKrotationMatrix( dt, 1.0 / 6.0, angRatesBody );
-
-
-    // k2
-    dVelBody[1][X]          = dt * udot( velBody[Y] + dVelBody[0][Y] / 2.0, velBody[Z] + dVelBody[0][Z] / 2.0, angRatesBody[PITCH] + dAngBodyRates[0][PITCH] / 2.0, angRatesBody[YAW]   + dAngBodyRates[0][YAW]   / 2.0 );
-    dVelBody[1][Y]          = dt * vdot( velBody[X] + dVelBody[0][X] / 2.0, velBody[Z] + dVelBody[0][Z] / 2.0, angRatesBody[ROLL]  + dAngBodyRates[0][ROLL]  / 2.0, angRatesBody[YAW]   + dAngBodyRates[0][YAW]   / 2.0 );
-    dVelBody[1][Z]          = dt * wdot( velBody[X] + dVelBody[0][X] / 2.0, velBody[Y] + dVelBody[0][Y] / 2.0, angRatesBody[ROLL]  + dAngBodyRates[0][ROLL]  / 2.0, angRatesBody[PITCH] + dAngBodyRates[0][PITCH] / 2.0 );
-
-    dPosBody[1][X]          = dt * ( velBody[X] + dVelBody[0][X] / 2.0 );
-    dPosBody[1][Y]          = dt * ( velBody[Y] + dVelBody[0][Y] / 2.0 );
-    dPosBody[1][Z]          = dt * ( velBody[Z] + dVelBody[0][Z] / 2.0 );
-
-    dAngBodyRatesDot        = angularRatesDerivative( angRatesBody[ROLL] + dAngBodyRates[0][ROLL] / 2.0, angRatesBody[PITCH] + dAngBodyRates[0][PITCH] / 2.0, angRatesBody[YAW] + dAngBodyRates[0][YAW] / 2.0 );
-
-    dAngBodyRates[1][ROLL]  = dt * dAngBodyRatesDot[ROLL];
-    dAngBodyRates[1][PITCH] = dt * dAngBodyRatesDot[PITCH];
-    dAngBodyRates[1][YAW]   = dt * dAngBodyRatesDot[YAW];
-
-    Kq[1]                   = QuaterionRKrotationMatrix( dt, 1.0 / 3.0, angRatesBody );
-
-    // k3
-    dVelBody[2][X]          = dt * udot( velBody[Y] + dVelBody[1][Y] / 2.0, velBody[Z] + dVelBody[1][Z] / 2.0, angRatesBody[PITCH] + dAngBodyRates[1][PITCH] / 2.0, angRatesBody[YAW]   + dAngBodyRates[1][YAW]   / 2.0 );
-    dVelBody[2][Y]          = dt * vdot( velBody[X] + dVelBody[1][X] / 2.0, velBody[Z] + dVelBody[1][Z] / 2.0, angRatesBody[ROLL]  + dAngBodyRates[1][ROLL]  / 2.0, angRatesBody[YAW]   + dAngBodyRates[1][YAW]   / 2.0 );
-    dVelBody[2][Z]          = dt * wdot( velBody[X] + dVelBody[1][X] / 2.0, velBody[Y] + dVelBody[1][Y] / 2.0, angRatesBody[ROLL]  + dAngBodyRates[1][ROLL]  / 2.0, angRatesBody[PITCH] + dAngBodyRates[1][PITCH] / 2.0 );
-
-    dPosBody[2][X]          = dt * ( velBody[X] + dVelBody[1][X] / 2.0 );
-    dPosBody[2][Y]          = dt * ( velBody[Y] + dVelBody[1][Y] / 2.0 );
-    dPosBody[2][Z]          = dt * ( velBody[Z] + dVelBody[1][Z] / 2.0 );
-
-    dAngBodyRatesDot        = angularRatesDerivative( angRatesBody[ROLL] + dAngBodyRates[1][ROLL] / 2.0, angRatesBody[PITCH] + dAngBodyRates[1][PITCH] / 2.0, angRatesBody[YAW] + dAngBodyRates[1][YAW] / 2.0 );
-
-    dAngBodyRates[2][ROLL]  = dt * dAngBodyRatesDot[ROLL];
-    dAngBodyRates[2][PITCH] = dt * dAngBodyRatesDot[PITCH];
-    dAngBodyRates[2][YAW]   = dt * dAngBodyRatesDot[YAW];
-
-    Kq[2]                   = QuaterionRKrotationMatrix( dt, 1.0 / 3.0, angRatesBody );
-
-    // k4
-    dVelBody[3][X]          = dt * udot( velBody[Y] + dVelBody[2][Y], velBody[Z] + dVelBody[2][Z], angRatesBody[PITCH] + dAngBodyRates[2][PITCH], angRatesBody[YAW]   + dAngBodyRates[2][YAW] );
-    dVelBody[3][Y]          = dt * vdot( velBody[X] + dVelBody[2][X], velBody[Z] + dVelBody[2][Z], angRatesBody[ROLL]  + dAngBodyRates[2][ROLL], angRatesBody[YAW]   + dAngBodyRates[2][YAW] );
-    dVelBody[3][Z]          = dt * wdot( velBody[X] + dVelBody[2][X], velBody[Y] + dVelBody[2][Y], angRatesBody[ROLL]  + dAngBodyRates[2][ROLL], angRatesBody[PITCH] + dAngBodyRates[2][PITCH] );
-
-    dPosBody[3][X]          = dt * ( velBody[X] + dVelBody[2][X] );
-    dPosBody[3][Y]          = dt * ( velBody[Y] + dVelBody[2][Y] );
-    dPosBody[3][Z]          = dt * ( velBody[Z] + dVelBody[2][Z] );
-
-    dAngBodyRatesDot        = angularRatesDerivative( angRatesBody[ROLL] + dAngBodyRates[2][ROLL], angRatesBody[PITCH] + dAngBodyRates[2][PITCH], angRatesBody[YAW] + dAngBodyRates[2][YAW] );
-
-    dAngBodyRates[3][ROLL]  = dt * dAngBodyRatesDot[ROLL];
-    dAngBodyRates[3][PITCH] = dt * dAngBodyRatesDot[PITCH];
-    dAngBodyRates[3][YAW]   = dt * dAngBodyRatesDot[YAW];
-
-    Kq[3]                   = QuaterionRKrotationMatrix( dt, 1.0 / 6.0, angRatesBody );
-
-
-    // Update state
-    velBody[X]          += ( dVelBody[0][X] + 2.0 * ( dVelBody[1][X] + dVelBody[2][X] ) + dVelBody[3][X] ) / 6.0;
-    velBody[Y]          += ( dVelBody[0][Y] + 2.0 * ( dVelBody[1][Y] + dVelBody[2][Y] ) + dVelBody[3][Y] ) / 6.0;
-    velBody[Z]          += ( dVelBody[0][Z] + 2.0 * ( dVelBody[1][Z] + dVelBody[2][Z] ) + dVelBody[3][Z] ) / 6.0;
-
-    myMath::Vector3d deltaPosBody;
-    deltaPosBody[X]     = ( dPosBody[0][X] + 2.0 * ( dPosBody[1][X] + dPosBody[2][X] ) + dPosBody[3][X] ) / 6.0;
-    deltaPosBody[Y]     = ( dPosBody[0][Y] + 2.0 * ( dPosBody[1][Y] + dPosBody[2][Y] ) + dPosBody[3][Y] ) / 6.0;
-    deltaPosBody[Z]     = ( dPosBody[0][Z] + 2.0 * ( dPosBody[1][Z] + dPosBody[2][Z] ) + dPosBody[3][Z] ) / 6.0;
-
-    posEci              += bodyFromEci.Transpose() * deltaPosBody;
-
-    q_nedToBody         = Kq[3] * Kq[2] * Kq[1] * Kq[0] * q_nedToBody;
-    q_nedToBody.Normalize();
-
-    angRatesBody[ROLL]  += ( dAngBodyRates[0][ROLL]   + 2.0 * ( dAngBodyRates[1][ROLL]  + dAngBodyRates[2][ROLL]  ) + dAngBodyRates[3][ROLL]  ) / 6.0;
-    angRatesBody[PITCH] += ( dAngBodyRates[0][PITCH]  + 2.0 * ( dAngBodyRates[1][PITCH] + dAngBodyRates[2][PITCH] ) + dAngBodyRates[3][PITCH] ) / 6.0;
-    angRatesBody[YAW]   += ( dAngBodyRates[0][YAW]    + 2.0 * ( dAngBodyRates[1][YAW]   + dAngBodyRates[2][YAW]   ) + dAngBodyRates[3][YAW]   ) / 6.0;
-
-    eulerAngles = q_nedToBody.Inverse().ToEuler( myMath::TaitBryanOrder::ZYX );
+    posNed_ = enuFromNed_ * posEnu_;
+    velNed_ = enuFromNed_ * velEnu_;
 }
 
 
@@ -333,28 +177,28 @@ void eom::rungeKutta4thOrder()
 //////////////////////////////////////////////////////
 void eom::updateEcef()
 {
-    earthRotation   += myMath::Constants::EARTH_ROTATION_RATE * dt;
+    earthRotation_   += myMath::Constants::EARTH_ROTATION_RATE / m_rate;
 
-    double cosW     = std::cos( earthRotation );
-    double sinW     = std::sin( earthRotation );
+    double cosW     = std::cos( earthRotation_ );
+    double sinW     = std::sin( earthRotation_ );
 
-    ecefFromEci[0][0] = cosW;
-    ecefFromEci[0][1] = sinW;
-    ecefFromEci[0][2] = 0.0;
+    ecefFromEci_[0][0] = cosW;
+    ecefFromEci_[0][1] = sinW;
+    ecefFromEci_[0][2] = 0.0;
 
-    ecefFromEci[1][0] = -sinW;
-    ecefFromEci[1][1] = cosW;
-    ecefFromEci[1][2] = 0.0;
+    ecefFromEci_[1][0] = -sinW;
+    ecefFromEci_[1][1] = cosW;
+    ecefFromEci_[1][2] = 0.0;
 
-    ecefFromEci[2][0] = 0.0;
-    ecefFromEci[2][1] = 0.0;
-    ecefFromEci[2][2] = 1.0;
+    ecefFromEci_[2][0] = 0.0;
+    ecefFromEci_[2][1] = 0.0;
+    ecefFromEci_[2][2] = 1.0;
 
-    q_ecefToEci = ecefFromEci.Transpose().ToQuaternion();
+    q_ecefToEci_ = ecefFromEci_.Transpose().ToQuaternion();
 
-    posEcef     = ecefFromEci * posEci;
+    posEcef_     = ecefFromEci_ * posEci_;
 
-    // altSeaLevel = posEcef.Magnitude() - myMath::Constants::EARTH_SEALEVEL_RADIUS;
+    altSeaLevel_ = posEcef_.Magnitude() - myMath::Constants::EARTH_SEALEVEL_RADIUS;
 }
 
 
@@ -366,31 +210,31 @@ void eom::updateEcef()
 //////////////////////////////////////////////////////
 void eom::updateNed()
 {
-    lat_centric = std::atan2( posEcef[Z], posEcef[X] );
-    lon_centric = std::atan2( posEcef[Y], posEcef[X] );
+    lat_centric_ = std::atan2( posEcef_[Z], posEcef_[X] );
+    lon_centric_ = std::atan2( posEcef_[Y], posEcef_[X] );
 
-    lon_geodetic = lon_centric;
+    lon_geodetic_ = lon_centric_;
 
-    WGS84::EcefToLla( posEcef, lat_geodetic, lon_geodetic, altGeodetic );
+    WGS84::EcefToLla( posEcef_, lat_geodetic_, lon_geodetic_, altGeodetic_ );
 
-    double cosLat = std::cos( lat_geodetic );
-    double sinLat = std::sin( lat_geodetic );
-    double cosLon = std::cos( lon_geodetic );
-    double sinLon = std::sin( lon_geodetic );
+    double cosLat = std::cos( lat_geodetic_ );
+    double sinLat = std::sin( lat_geodetic_ );
+    double cosLon = std::cos( lon_geodetic_ );
+    double sinLon = std::sin( lon_geodetic_ );
 
-    enuFromEcef[0][0] = -sinLon;
-    enuFromEcef[0][1] = cosLon;
-    enuFromEcef[0][2] = 0.0;
+    enuFromEcef_[0][0] = -sinLon;
+    enuFromEcef_[0][1] = cosLon;
+    enuFromEcef_[0][2] = 0.0;
 
-    enuFromEcef[1][0] = -sinLat * cosLon;
-    enuFromEcef[1][1] = -sinLat * sinLon;
-    enuFromEcef[1][2] = cosLat;
+    enuFromEcef_[1][0] = -sinLat * cosLon;
+    enuFromEcef_[1][1] = -sinLat * sinLon;
+    enuFromEcef_[1][2] = cosLat;
 
-    enuFromEcef[2][0] = cosLat * cosLon;
-    enuFromEcef[2][1] = cosLat * sinLon;
-    enuFromEcef[2][2] = sinLat;
+    enuFromEcef_[2][0] = cosLat * cosLon;
+    enuFromEcef_[2][1] = cosLat * sinLon;
+    enuFromEcef_[2][2] = sinLat;
 
-    nedFromEcef = enuFromNed.Transpose() * enuFromEcef;
+    nedFromEcef_ = enuFromNed_.Transpose() * enuFromEcef_;
 }
 
 
@@ -402,11 +246,11 @@ void eom::updateNed()
 //////////////////////////////////////////////////////
 void eom::updateBody()
 {
-    bodyFromNed  = eulerAngles.ToDCM( myMath::TaitBryanOrder::ZYX );
+    bodyFromNed_  = eulerAngles_.ToDCM( myMath::TaitBryanOrder::ZYX );
 
-    bodyFromEcef = bodyFromNed * nedFromEcef;
+    bodyFromEcef_ = bodyFromNed_ * nedFromEcef_;
 
-    bodyFromEci  = bodyFromEcef * ecefFromEci;
+    bodyFromEci_  = bodyFromEcef_ * ecefFromEci_;
 }
 
 
@@ -418,16 +262,13 @@ void eom::updateBody()
 //////////////////////////////////////////////////////
 void eom::updateAeroAngles()
 {
-    angleOfAttack   = std::atan2( velBody[Z], velBody[X] ) + Aircraft::WingIncidenceAngle;
-    angleOfSideslip = std::asin( velBody[Y] / velBody.Magnitude() );
+    angleOfAttack_   = std::atan2( velBody_[Z], velBody_[X] ) + Aircraft::WingIncidenceAngle;
+    angleOfSideslip_ = std::asin( velBody_[Y] / velBody_.Magnitude() );
 
-    angleOfAttackDot    = ( std::cos( angleOfSideslip ) * accelBody[X] + std::sin( angleOfSideslip ) * accelBody[Z] ) / velBody.Magnitude();
-    angleOfSideslipDot  = ( accelBody[Y] - angleOfAttackDot * velBody[Y] ) / velBody.Magnitude();
+    angleOfAttackDot_    = ( std::cos( angleOfSideslip_ ) * accelBody_[X] + std::sin( angleOfSideslip_ ) * accelBody_[Z] ) / velBody_.Magnitude();
+    angleOfSideslipDot_  = ( accelBody_[Y] - angleOfAttackDot_ * velBody_[Y] ) / velBody_.Magnitude();
 
-    flightPathAngle = eulerAngles[PITCH] - angleOfAttack;
-
-    angleOfAttackTotal          = std::acos( velBody[X] / velBody.Magnitude() );
-    angleOfAttackTotalClockAng  = std::atan2( velBody[Y], velBody[Z] );
+    flightPathAngle_ = eulerAngles_[PITCH] - angleOfAttack_;
 }
 
 
@@ -439,99 +280,25 @@ void eom::updateAeroAngles()
 //////////////////////////////////////////////////////
 void eom::updateWind()
 {
-    windVelBody = -velBody + naturalWindVelBody;
+    windVelBody_ = -velBody_;
 
-    double cosAoA  = std::cos( angleOfAttack );
-    double sinAoA  = std::sin( angleOfAttack );
-    double cosAoSS = std::cos( angleOfSideslip );
-    double sinAoSS = std::sin( angleOfSideslip );
+    double cosAoA  = std::cos( angleOfAttack_ );
+    double sinAoA  = std::sin( angleOfAttack_ );
+    double cosAoSS = std::cos( angleOfSideslip_ );
+    double sinAoSS = std::sin( angleOfSideslip_ );
 
-    bodyFromWind[0][0] = cosAoA * cosAoSS;
-    bodyFromWind[0][1] = sinAoSS;
-    bodyFromWind[0][2] = sinAoA * cosAoSS;
+    bodyFromWind_[0][0] = cosAoA * cosAoSS;
+    bodyFromWind_[0][1] = sinAoSS;
+    bodyFromWind_[0][2] = sinAoA * cosAoSS;
 
-    bodyFromWind[1][0] = -cosAoA * sinAoSS;
-    bodyFromWind[1][1] = cosAoSS;
-    bodyFromWind[1][2] = -sinAoA * sinAoSS;
+    bodyFromWind_[1][0] = -cosAoA * sinAoSS;
+    bodyFromWind_[1][1] = cosAoSS;
+    bodyFromWind_[1][2] = -sinAoA * sinAoSS;
 
-    bodyFromWind[2][0] = -sinAoA;
-    bodyFromWind[2][1] = 0.0;
-    bodyFromWind[2][2] = cosAoA;
+    bodyFromWind_[2][0] = -sinAoA;
+    bodyFromWind_[2][1] = 0.0;
+    bodyFromWind_[2][2] = cosAoA;
 }
-
-
-//////////////////////////////////////////////////////
-/// @note   Name: udot
-/// @brief  Calculate the acceleration in the X
-///         direction in the body frame
-/// @param  Y velocity in body frame
-/// @param  Z velocity in body frame
-/// @param  Pitch rate in body frame
-/// @param  Yaw rate in body frame
-/// @param  EOM input data structure
-/// @return Acceleration in X direction in body frame
-//////////////////////////////////////////////////////
-double eom::udot( const double v, const double w, const double q, const double r )
-{
-    return ( r * v - q * w ) + netForceBody[X] /* / inData.mass */;
-}
-
-
-//////////////////////////////////////////////////////
-/// @note   Name: vdot
-/// @brief  Calculate the acceleration in the Y
-///         direction in the body frame
-/// @param  X velocity in body frame
-/// @param  Z velocity in body frame
-/// @param  Roll rate in body frame
-/// @param  Yaw rate in body frame
-/// @param  EOM input data structure
-/// @return Acceleration in Y direction in body frame
-//////////////////////////////////////////////////////
-double eom::vdot( const double u, const double w, const double p, const double r )
-{
-    return ( p * w - r * u ) + netForceBody[Y] /* / inData.mass */;
-}
-
-
-//////////////////////////////////////////////////////
-/// @note   Name: wdot
-/// @brief  Calculate the acceleration in the Z
-///         direction in the body frame
-/// @param  X velocity in body frame
-/// @param  Y velocity in body frame
-/// @param  Roll rate in body frame
-/// @param  Pitch rate in body frame
-/// @param  EOM input data structure
-/// @return Acceleration in Z direction in body frame
-//////////////////////////////////////////////////////
-double eom::wdot( const double u, const double v, const double p, const double q )
-{
-    return ( q * u - p * v ) + netForceBody[Z] /* / inData.mass */;
-}
-
-
-//////////////////////////////////////////////////////
-/// @note   Name: angularRatesDerivative
-/// @brief  Calculate the angular acceleration in
-///         the body frame
-/// @param  Roll rate in body frame
-/// @param  Pitch rate in body frame
-/// @param  Yaw rate in body frame
-/// @param  EOM input data structure
-/// @return Acceleration in Z direction in body frame
-//////////////////////////////////////////////////////
-myMath::Vector3d eom::angularRatesDerivative( const double p, const double q, const double r )
-{
-    myMath::Vector3d angularRatesDerivs;
-/*
-    angularRatesDerivs[ROLL]  = -q * ( -p * inData.I[X][Z] - q * inData.I[Y][Z] + r * inData.I[Z][Z] ) + r * ( -p * inData.I[X][Y] + q * inData.I[Y][Y] - r * inData.I[Y][Z] ) + netMomentBody[ROLL];
-    angularRatesDerivs[PITCH] =  p * ( -p * inData.I[X][Z] - q * inData.I[Y][Z] + r * inData.I[Z][Z] ) - r * (  p * inData.I[X][X] - q * inData.I[X][Y] + r * inData.I[X][Z] ) + netMomentBody[PITCH];
-    angularRatesDerivs[YAW]   = -p * ( -p * inData.I[X][Y] + q * inData.I[Y][Y] - r * inData.I[Y][Z] ) + q * (  p * inData.I[X][X] - q * inData.I[X][Y] + r * inData.I[X][Z] ) + netMomentBody[YAW];
-*/
-    return /* inData.I.Inverse() * */ angularRatesDerivs;
-}
-
 
 //////////////////////////////////////////////////////
 /// @note   Name: quaternionDerivative
@@ -572,48 +339,4 @@ myMath::QuaternionD eom::quaternionDerivative( const double p, const double q, c
     myMath::QuaternionD q_out = 0.5 * omega * q0;
 
     return q_out;
-}
-
-
-//////////////////////////////////////////////////////
-/// @note   Name: QuaterionRKrotationMatrix
-/// @brief  Calculate rotor derivative using
-///         angular rates for Runge-Kutta
-/// @param  Time step
-/// @param  Integration scalar
-/// @param  Rotation rates
-/// @return Rotor
-//////////////////////////////////////////////////////
-myMath::Matrix4d eom::QuaterionRKrotationMatrix( const double dt, const double scalar, const myMath::Vector3d& rotRates )
-{
-    if ( myMath::isZero( rotRates.Magnitude() ) )
-    {
-        return myMath::Matrix4d::Identity();
-    }
-
-    myMath::Matrix4d omega;
-    omega[0][0] = 0.0;
-    omega[0][1] = -rotRates[2];
-    omega[0][2] = rotRates[1];
-    omega[0][3] = rotRates[0];
-
-    omega[1][0] = rotRates[2];
-    omega[1][1] = 0.0;
-    omega[1][2] = -rotRates[0];
-    omega[1][3] = rotRates[1];
-
-    omega[2][0] = -rotRates[1];
-    omega[2][1] = rotRates[0];
-    omega[2][2] = 0.0;
-    omega[2][3] = rotRates[2];
-
-    omega[3][0] = -rotRates[0];
-    omega[3][1] = -rotRates[1];
-    omega[3][2] = -rotRates[2];
-    omega[3][3] = 0.0;
-
-    myMath::Matrix4d rotation = myMath::Matrix4d::Identity() * std::cos( 0.5 * dt * scalar * rotRates.Magnitude() )
-                                + omega * std::sin( 0.5 * dt * scalar * rotRates.Magnitude() ) / rotRates.Magnitude();
-
-    return rotation;
 }

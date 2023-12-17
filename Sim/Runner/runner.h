@@ -3,12 +3,6 @@
 
 #include "6DOFSimulation.h"
 
-class runner
-{
-public:
-    SixDOFSimulation sim_;
-};
-
-runner wrapper;
+SixDOFSimulation sim_;
 
 #endif /* RUNNER_H */

@@ -21,13 +21,15 @@ class EarthGRAM : public SimLib::Model
     EarthGRAM( const double runRate, const std::string name = "EarthGRAM" );
     virtual ~EarthGRAM();
 
-    void initialize( void ) override;
-    void update( void ) override;
-    void finalize( void ) override;
-
     // Getters
 
   protected:
+
+
+    void initialize( void ) override;
+    void update( void ) override;
+    void finalize( void ) override;
+    virtual void requestReferences( SimLib::ReferenceRequest& refReq ) override;
 
     void updateGRAM();
 
@@ -42,7 +44,6 @@ class EarthGRAM : public SimLib::Model
 
   private:
 
-    virtual void requestReferences( SimLib::ReferenceRequest& refReq ) override;
 };
 
 #endif /* C9F664FD_0B86_499E_8314_7353A41B39E9 */

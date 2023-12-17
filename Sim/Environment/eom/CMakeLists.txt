@@ -13,6 +13,6 @@ target_link_libraries(${target} PRIVATE SimLib
                                         mathlib
                                         AircraftProperties
                                         EarthModels
-                                        Messages
+                                        MassProperties
                                         Utility
                                         )

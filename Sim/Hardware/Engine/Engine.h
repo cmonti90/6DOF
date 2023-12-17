@@ -11,10 +11,6 @@ class Engine : public SimLib::Model
     Engine( const double runRate, const std::string str = "Engine" );
     virtual ~Engine();
 
-    void initialize( void );
-    void update();
-    void finalize( void );
-
     // Getters
     myMath::Vector3d getNetForceBody( void ) const
     {
@@ -27,6 +23,10 @@ class Engine : public SimLib::Model
     }
 
   protected:
+
+    void initialize( void );
+    void update();
+    void finalize( void );
 
     myMath::Vector3d netForceBody_;
     myMath::Vector3d netMomentBody_;

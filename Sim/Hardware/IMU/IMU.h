@@ -23,6 +23,11 @@ class IMU : public SimLib::HwIntf
 
   protected:
 
+    void initialize() override;
+    void update() override;
+    void finalize() override;
+    virtual void requestReferences( SimLib::ReferenceRequest& refReq ) override;
+
     PubSub::PayloadEndpoint endoint_;
 
     myMath::Vector3d deltaVel_;
@@ -34,12 +39,6 @@ class IMU : public SimLib::HwIntf
     std::unique_ptr< IMUTypes::OutData > swOutData_;
 
   private:
-
-    void initialize() override;
-    void update() override;
-    void finalize() override;
-
-    virtual void requestReferences( SimLib::ReferenceRequest& refReq ) override;
 
     eom* pEom_;
 

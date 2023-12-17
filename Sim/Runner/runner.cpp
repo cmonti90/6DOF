@@ -1,8 +1,12 @@
 #include "runner.h"
 
+#include <iostream>
+
 int main()
 {
-        wrapper.sim_.go();
+        std::cout << "Starting Simulation" << std::endl << std::endl;
+
+        sim_.go();
 
         return 1;
 }
