@@ -2,6 +2,8 @@
 #include "EngineTypes.h"
 #include "PhysicalProperties.h"
 
+#include "ForceEffector.h"
+
 #include <math.h>
 
 #include <iostream>
@@ -18,6 +20,11 @@ Engine::Engine( const double runRate, const std::string str )
 
 Engine::~Engine()
 {
+}
+
+void Engine::requestReferences( SimLib::ReferenceRequest& refReq )
+{
+    refReq.requestReference( reinterpret_cast< SimLib::Model** >( &pForceEffector_ ), "ForceEffector" );
 }
 
 void Engine::receiveQueueMngr( std::shared_ptr< PubSub::QueueMngr >& queueMngr )

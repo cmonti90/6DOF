@@ -13,6 +13,11 @@ namespace EngineTypes
     struct InData;
 }
 
+namespace SimLib
+{
+    class ForceEffector;
+}
+
 class Engine : public SimLib::HwIntf
 {
   public:
@@ -35,7 +40,7 @@ class Engine : public SimLib::HwIntf
     void initialize() override;
     void update() override;
     void finalize() override;
-    virtual void receiveQueueMngr( std::shared_ptr< PubSub::QueueMngr >& queueMngr ) override;
+    virtual void requestReferences( SimLib::ReferenceRequest& refReq ) override;
 
     void CheckForMessages();
 
@@ -47,6 +52,12 @@ class Engine : public SimLib::HwIntf
     myMath::Vector3d netMomentBody_;
 
     unsigned int counter_;
+
+  private:
+
+    virtual void receiveQueueMngr( std::shared_ptr< PubSub::QueueMngr >& queueMngr ) override;
+
+    SimLib::ForceEffector* pForceEffector_;
 };
 
 #endif /* ENGINE_H */
