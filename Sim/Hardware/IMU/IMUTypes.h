@@ -6,10 +6,12 @@
 
 #include "ImuMsg.h"
 
+#include "ImuDataSerialization.h"
+
 namespace IMUTypes
 {
     struct OutData : Intf::MessageContainer<
-        OutputPayload< ImuMsg >
+        OutputPayload< ImuMsg, Serialize >
     >
     {};
 }

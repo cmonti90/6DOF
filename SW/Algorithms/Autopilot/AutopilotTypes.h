@@ -9,16 +9,18 @@
 #include "GuidanceMsg.h"
 #include "NavMsg.h"
 
+#include "NavDataSerialization.h"
+
 namespace AutopilotTypes
 {
     struct InData : Intf::MessageContainer<
-        InputPayload<GuidanceMsg>,
-        InputPayload<NavMsg>
+        InputPayload< GuidanceMsg                          >,
+        InputPayload< NavMsg     , Deserialize, Persistent >
     >
     {};
 
     struct OutData : Intf::MessageContainer<
-        OutputPayload<AutopilotMsg>
+        OutputPayload< AutopilotMsg >
     >
     {};
 }

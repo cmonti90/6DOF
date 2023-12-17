@@ -3,16 +3,9 @@
 
 enum MessageIds : int
 {
-    AeroMsgId,
     AutopilotMsgId,
-    CtrlSurfMsgId,
-    EngineMsgId,
-    EomMsgId,
-    GRAMMsgId,
-    GravityMsgId,
     GuidanceMsgId,
     ImuMsgId,
-    MassPropMsgId,
     NavMsgId,
     MsgIdCount
 };

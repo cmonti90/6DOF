@@ -13,7 +13,7 @@
 namespace GuidanceTypes
 {
     struct InData : Intf::MessageContainer<
-        InputPayload< NavMsg, Deserialize >
+        InputPayload< NavMsg, Deserialize, Persistent >
     >
     {};
 

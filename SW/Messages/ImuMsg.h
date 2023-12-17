@@ -7,31 +7,42 @@
 
 struct ImuData
 {
-    double accelXBody;
-    double accelYBody;
-    double accelZBody;
+    double accelXSensor_raw;
+    double accelYSensor_raw;
+    double accelZSensor_raw;
 
-    double rollRate;
-    double pitchRate;
-    double yawRate;
+    double rollRateSensor_raw;
+    double pitchRateSensor_raw;
+    double yawRateSensor_raw;
+
+    double timeStamp;
 
     void Default()
     {
-        accelXBody = 0.0;
-        accelYBody = 0.0;
-        accelZBody = 0.0;
+        accelXSensor_raw = 0.0;
+        accelYSensor_raw = 0.0;
+        accelZSensor_raw = 0.0;
 
-        rollRate = 0.0;
-        pitchRate = 0.0;
-        yawRate = 0.0;
+        rollRateSensor_raw = 0.0;
+        pitchRateSensor_raw = 0.0;
+        yawRateSensor_raw = 0.0;
+
+        timeStamp = 0.0;
     }
 
-    ImuData() : accelXBody(), accelYBody(), accelZBody(), rollRate(), pitchRate(), yawRate()
+    ImuData()
+        : accelXSensor_raw()
+        , accelYSensor_raw()
+        , accelZSensor_raw()
+        , rollRateSensor_raw()
+        , pitchRateSensor_raw()
+        , yawRateSensor_raw()
+        , timeStamp()
     {
         Default();
     }
 };
 
-MESSAGE_PAYLOAD(ImuMsg, ImuData, ImuMsgId)
+MESSAGE_PAYLOAD( ImuMsg, ImuData, ImuMsgId )
 
 #endif /* F826EEC0_1BBA_4DB7_9903_1AD431D6F7E0 */

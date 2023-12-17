@@ -1,11 +1,10 @@
-#include "runner.h"
 
-#include <iostream>
+#include "6DOFSimulation.h"
+
+SixDOFSimulation sim_;
 
 int main()
 {
-        std::cout << "Starting Simulation" << std::endl << std::endl;
-
         sim_.go();
 
         return 1;

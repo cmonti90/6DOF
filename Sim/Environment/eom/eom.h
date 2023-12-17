@@ -20,6 +20,26 @@ class eom : public SimLib::EOMEcef
         return altSeaLevel_;
     }
 
+    myMath::Vector3d getPosEcef() const
+    {
+        return posEcef_;
+    }
+
+    myMath::Vector3d getVelEcef() const
+    {
+        return velEcef_;
+    }
+
+    myMath::Vector3d getAccelEcef() const
+    {
+        return accelEcef_;
+    }
+
+    myMath::Vector3d getAngRatesBody() const
+    {
+        return angRatesBody_;
+    }
+
   protected:
 
         enum : unsigned int
@@ -104,8 +124,9 @@ class eom : public SimLib::EOMEcef
     myMath::DCMd bodyFromNed_;
     myMath::DCMd bodyFromWind_;
     myMath::DCMd nedFromEcef_;
-    myMath::DCMd enuFromNed_;
     myMath::DCMd enuFromEcef_;
+    
+    const myMath::DCMd enuFromNed_;
 
     myMath::Vector3d originEnuInEcef_;
 
@@ -114,7 +135,7 @@ class eom : public SimLib::EOMEcef
 
     myMath::QuaternionD quaternionDerivative( const double p, const double q, const double r, myMath::QuaternionD q0 );
 
-    void updateEcef();
+    void updateEci();
     void updateNed();
     void updateBody();
     void updateAeroAngles();

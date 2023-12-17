@@ -13,28 +13,41 @@ namespace IMUTypes
     struct OutData;
 }
 
+// Base off TDK InvenSense IIM-46230 IMU
+
 class IMU : public SimLib::HwIntf
 {
   public:
     IMU( const double runRate, const std::string name = "IMU" );
     ~IMU();
 
-    // Getters
-
   protected:
+
+    // Rate to Send Message to SW
+    static const int INTERUPT_RATE;
+
+    // IMU Properties
+    static const double ACCEL_BIAS;
+    static const double GYRO_BIAS;
+    static const double ACCEL_NOISE_DENSITY;
+    static const double GYRO_NOISE_DENSITY;
 
     void initialize() override;
     void update() override;
     void finalize() override;
     virtual void requestReferences( SimLib::ReferenceRequest& refReq ) override;
 
+    void AccelerometerMeasurement();
+    void GyroscopeMeasurement();
+    void BuildSwOutput();
+
     PubSub::PayloadEndpoint endoint_;
 
-    myMath::Vector3d deltaVel_;
-    myMath::Vector3d gyro_;
-    myMath::Vector3d mag_;
+    double timeStamp_;
+    myMath::Vector3d measAccel_;
+    myMath::Vector3d measOmega_;
 
-    unsigned int counter_;
+    uint64_t counter_;
 
     std::unique_ptr< IMUTypes::OutData > swOutData_;
 

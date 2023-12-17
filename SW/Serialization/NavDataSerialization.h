@@ -23,13 +23,13 @@ struct NavDeserializedData
     myMath::DCMd bodyFromNed;
 
     NavDeserializedData() : posEci(),
-                            velEci(),
-                            accEci(),
-                            posEcef(),
-                            velEcef(),
-                            accEcef(),
-                            eulerAngs(),
-                            eulerAngRates()
+        velEci(),
+        accEci(),
+        posEcef(),
+        velEcef(),
+        accEcef(),
+        eulerAngs(),
+        eulerAngRates()
     {
     }
 
@@ -62,7 +62,7 @@ struct PayloadDeserializer<NavData> : NavDeserializedData
     {
     }
 
-    void deserialize(const NavData &payload)
+    void deserialize( const NavData& payload )
     {
         posEci = payload.posEci_raw;
         velEci = payload.velEci_raw;
@@ -85,9 +85,9 @@ struct PayloadSerializer<NavData> : NavDeserializedData
     {
     }
 
-    void serialize(NavData &payload) const
+    void serialize( NavData& payload ) const
     {
-        for (unsigned int i{0u}; i < 3u; i++)
+        for ( unsigned int i{0u}; i < 3u; i++ )
         {
             payload.posEci_raw[i] = posEci[i];
             payload.velEci_raw[i] = velEci[i];
@@ -100,7 +100,7 @@ struct PayloadSerializer<NavData> : NavDeserializedData
             payload.eulerAngs_raw[i] = eulerAngs[i];
             payload.eulerAngRates_raw[i] = eulerAngRates[i];
 
-            for (unsigned int j{0u}; j < 3u; j++)
+            for ( unsigned int j{0u}; j < 3u; j++ )
             {
                 payload.bodyFromNed_raw[i][j] = bodyFromNed[i][j];
             }

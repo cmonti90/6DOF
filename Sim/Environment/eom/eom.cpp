@@ -76,25 +76,26 @@ eom::eom( const double runRate, const std::string name )
     , bodyFromNed_( 0.0 )
     , bodyFromWind_( 0.0 )
     , nedFromEcef_( 0.0 )
-    , enuFromNed_( 0.0 )
     , enuFromEcef_( 0.0 )
 
-    , originEnuInEcef_( 0.0 )
+    , enuFromNed_( { 0.0, 1.0, 0.0,
+    1.0, 0.0, 0.0,
+    0.0, 0.0, -1.0 } )
 
-    , altSeaLevel_( 0.0 )
+, originEnuInEcef_( 0.0 )
 
-    , fEom_( nullptr )
-    , logOutput_( false )
+, altSeaLevel_( 0.0 )
 
-    // , pMassProps_( nullptr )
+, fEom_( nullptr )
+, logOutput_( false )
+
+, pMassProps_( nullptr )
 
 {
     if ( logOutput_ )
     {
         fEom_ = fopen( "eom.dat", "w" );
     }
-
-    std::cout << "eom::eom(), at: " << this << std::endl;
 }
 
 
@@ -145,23 +146,11 @@ void eom::initialize()
 
     ecefFromEci_ = myMath::DCMd::Identity();
 
-    enuFromNed_[0][0] = 0.0;
-    enuFromNed_[0][1] = 1.0;
-    enuFromNed_[0][2] = 0.0;
-
-    enuFromNed_[1][0] = 1.0;
-    enuFromNed_[1][1] = 0.0;
-    enuFromNed_[1][2] = 0.0;
-
-    enuFromNed_[2][0] = 0.0;
-    enuFromNed_[2][1] = 0.0;
-    enuFromNed_[2][2] = -1.0;
-
     windVelBody_ = 0.0;
 
     q_nedToBody_ = myMath::QuaternionD::Identity();
 
-    altSeaLevel_ = 1.0;
+    altSeaLevel_ = 0.0;
 
     update();
 }
@@ -186,7 +175,7 @@ void eom::update()
     RungeKutta4thOrder( posEcef_, velEcef_, accelEcef_, angRatesBody_, angAccelBody_, pMassProps_->getRotInertia(),
                         q_nedToBody_, specificForceEcef_, momentEcef_ );
 
-    updateEcef();
+    updateEci();
     updateNed();
     updateBody();
     updateAeroAngles();
@@ -238,18 +227,18 @@ void eom::updateStates()
     posEnu_ = enuFromEcef_ * posEcef_;
     velEnu_ = enuFromEcef_ * velEcef_;
 
-    posNed_ = enuFromNed_ * posEnu_;
-    velNed_ = enuFromNed_ * velEnu_;
+    posNed_ = myMath::Transpose( enuFromNed_ ) * posEnu_;
+    velNed_ = myMath::Transpose( enuFromNed_ ) * velEnu_;
 }
 
 
 //////////////////////////////////////////////////////
-/// @note   Name: updateEcef
-/// @brief  Update ECEF frame and states
+/// @note   Name: updateEci
+/// @brief  Update ECI frame and states
 /// @param  None
 /// @return None
 //////////////////////////////////////////////////////
-void eom::updateEcef()
+void eom::updateEci()
 {
     earthRotation_   += myMath::Constants::EARTH_ROTATION_RATE / m_rate;
 
@@ -268,9 +257,10 @@ void eom::updateEcef()
     ecefFromEci_[2][1] = 0.0;
     ecefFromEci_[2][2] = 1.0;
 
-    q_ecefToEci_ = ecefFromEci_.Transpose().ToQuaternion();
+    q_ecefToEci_ = myMath::Transpose( ecefFromEci_ ).ToQuaternion();
 
-    posEcef_     = ecefFromEci_ * posEci_;
+    posEci_     = myMath::Transpose( ecefFromEci_ ) * posEcef_;
+    velEci_     = myMath::Transpose( ecefFromEci_ ) * posEcef_;
 
     altSeaLevel_ = posEcef_.Magnitude() - myMath::Constants::EARTH_SEALEVEL_RADIUS;
 }
@@ -308,7 +298,7 @@ void eom::updateNed()
     enuFromEcef_[2][1] = cosLat * sinLon;
     enuFromEcef_[2][2] = sinLat;
 
-    nedFromEcef_ = enuFromNed_.Transpose() * enuFromEcef_;
+    nedFromEcef_ = myMath::Transpose( enuFromNed_ ) * enuFromEcef_;
 }
 
 
