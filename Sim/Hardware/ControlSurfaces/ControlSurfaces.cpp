@@ -82,3 +82,26 @@ void ControlSurfaces::CheckForMessages()
         status = endpoint_.peek( label );
     }
 }
+
+
+// Getters
+
+double ControlSurfaces::getAileronLDeflection() const
+{
+    return aileronL_->getDeflection();
+}
+
+double ControlSurfaces::getAileronRDeflection() const
+{
+    return aileronR_->getDeflection();
+}
+
+double ControlSurfaces::getElevatorDeflection() const
+{
+    return elevator_->getDeflection();
+}
+
+double ControlSurfaces::getRudderDeflection() const
+{
+    return rudder_->getDeflection();
+}

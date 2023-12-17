@@ -19,6 +19,12 @@ class ControlSurfaces : public SimLib::HwIntf
     ControlSurfaces( const double runRate, const std::string name = "ControlSurfaces" );
     ~ControlSurfaces();
 
+    // Getters
+    double getAileronLDeflection() const;
+    double getAileronRDeflection() const;
+    double getElevatorDeflection() const;
+    double getRudderDeflection() const;
+
   protected:
 
     virtual void initialize() override;

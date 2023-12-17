@@ -45,10 +45,8 @@ void IMU::update()
 {
     if ( counter_ % 10 == 0 )
     {
-        endoint_.send< ImuMsg>( *swOutData_ );
+        endoint_.send< ImuMsg >( *swOutData_ );
     }
-
-    std::cout << "IMU::altSeaLevel = " << pEom_->getAltitudeSeaLevel() << std::endl;
 
     counter_++;
 }

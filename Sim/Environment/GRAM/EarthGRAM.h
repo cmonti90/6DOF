@@ -26,9 +26,9 @@ class EarthGRAM : public SimLib::Model
   protected:
 
 
-    void initialize( void ) override;
-    void update( void ) override;
-    void finalize( void ) override;
+    void initialize() override;
+    void update() override;
+    void finalize() override;
     virtual void requestReferences( SimLib::ReferenceRequest& refReq ) override;
 
     void updateGRAM();
