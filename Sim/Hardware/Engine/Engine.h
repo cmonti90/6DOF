@@ -1,11 +1,19 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
-#include "Model.h"
+#include "HwIntf.h"
+#include "PayloadEndpoint.h"
 
 #include "mathlib.h"
 
-class Engine : public SimLib::Model
+#include <memory>
+
+namespace EngineTypes
+{
+    struct InData;
+}
+
+class Engine : public SimLib::HwIntf
 {
   public:
     Engine( const double runRate, const std::string str = "Engine" );
@@ -24,9 +32,16 @@ class Engine : public SimLib::Model
 
   protected:
 
-    void initialize( void );
-    void update();
-    void finalize( void );
+    void initialize() override;
+    void update() override;
+    void finalize() override;
+    virtual void receiveQueueMngr( std::shared_ptr< PubSub::QueueMngr >& queueMngr ) override;
+
+    void CheckForMessages();
+
+    PubSub::PayloadEndpoint endpoint_;
+
+    std::unique_ptr< EngineTypes::InData > swInData_;
 
     myMath::Vector3d netForceBody_;
     myMath::Vector3d netMomentBody_;

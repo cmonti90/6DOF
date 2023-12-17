@@ -6,6 +6,8 @@
 #include "PhysicalProperties.h"
 #include "AltitudeTables.h"
 
+#include "ForceEffector.h"
+
 #include <math.h>
 
 Aero::Aero( const double runRate, const std::string name )
@@ -46,9 +48,10 @@ Aero::~Aero()
 
 void Aero::requestReferences( SimLib::ReferenceRequest& refReq )
 {
-    refReq.requestReference( reinterpret_cast< SimLib::Model** >( &pEom_        ), "eom" );
-    refReq.requestReference( reinterpret_cast< SimLib::Model** >( &pEarthGRAM_  ), "EarthGRAM" );
-    // refReq.requestReference( "ControlSurfaces" );
+    refReq.requestReference( reinterpret_cast< SimLib::Model** >( &pEom_            ), "eom"            );
+    refReq.requestReference( reinterpret_cast< SimLib::Model** >( &pEarthGRAM_      ), "EarthGRAM"      );
+    refReq.requestReference( reinterpret_cast< SimLib::Model** >( &pControlSurfaces_), "ControlSurfaces");
+    refReq.requestReference( reinterpret_cast< SimLib::Model** >( &pForceEffector_  ), "ForceEffector"  );
 }
 
 void Aero::initialize()

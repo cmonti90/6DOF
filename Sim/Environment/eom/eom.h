@@ -22,14 +22,28 @@ class eom : public SimLib::EOMEcef
 
   protected:
 
+        enum : unsigned int
+        {
+            X = 0u,
+            Y,
+            Z
+        };
+
+        enum : unsigned int
+        {
+            ROLL = 0u,
+            PITCH,
+            YAW
+        };
+
     void initialize() override;
     void update    () override;
     void finalize  () override;
     void requestReferences( SimLib::ReferenceRequest& refReq ) override;
 
-    double t{0.0};
-    double t_prev{0.0};
-    int counter{0};
+    double t_;
+    double t_prev_;
+    int counter_;
 
     myMath::Vector3d forceEcef_;
     myMath::Vector3d specificForceEcef_;
@@ -108,10 +122,9 @@ class eom : public SimLib::EOMEcef
     void updateStates();
 
     FILE* fEom_;
-    bool logOutput_{true};
+    bool logOutput_;
 
   private:
-
 
     MassProperties* pMassProps_;
 };

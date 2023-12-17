@@ -7,15 +7,15 @@ ControlSurfaces::ControlSurfaces( const double runRate, const std::string name )
     : SimLib::HwIntf( runRate, name )
     , endpoint_()
     , swInData_( new CtrlSurfTypes::InData() )
-    , aileronL( new Actuator( 0.0, 0.050, 5.0 ) )
-    , aileronR( new Actuator( 0.0, 0.050, 5.0 ) )
-    , elevator( new Actuator( 0.0, 0.050, 5.0 ) )
-    , rudder  ( new Actuator( 0.0, 0.050, 5.0 ) )
+    , aileronL_( new Actuator( 0.0, 0.050, 5.0 ) )
+    , aileronR_( new Actuator( 0.0, 0.050, 5.0 ) )
+    , elevator_( new Actuator( 0.0, 0.050, 5.0 ) )
+    , rudder_  ( new Actuator( 0.0, 0.050, 5.0 ) )
 {
-    aileronL->setPID( 7469.1259, 75079.5091, 52.6578, 1735.6444 );
-    aileronR->setPID( 7469.1259, 75079.5091, 52.6578, 1735.6444 );
-    elevator->setPID( 7469.1259, 75079.5091, 52.6578, 1735.6444 );
-    rudder  ->setPID( 7469.1259, 75079.5091, 52.6578, 1735.6444 );
+    aileronL_->setPID( 7469.1259, 75079.5091, 52.6578, 1735.6444 );
+    aileronR_->setPID( 7469.1259, 75079.5091, 52.6578, 1735.6444 );
+    elevator_->setPID( 7469.1259, 75079.5091, 52.6578, 1735.6444 );
+    rudder_  ->setPID( 7469.1259, 75079.5091, 52.6578, 1735.6444 );
 }
 
 ControlSurfaces::~ControlSurfaces()
@@ -27,35 +27,58 @@ void ControlSurfaces::receiveQueueMngr( std::shared_ptr< PubSub::QueueMngr >& qu
     endpoint_.configure( queueMngr );
 }
 
-void ControlSurfaces::requestReferences( SimLib::ReferenceRequest& refReq )
-{
-    // refReq.requestReference( reinterpret_cast< SimLib::Model** >( &pEom_ ), "eom" );
-}
-
 void ControlSurfaces::initialize()
 {
     swInData_->reset();
 
     endpoint_.subscribe< AutopilotMsg >( *swInData_ );
 
-    aileronL->initialize();
-    aileronR->initialize();
-    elevator->initialize();
-    rudder  ->initialize();
-}
-
-void ControlSurfaces::finalize()
-{
-    aileronL->finalize();
-    aileronR->finalize();
-    elevator->finalize();
-    rudder  ->finalize();
+    aileronL_->initialize();
+    aileronR_->initialize();
+    elevator_->initialize();
+    rudder_  ->initialize();
 }
 
 void ControlSurfaces::update()
 {
-    aileronL->update( swInData_->aileronCmd[0] );
-    aileronR->update( swInData_->aileronCmd[1] );
-    elevator->update( swInData_->elevatorCmd );
-    rudder  ->update( swInData_->rudderCmd );
+    CheckForMessages();
+
+    aileronL_->update( swInData_->aileronCmd[0] );
+    aileronR_->update( swInData_->aileronCmd[1] );
+    elevator_->update( swInData_->elevatorCmd );
+    rudder_  ->update( swInData_->rudderCmd );
+}
+
+void ControlSurfaces::finalize()
+{
+    aileronL_->finalize();
+    aileronR_->finalize();
+    elevator_->finalize();
+    rudder_  ->finalize();
+}
+
+void ControlSurfaces::CheckForMessages()
+{
+    PubSub::Message_Label label;
+    PubSub::MessageStatus status = endpoint_.peek( label );
+
+    while ( status == PubSub::MessageStatus::MESSAGE_AVAILABLE )
+    {
+        switch ( label )
+        {
+            case AutopilotMsg::MESSAGE_LABEL:
+
+                endpoint_.receive< AutopilotMsg >( *swInData_ );
+
+                break;
+
+            default:
+
+                endpoint_.removeTopMessage();
+
+                break;
+        }
+
+        status = endpoint_.peek( label );
+    }
 }

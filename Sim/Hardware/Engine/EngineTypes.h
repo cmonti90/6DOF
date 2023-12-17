@@ -5,19 +5,11 @@
 #include "Payload.h"
 
 #include "AutopilotMsg.h"
-#include "EngineMsg.h"
-
-#include "EngineDataSerialization.h"
 
 namespace EngineTypes
 {
     struct InData : Intf::MessageContainer<
         InputPayload<AutopilotMsg>
-    >
-    {};
-
-    struct OutData : Intf::MessageContainer<
-        OutputPayload<EngineMsg, Serialize>
     >
     {};
 }

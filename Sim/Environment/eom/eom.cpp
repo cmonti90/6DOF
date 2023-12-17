@@ -17,11 +17,84 @@
 //////////////////////////////////////////////////////
 eom::eom( const double runRate, const std::string name )
     : EOMEcef( runRate, name )
+    , t_( 0.0 )
+    , t_prev_( 0.0 )
+    , counter_( 0 )
+
+    , forceEcef_( 0.0 )
+    , specificForceEcef_( 0.0 )
+    , momentEcef_( 0.0 )
+    , gravityEcef_( 0.0 )
+
+    , windVelBody_( 0.0 )
+
+    , eulerAngles_( 0.0 )
+
+    , velBody_( 0.0 )
+    , accelBody_( 0.0 )
+    , angRatesBody_( 0.0 )
+    , angAccelBody_( 0.0 )
+
+    , posEcef_( 0.0 )
+    , velEcef_( 0.0 )
+    , accelEcef_( 0.0 )
+
+    , posEci_( 0.0 )
+    , velEci_( 0.0 )
+
+    , posEnu_( 0.0 )
+    , velEnu_( 0.0 )
+
+    , posNed_( 0.0 )
+    , velNed_( 0.0 )
+
+    , flightPathAngle_( 0.0 )
+    , angleOfAttack_( 0.0 )
+    , angleOfSideslip_( 0.0 )
+    , angleOfAttackDot_( 0.0 )
+    , angleOfSideslipDot_( 0.0 )
+
+    , lat_centric_( 0.0 )
+    , lon_centric_( 0.0 )
+
+    , lat_geodetic_( 0.0 )
+    , lon_geodetic_( 0.0 )
+
+    , earthRotation_( 0.0 )
+
+    , q_nedToBody_()
+    , q_ecefToNed_()
+    , q_ecefToEci_()
+    , q_ecefToBody_( )
+    , q_eciToBody_()
+
+    , qdot_body_()
+
+    , ecefFromEci_( 0.0 )
+    , bodyFromEcef_( 0.0 )
+    , bodyFromEci_( 0.0 )
+    , bodyFromNed_( 0.0 )
+    , bodyFromWind_( 0.0 )
+    , nedFromEcef_( 0.0 )
+    , enuFromNed_( 0.0 )
+    , enuFromEcef_( 0.0 )
+
+    , originEnuInEcef_( 0.0 )
+
+    , altSeaLevel_( 0.0 )
+
+    , fEom_( nullptr )
+    , logOutput_( false )
+
+    // , pMassProps_( nullptr )
+
 {
     if ( logOutput_ )
     {
         fEom_ = fopen( "eom.dat", "w" );
     }
+
+    std::cout << "eom::eom(), at: " << this << std::endl;
 }
 
 
@@ -104,7 +177,7 @@ void eom::initialize()
 //////////////////////////////////////////////////////
 void eom::update()
 {
-    counter++;
+    counter_++;
 
     forceEcef_ = m_forceEffector->getForce();
     specificForceEcef_ = forceEcef_ / pMassProps_->getMass();
@@ -123,12 +196,13 @@ void eom::update()
     if ( logOutput_ )
     {
         myMath::QuaternionD qTest = eulerAngles_.ToQuaternion( myMath::TaitBryanOrder::ZYX );
-        fprintf( fEom_, "%f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f\n", t, posEci_[0], posEci_[1], posEci_[2], eulerAngles_[0], eulerAngles_[1], eulerAngles_[2]
+
+        fprintf( fEom_, "%f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f\n", t_, posEci_[0], posEci_[1], posEci_[2], eulerAngles_[0], eulerAngles_[1], eulerAngles_[2]
                  , angRatesBody_[0], angRatesBody_[1], angRatesBody_[2], q_nedToBody_[0], q_nedToBody_[1], q_nedToBody_[2], q_nedToBody_[3]
                  , qTest[0], qTest[1], qTest[2], qTest[3] );
     }
 
-    t_prev = t;
+    t_prev_ = t_;
 
 }
 

@@ -6,7 +6,12 @@
 
 class eom;
 class EarthGRAM;
-// class ControlSurfaces;
+class ControlSurfaces;
+
+namespace SimLib
+{
+    class ForceEffector;
+}
 
 class Aero : public SimLib::Model
 {
@@ -115,7 +120,8 @@ class Aero : public SimLib::Model
 
     eom* pEom_;
     EarthGRAM* pEarthGRAM_;
-    // ControlSurfaces* pControlSurfaces_;
+    ControlSurfaces* pControlSurfaces_;
+    SimLib::ForceEffector* pForceEffector_;
 
     Aero& operator=( const Aero& orig ) = delete;
     Aero( const Aero& orig ) = delete;
