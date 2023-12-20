@@ -4,7 +4,7 @@ set(SOURCES ProcModule.cpp)
 
 set(HEADERS ProcModule.h)
 
-add_library(${target} ${SOURCES} ${HEADERS})
+add_library(${target} STATIC ${SOURCES} ${HEADERS})
 
 target_include_directories(${target}    PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR}
                                                 )

@@ -1,6 +1,7 @@
 set(target eom)
 
-set(SOURCES eom.cpp)
+set(SOURCES eom.cpp
+            eomGetters.cpp)
 
 set(HEADERS eom.h)
 

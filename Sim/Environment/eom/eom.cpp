@@ -6,6 +6,8 @@
 
 #include "Units.h"
 
+#include "SimTime.h"
+
 #include <math.h>
 #include <iostream>
 
@@ -65,7 +67,7 @@ eom::eom( const double runRate, const std::string name )
     , q_nedToBody_()
     , q_ecefToNed_()
     , q_ecefToEci_()
-    , q_ecefToBody_( )
+    , q_ecefToBody_()
     , q_eciToBody_()
 
     , qdot_body_()
@@ -87,10 +89,9 @@ eom::eom( const double runRate, const std::string name )
 , altSeaLevel_( 0.0 )
 
 , fEom_( nullptr )
-, logOutput_( false )
+, logOutput_( true )
 
 , pMassProps_( nullptr )
-
 {
     if ( logOutput_ )
     {
@@ -122,6 +123,7 @@ void eom::requestReferences( SimLib::ReferenceRequest& refReq )
 }
 
 //////////////////////////////////////////////////////
+/// @note    Name: initialize
 /// @brief   initialize EOM object
 /// @param   None
 /// @return  None
@@ -166,33 +168,31 @@ void eom::initialize()
 //////////////////////////////////////////////////////
 void eom::update()
 {
-    counter_++;
+    t_ = SimLib::SimTime::GetInstance()->getTimeNow();
 
-    forceEcef_ = m_forceEffector->getForce();
-    specificForceEcef_ = forceEcef_ / pMassProps_->getMass();
-    momentEcef_ = m_forceEffector->getMoment();
+    forceEcef_          = m_forceEffector->getForce();
+    specificForceEcef_  = forceEcef_ / pMassProps_->getMass();
+    momentEcef_         = m_forceEffector->getMoment();
 
     RungeKutta4thOrder( posEcef_, velEcef_, accelEcef_, angRatesBody_, angAccelBody_, pMassProps_->getRotInertia(),
                         q_nedToBody_, specificForceEcef_, momentEcef_ );
 
-    updateEci();
-    updateNed();
-    updateBody();
-    updateAeroAngles();
-    updateWind();
-    updateStates();
+    UpdateEci();
+    UpdateNed();
+    UpdateBody();
+    UpdateAeroAngles();
+    UpdateWind();
 
     if ( logOutput_ )
     {
-        myMath::QuaternionD qTest = eulerAngles_.ToQuaternion( myMath::TaitBryanOrder::ZYX );
-
-        fprintf( fEom_, "%f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f\n", t_, posEci_[0], posEci_[1], posEci_[2], eulerAngles_[0], eulerAngles_[1], eulerAngles_[2]
-                 , angRatesBody_[0], angRatesBody_[1], angRatesBody_[2], q_nedToBody_[0], q_nedToBody_[1], q_nedToBody_[2], q_nedToBody_[3]
-                 , qTest[0], qTest[1], qTest[2], qTest[3] );
+        fprintf( fEom_, "%f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f\n", t_,
+                 posEcef_[0], posEcef_[1], posEcef_[2], velEcef_[0], velEcef_[1], velEcef_[2], accelEcef_[0], accelEcef_[1], accelEcef_[2],
+                 eulerAngles_[0], eulerAngles_[1], eulerAngles_[2], angRatesBody_[0], angRatesBody_[1], angRatesBody_[2],
+                 q_nedToBody_[0], q_nedToBody_[1], q_nedToBody_[2], q_nedToBody_[3] );
     }
 
     t_prev_ = t_;
-
+    counter_++;
 }
 
 
@@ -212,33 +212,12 @@ void eom::finalize()
 
 
 //////////////////////////////////////////////////////
-/// @note   Name: updateStates
-/// @brief  Update vehicle states in ECI, ECEF, ENU,
-///         and NED coordinate systems
-/// @param  None
-/// @return None
-//////////////////////////////////////////////////////
-void eom::updateStates()
-{
-    velEci_ = bodyFromEci_.Transpose() * velBody_;
-
-    velEcef_ = bodyFromEcef_.Transpose() * velBody_;
-
-    posEnu_ = enuFromEcef_ * posEcef_;
-    velEnu_ = enuFromEcef_ * velEcef_;
-
-    posNed_ = myMath::Transpose( enuFromNed_ ) * posEnu_;
-    velNed_ = myMath::Transpose( enuFromNed_ ) * velEnu_;
-}
-
-
-//////////////////////////////////////////////////////
-/// @note   Name: updateEci
+/// @note   Name: UpdateEci
 /// @brief  Update ECI frame and states
 /// @param  None
 /// @return None
 //////////////////////////////////////////////////////
-void eom::updateEci()
+void eom::UpdateEci()
 {
     earthRotation_   += myMath::Constants::EARTH_ROTATION_RATE / m_rate;
 
@@ -267,12 +246,12 @@ void eom::updateEci()
 
 
 //////////////////////////////////////////////////////
-/// @note   Name: updateNed
+/// @note   Name: UpdateNed
 /// @brief  Update NED frame and states
 /// @param  None
 /// @return None
 //////////////////////////////////////////////////////
-void eom::updateNed()
+void eom::UpdateNed()
 {
     lat_centric_ = std::atan2( posEcef_[Z], posEcef_[X] );
     lon_centric_ = std::atan2( posEcef_[Y], posEcef_[X] );
@@ -299,32 +278,38 @@ void eom::updateNed()
     enuFromEcef_[2][2] = sinLat;
 
     nedFromEcef_ = myMath::Transpose( enuFromNed_ ) * enuFromEcef_;
+
+    posEnu_ = enuFromEcef_ * posEcef_;
+    velEnu_ = enuFromEcef_ * velEcef_;
+
+    posNed_ = myMath::Transpose( enuFromNed_ ) * posEnu_;
+    velNed_ = myMath::Transpose( enuFromNed_ ) * velEnu_;
 }
 
 
 //////////////////////////////////////////////////////
-/// @note   Name: updateBody
+/// @note   Name: UpdateBody
 /// @brief  Update body frame and states
 /// @param  None
 /// @return None
 //////////////////////////////////////////////////////
-void eom::updateBody()
+void eom::UpdateBody()
 {
     bodyFromNed_  = eulerAngles_.ToDCM( myMath::TaitBryanOrder::ZYX );
-
     bodyFromEcef_ = bodyFromNed_ * nedFromEcef_;
-
     bodyFromEci_  = bodyFromEcef_ * ecefFromEci_;
+
+
 }
 
 
 //////////////////////////////////////////////////////
-/// @note   Name: updateAeroAngles
+/// @note   Name: UpdateAeroAngles
 /// @brief  Update aerodynamic angles
 /// @param  None
 /// @return None
 //////////////////////////////////////////////////////
-void eom::updateAeroAngles()
+void eom::UpdateAeroAngles()
 {
     angleOfAttack_   = std::atan2( velBody_[Z], velBody_[X] ) + Aircraft::WingIncidenceAngle;
     angleOfSideslip_ = std::asin( velBody_[Y] / velBody_.Magnitude() );
@@ -337,12 +322,12 @@ void eom::updateAeroAngles()
 
 
 //////////////////////////////////////////////////////
-/// @note   Name: updateWind
+/// @note   Name: UpdateWind
 /// @brief  Update wind frame and states
 /// @param  None
 /// @return None
 //////////////////////////////////////////////////////
-void eom::updateWind()
+void eom::UpdateWind()
 {
     windVelBody_ = -velBody_;
 

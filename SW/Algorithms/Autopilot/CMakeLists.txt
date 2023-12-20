@@ -14,17 +14,16 @@ set(SOURCES AutopilotComponent.cpp )
 
 set(HEADERS AutopilotComponent.h )
 
-add_library(${target} ${SOURCES} )
+add_library(${target} STATIC ${SOURCES} )
 
 target_include_directories(${target}    PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR}
                                                 )
 
-target_link_libraries(${target} PUBLIC  Messages
-                                PRIVATE mathlib
+target_link_libraries(${target} PRIVATE mathlib
                                         PubSub
                                         AutopilotAlgorithm
                                         DebugTools
-                                        Serialization
+                                        AutopilotIntf
                                         Utility
                                         )
 

@@ -3,7 +3,6 @@
 
 #include "EOMEcef.h"
 #include "mathlib.h"
-#include "EomTypes.h"
 
 class MassProperties;
 
@@ -15,46 +14,15 @@ class eom : public SimLib::EOMEcef
     virtual ~eom();
 
     // Getters
-    double getAltitudeSeaLevel() const
-    {
-        return altSeaLevel_;
-    }
+    double getAltitudeSeaLevel() const;
 
-    myMath::Vector3d getPosEcef() const
-    {
-        return posEcef_;
-    }
+    myMath::Vector3d getPosEcef() const;
+    myMath::Vector3d getVelEcef() const;
+    myMath::Vector3d getAccelEcef() const;
 
-    myMath::Vector3d getVelEcef() const
-    {
-        return velEcef_;
-    }
-
-    myMath::Vector3d getAccelEcef() const
-    {
-        return accelEcef_;
-    }
-
-    myMath::Vector3d getAngRatesBody() const
-    {
-        return angRatesBody_;
-    }
+    myMath::Vector3d getAngRatesBody() const;
 
   protected:
-
-        enum : unsigned int
-        {
-            X = 0u,
-            Y,
-            Z
-        };
-
-        enum : unsigned int
-        {
-            ROLL = 0u,
-            PITCH,
-            YAW
-        };
 
     void initialize() override;
     void update    () override;
@@ -135,12 +103,11 @@ class eom : public SimLib::EOMEcef
 
     myMath::QuaternionD quaternionDerivative( const double p, const double q, const double r, myMath::QuaternionD q0 );
 
-    void updateEci();
-    void updateNed();
-    void updateBody();
-    void updateAeroAngles();
-    void updateWind();
-    void updateStates();
+    void UpdateEci();
+    void UpdateNed();
+    void UpdateBody();
+    void UpdateAeroAngles();
+    void UpdateWind();
 
     FILE* fEom_;
     bool logOutput_;

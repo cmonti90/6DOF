@@ -15,7 +15,7 @@ set(SOURCES     NavigationComponent.cpp )
 set(HEADERS     NavigationComponent.h
                 NavigationTypes.h )
 
-add_library(${target} ${SOURCES})
+add_library(${target} STATIC ${SOURCES})
 
 target_include_directories(${target}    PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR}
                                                 )

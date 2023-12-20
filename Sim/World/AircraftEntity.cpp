@@ -34,11 +34,11 @@ void AircraftEntity::createEntity()
 {
     addSwApp( pProc.get() );
 
-    addModel( pEom.get(), 0 );
-    addModel( pImu.get(), 10 );
-    addModel( pAero.get(), 20 );
-    addModel( pEngine.get(), 30 );
-    addModel( pEarthGram.get(), 40 );
-    addModel( pMassProps.get(), 50 );
-    addModel( pControlSurfaces.get(), 60 );
+    addModel( pControlSurfaces.get(), 0 );
+    addModel( pEngine.get(), 10 );
+    addModel( pEom.get(), 20 );
+    addModel( pEarthGram.get(), 30 );
+    addModel( pMassProps.get(), 40 );
+    addModel( pAero.get(), 50 );
+    addModel( pImu.get(), 60 );
 }
