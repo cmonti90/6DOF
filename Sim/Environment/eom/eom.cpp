@@ -132,9 +132,12 @@ void eom::initialize()
 {
     windVelBody_ = 0.0;
 
-    posEcef_[0] = 5.0e3_km; // m
-    posEcef_[1] = 5.0e3_km; // m
-    posEcef_[2] = 5.0e3_km; // m
+    // posEcef_[0] = 5.0e3_km; // m
+    // posEcef_[1] = 5.0e3_km; // m
+    // posEcef_[2] = 5.0e3_km; // m
+
+    WGS84::LlaToEcef( 0.0, 0.0, 1000.0, posEcef_ );
+    
 
     velEcef_[0] = 0.0; // m/sec
     velEcef_[1] = 0.0;
@@ -171,7 +174,8 @@ void eom::update()
     t_ = SimLib::SimTime::GetInstance()->getTimeNow();
 
     forceEcef_          = m_forceEffector->getForce();
-    specificForceEcef_  = forceEcef_ / pMassProps_->getMass();
+    // specificForceEcef_  = forceEcef_ / pMassProps_->getMass();
+    specificForceEcef_  = 0.0;
     momentEcef_         = m_forceEffector->getMoment();
 
     RungeKutta4thOrder( posEcef_, velEcef_, accelEcef_, angRatesBody_, angAccelBody_, pMassProps_->getRotInertia(),
