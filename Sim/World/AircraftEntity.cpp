@@ -32,13 +32,22 @@ AircraftEntity::~AircraftEntity()
 
 void AircraftEntity::createEntity()
 {
-    addSwApp( pProc.get() );
+    addSwApps();
+    addModels();
+}
 
-    addModel( pControlSurfaces.get(), 0 );
-    addModel( pEngine.get(), 10 );
-    addModel( pEom.get(), 20 );
-    addModel( pEarthGram.get(), 30 );
-    addModel( pMassProps.get(), 40 );
-    addModel( pAero.get(), 50 );
-    addModel( pImu.get(), 60 );
+void AircraftEntity::addSwApps()
+{
+    addSwApp( pProc.get() );
+}
+
+void AircraftEntity::addModels()
+{
+    addModel( pControlSurfaces.get(), 0  );
+    addModel( pEngine         .get(), 10 );
+    addModel( pEom            .get(), 20 );
+    addModel( pEarthGram      .get(), 30 );
+    addModel( pMassProps      .get(), 40 );
+    addModel( pAero           .get(), 50 );
+    addModel( pImu            .get(), 60 );
 }

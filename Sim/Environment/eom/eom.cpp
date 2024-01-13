@@ -80,18 +80,18 @@ eom::eom( const double runRate, const std::string name )
     , nedFromEcef_( 0.0 )
     , enuFromEcef_( 0.0 )
 
-    , enuFromNed_( { 0.0, 1.0, 0.0,
-    1.0, 0.0, 0.0,
-    0.0, 0.0, -1.0 } )
+    , enuFromNed_{ 0.0, 1.0, 0.0,
+                   1.0, 0.0, 0.0,
+                   0.0, 0.0, -1.0 }
 
-, originEnuInEcef_( 0.0 )
+    , originEnuInEcef_( 0.0 )
 
-, altSeaLevel_( 0.0 )
+    , altSeaLevel_( 0.0 )
 
-, fEom_( nullptr )
-, logOutput_( true )
+    , fEom_( nullptr )
+    , logOutput_( true )
 
-, pMassProps_( nullptr )
+    , pMassProps_( nullptr )
 {
     if ( logOutput_ )
     {
@@ -137,11 +137,9 @@ void eom::initialize()
     // posEcef_[2] = 5.0e3_km; // m
 
     WGS84::LlaToEcef( 0.0, 0.0, 1000.0, posEcef_ );
-    
 
-    velEcef_[0] = 0.0; // m/sec
-    velEcef_[1] = 0.0;
-    velEcef_[2] = 0.0;
+
+    velEcef_ = 0.0; // m/sec
 
     eulerAngles_[0] = 0.0; // rad
     eulerAngles_[1] = 0.0;
@@ -176,7 +174,8 @@ void eom::update()
     forceEcef_          = m_forceEffector->getForce();
     // specificForceEcef_  = forceEcef_ / pMassProps_->getMass();
     specificForceEcef_  = 0.0;
-    momentEcef_         = m_forceEffector->getMoment();
+    // momentEcef_         = m_forceEffector->getMoment();
+    momentEcef_         = 0.0;
 
     RungeKutta4thOrder( posEcef_, velEcef_, accelEcef_, angRatesBody_, angAccelBody_, pMassProps_->getRotInertia(),
                         q_nedToBody_, specificForceEcef_, momentEcef_ );
@@ -225,8 +224,8 @@ void eom::UpdateEci()
 {
     earthRotation_   += myMath::Constants::EARTH_ROTATION_RATE / m_rate;
 
-    double cosW     = std::cos( earthRotation_ );
-    double sinW     = std::sin( earthRotation_ );
+    const double cosW  = std::cos( earthRotation_ );
+    const double sinW  = std::sin( earthRotation_ );
 
     ecefFromEci_[0][0] = cosW;
     ecefFromEci_[0][1] = sinW;
@@ -264,10 +263,10 @@ void eom::UpdateNed()
 
     WGS84::EcefToLla( posEcef_, lat_geodetic_, lon_geodetic_, altGeodetic_ );
 
-    double cosLat = std::cos( lat_geodetic_ );
-    double sinLat = std::sin( lat_geodetic_ );
-    double cosLon = std::cos( lon_geodetic_ );
-    double sinLon = std::sin( lon_geodetic_ );
+    const double cosLat = std::cos( lat_geodetic_ );
+    const double sinLat = std::sin( lat_geodetic_ );
+    const double cosLon = std::cos( lon_geodetic_ );
+    const double sinLon = std::sin( lon_geodetic_ );
 
     enuFromEcef_[0][0] = -sinLon;
     enuFromEcef_[0][1] = cosLon;
@@ -302,8 +301,6 @@ void eom::UpdateBody()
     bodyFromNed_  = eulerAngles_.ToDCM( myMath::TaitBryanOrder::ZYX );
     bodyFromEcef_ = bodyFromNed_ * nedFromEcef_;
     bodyFromEci_  = bodyFromEcef_ * ecefFromEci_;
-
-
 }
 
 
@@ -335,10 +332,10 @@ void eom::UpdateWind()
 {
     windVelBody_ = -velBody_;
 
-    double cosAoA  = std::cos( angleOfAttack_ );
-    double sinAoA  = std::sin( angleOfAttack_ );
-    double cosAoSS = std::cos( angleOfSideslip_ );
-    double sinAoSS = std::sin( angleOfSideslip_ );
+    const double cosAoA  = std::cos( angleOfAttack_ );
+    const double sinAoA  = std::sin( angleOfAttack_ );
+    const double cosAoSS = std::cos( angleOfSideslip_ );
+    const double sinAoSS = std::sin( angleOfSideslip_ );
 
     bodyFromWind_[0][0] = cosAoA * cosAoSS;
     bodyFromWind_[0][1] = sinAoSS;

@@ -15,6 +15,8 @@ class SixDOFSimulation : public SimLib::World
 
     void createWorld() override;
 
+    static constexpr unsigned int SimulationRunRate = 3000u;
+
   private:
 
     std::shared_ptr< AircraftEntity > pAircraftEntity;

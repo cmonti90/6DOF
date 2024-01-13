@@ -18,5 +18,10 @@ find_package(PubSub CONFIG REQUIRED)
 find_package(GRAM_Earth CONFIG REQUIRED)
 find_package(SimLib CONFIG REQUIRED)
 
+set (LIB_TYPE SHARED) # STATIC/SHARED
+string(TOLOWER ${LIB_TYPE} SEARCH_TYPE)
+set_directory_properties(PROPERTIES INCLUDE_DIRECTORIES "${HDF5_INCLUDE_DIR}")
+set (LINK_HDF5_LIBS ${HDF5_C_${LIB_TYPE}_LIBRARY})
+
 add_subdirectory("SW")
 add_subdirectory("Sim")

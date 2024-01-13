@@ -4,8 +4,8 @@
 #include "AircraftEntity.h"
 
 SixDOFSimulation::SixDOFSimulation()
-    : World()
-    , pAircraftEntity( new AircraftEntity( 3600 ) )
+    : World( SixDOFSimulation::SimulationRunRate )
+    , pAircraftEntity( new AircraftEntity( static_cast< double >( SixDOFSimulation::SimulationRunRate ) ) )
 {
 }
 

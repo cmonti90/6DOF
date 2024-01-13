@@ -1,5 +1,6 @@
 clear;clc; close all;
 
+mass = 5000;
 
 idx.time = 1;
 idx.posEcef = 2:4;
@@ -8,11 +9,12 @@ idx.accelEcef = 8:10;
 idx.eulerAngs = 11:13;
 idx.eulerAngRates = 14:16;
 idx.qNedToBody = 17:20;
-idx.accelEcef = 21:23;
 
 dataDir = '/home/cmonti/Documents/Coding/Projects/6DOF/Sim/run/output/0';
 
 runSimulink = 1;
+dt = 1/3000;
+tf = 100;
 
 testTranslational = 1;
 F = [0, 0, 0];

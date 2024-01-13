@@ -29,6 +29,9 @@ class AircraftEntity : public SimLib::Entity
 
   private:
 
+    void addSwApps();
+    void addModels();
+
     // SW Apps
     std::unique_ptr< ProcModule > pProc;
 
