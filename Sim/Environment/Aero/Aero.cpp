@@ -1,7 +1,7 @@
 #include "Aero.h"
 
 #include "eom.h"
-#include "EarthGRAM.h"
+// #include "EarthGRAM.h"
 
 #include "PhysicalProperties.h"
 #include "AltitudeTables.h"
@@ -36,8 +36,8 @@ Aero::Aero( const double runRate, const std::string name )
 , altSeaLevel( 0.0 )
 , mach( 0.0 )
 , pEom_( nullptr )
-, pEarthGRAM_( nullptr )
-// , pControlSurfaces_( nullptr )
+// , pEarthGRAM_( nullptr )
+, pControlSurfaces_( nullptr )
 
 {
 }
@@ -49,7 +49,7 @@ Aero::~Aero()
 void Aero::requestReferences( SimLib::ReferenceRequest& refReq )
 {
     refReq.requestReference( reinterpret_cast< SimLib::Model** >( &pEom_            ), "eom"            );
-    refReq.requestReference( reinterpret_cast< SimLib::Model** >( &pEarthGRAM_      ), "EarthGRAM"      );
+    // refReq.requestReference( reinterpret_cast< SimLib::Model** >( &pEarthGRAM_      ), "EarthGRAM"      );
     refReq.requestReference( reinterpret_cast< SimLib::Model** >( &pControlSurfaces_), "ControlSurfaces");
     refReq.requestReference( reinterpret_cast< SimLib::Model** >( &pForceEffector_  ), "ForceEffector"  );
 }

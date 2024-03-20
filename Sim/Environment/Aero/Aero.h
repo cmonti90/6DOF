@@ -5,7 +5,7 @@
 #include "mathlib.h"
 
 class eom;
-class EarthGRAM;
+// class EarthGRAM;
 class ControlSurfaces;
 
 namespace SimLib
@@ -112,6 +112,7 @@ class Aero : public SimLib::Model
     void updateAileronCoefficients();
     void updateElevatorCoefficients();
     void updateRudderCoefficients();
+    
     void computeAeroForces();
     void computeAeroMoments();
 
@@ -119,7 +120,7 @@ class Aero : public SimLib::Model
   private:
 
     eom* pEom_;
-    EarthGRAM* pEarthGRAM_;
+    // EarthGRAM* pEarthGRAM_;
     ControlSurfaces* pControlSurfaces_;
     SimLib::ForceEffector* pForceEffector_;
 

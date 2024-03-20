@@ -188,7 +188,7 @@ void eom::update()
 
     if ( logOutput_ )
     {
-        fprintf( fEom_, "%f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f\n", t_,
+        fprintf( fEom_, "%f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f\n", t_,
                  posEcef_[0], posEcef_[1], posEcef_[2], velEcef_[0], velEcef_[1], velEcef_[2], accelEcef_[0], accelEcef_[1], accelEcef_[2],
                  eulerAngles_[0], eulerAngles_[1], eulerAngles_[2], angRatesBody_[0], angRatesBody_[1], angRatesBody_[2],
                  q_nedToBody_[0], q_nedToBody_[1], q_nedToBody_[2], q_nedToBody_[3] );

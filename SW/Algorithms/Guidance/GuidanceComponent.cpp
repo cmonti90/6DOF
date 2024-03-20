@@ -104,7 +104,7 @@ void GuidanceComponent::update( void )
                 default:
 
                     endpoint_.removeTopMessage();
-                    
+
                     break;
             }
 

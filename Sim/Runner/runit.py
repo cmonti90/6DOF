@@ -11,7 +11,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Run the simulation')
     parser.add_argument('-o', '--output', dest='outputDir', action='store', help='Output directory', default="0")
-    parser.add_argument('-d', '--debug', dest='debug', action='store_true', help='Run with gdb', default=False)
+    parser.add_argument('-d', '--debug', dest='debugger', action='store', help='Run with debugger', default=None)
 
     args = parser.parse_args()
 
@@ -24,11 +24,19 @@ if __name__ == '__main__':
 
     os.chdir(outputDir)
 
-    if args.debug:
+    print ("Running simulation")
+    
+    if args.debugger == "valgrind":
+        os.system("valgrind --leak-check=full -s " + fileDir + "/../config/exec/runnerLink")
+
+    elif args.debugger == "gdb":
         os.system("gdb " + fileDir + "/../config/exec/runnerLink")
-    else:
-        print ("Running simulation")
+
+    elif args.debugger is None:
         os.system(fileDir + "/../config/exec/runnerLink")
+
+    else:
+        print("Unknown debugger: " + args.debugger)
 
     os.chdir(presentWorkDir)
 

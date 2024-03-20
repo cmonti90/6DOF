@@ -38,10 +38,10 @@ class ControlSurfaces : public SimLib::HwIntf
 
     std::unique_ptr< CtrlSurfTypes::InData > swInData_;
 
-    Actuator* aileronL_;
-    Actuator* aileronR_;
-    Actuator* elevator_;
-    Actuator* rudder_;
+    std::unique_ptr< Actuator > aileronL_;
+    std::unique_ptr< Actuator > aileronR_;
+    std::unique_ptr< Actuator > elevator_;
+    std::unique_ptr< Actuator > rudder_;
 
   private:
 
