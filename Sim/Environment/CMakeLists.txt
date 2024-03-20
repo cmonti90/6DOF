@@ -1,4 +1,4 @@
 add_subdirectory(Aero)
 add_subdirectory(eom)
 add_subdirectory(MassProperties)
-# add_subdirectory(GRAM) # TODO: reinstall GRAM
+add_subdirectory(GRAM)

@@ -110,6 +110,8 @@ void GuidanceComponent::update( void )
 
             status = endpoint_.peek( label );
         }
+
+        endpoint_.send< GuidanceMsg >( *outData_ );
     }
     END_CHECKED_EXCEPTION()
 }

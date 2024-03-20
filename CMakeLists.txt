@@ -15,7 +15,7 @@ list(APPEND CMAKE_PREFIX_PATH $ENV{SIMLIBLIB_DIR})
 
 find_package(mathlib CONFIG REQUIRED)
 find_package(PubSub CONFIG REQUIRED)
-# find_package(GRAM_Earth CONFIG REQUIRED) # TODO
+find_package(GRAM_Earth 2.0.0 CONFIG REQUIRED)
 find_package(SimLib CONFIG REQUIRED)
 
 set (LIB_TYPE SHARED) # STATIC/SHARED

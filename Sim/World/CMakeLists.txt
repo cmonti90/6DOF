@@ -15,7 +15,7 @@ target_link_libraries(${target} PRIVATE SimLib
                                         procModule
                                         Aero
                                         ControlSurfaces
-                                        # EarthGRAM
+                                        EarthGRAM
                                         Engine
                                         eom
                                         IMU

@@ -23,11 +23,11 @@ EarthGRAM::EarthGRAM( const double runRate,
 {
     GRAM::EarthInputParameters inputParameters;
 
-    inputParameters.spicePath  = "/home/cmonti/Documents/NASA_SW_Downloads/GRAM/GRAM_Suite_1.5.1/SPICE";
+    inputParameters.spicePath  = "/home/cmonti/Documents/NASA_SW/GRAM/GRAM_Suite_2.0.0/GRAM Suite 2.0/SPICE";
     inputParameters.spiceLsk   = "/lsk/naif0012.tls";
     inputParameters.spicePck   = "/pck/pck00011.tpc";
     inputParameters.spiceEarth = "/spk/planets/de440_GRAM.bsp";
-    inputParameters.dataPath   = "/home/cmonti/Documents/NASA_SW_Downloads/GRAM/GRAM_Suite_1.5.1/Earth/data";
+    inputParameters.dataPath   = "/home/cmonti/Documents/NASA_SW/GRAM/GRAM_Suite_2.0.0/GRAM Suite 2.0/Earth/data";
 
     earthAtmosphere_->setInputParameters( inputParameters );
 
