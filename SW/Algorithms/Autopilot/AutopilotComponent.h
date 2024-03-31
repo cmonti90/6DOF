@@ -36,6 +36,9 @@ class AutopilotComponent : public PubSub::Component
   protected:
     bool associateEvent() const override;
 
+    static constexpr unsigned int active_endpoint_depth = 10u;
+    static constexpr unsigned int passive_endpoint_depth = 10u;
+
   private:
     PubSub::PayloadEndpoint endpoint_;
 

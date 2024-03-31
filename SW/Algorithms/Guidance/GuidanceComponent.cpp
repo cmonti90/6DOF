@@ -66,6 +66,9 @@ void GuidanceComponent::initialize( void )
         inData_ ->initialize();
         outData_->initialize();
 
+        endpoint_.setActiveDepth( active_endpoint_depth );
+        endpoint_.setPassiveDepth( passive_endpoint_depth );
+
         endpoint_.subscribe< NavMsg >( *inData_, PubSub::Message_Type::ACTIVE );
 
         pAlg->initialize();
@@ -98,7 +101,6 @@ void GuidanceComponent::update( void )
                 case NavMsg::MESSAGE_LABEL:
 
                     endpoint_.receive< NavMsg >( *inData_ );
-
                     break;
 
                 default:

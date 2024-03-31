@@ -39,14 +39,21 @@ bool NavigationComponent::associateEvent() const
 
 void NavigationComponent::initialize( void )
 {
-    inData_->initialize();
-    outData_->initialize();
+    BEGIN_CHECKED_EXCEPTION()
+    {
+        inData_->initialize();
+        outData_->initialize();
 
-    endpoint_.subscribe< ImuMsg >( *inData_, PubSub::Message_Type::ACTIVE );
+        endpoint_.setActiveDepth( active_endpoint_depth );
+        endpoint_.setPassiveDepth( passive_endpoint_depth );
 
-    pAlg->initialize();
+        endpoint_.subscribe< ImuMsg >( *inData_, PubSub::Message_Type::ACTIVE );
 
-    counter_ = 0;
+        pAlg->initialize();
+
+        counter_ = 0;
+    }
+    END_CHECKED_EXCEPTION()
 }
 
 void NavigationComponent::update( void )
@@ -61,7 +68,7 @@ void NavigationComponent::update( void )
             switch ( label )
             {
                 case ImuMsg::MESSAGE_LABEL:
-                
+
                     endpoint_.receive< ImuMsg >( *inData_ );
 
                     break;
@@ -87,5 +94,9 @@ void NavigationComponent::update( void )
 
 void NavigationComponent::finalize( void )
 {
-    pAlg->finalize();
+    BEGIN_CHECKED_EXCEPTION()
+    {
+        pAlg->finalize();
+    }
+    END_CHECKED_EXCEPTION()
 }

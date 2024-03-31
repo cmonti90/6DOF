@@ -34,14 +34,21 @@ bool AutopilotComponent::associateEvent() const
 
 void AutopilotComponent::initialize( void )
 {
-    inData_ ->initialize();
-    outData_->initialize();
+    BEGIN_CHECKED_EXCEPTION()
+    {
+        inData_ ->initialize();
+        outData_->initialize();
 
-    endpoint_.subscribe< GuidanceMsg >( *inData_, PubSub::Message_Type::ACTIVE );
+        endpoint_.setActiveDepth( active_endpoint_depth );
+        endpoint_.setPassiveDepth( passive_endpoint_depth );
 
-    endpoint_.subscribe< NavMsg      >( *inData_, PubSub::Message_Type::PASSIVE );
+        endpoint_.subscribe< GuidanceMsg >( *inData_, PubSub::Message_Type::ACTIVE );
 
-    pAlg->initialize();
+        endpoint_.subscribe< NavMsg      >( *inData_, PubSub::Message_Type::PASSIVE );
+
+        pAlg->initialize();
+    }
+    END_CHECKED_EXCEPTION()
 }
 
 void AutopilotComponent::update( void )
@@ -82,5 +89,9 @@ void AutopilotComponent::update( void )
 
 void AutopilotComponent::finalize( void )
 {
-    pAlg->finalize();
+    BEGIN_CHECKED_EXCEPTION()
+    {
+        pAlg->finalize();
+    }
+    END_CHECKED_EXCEPTION()
 }
