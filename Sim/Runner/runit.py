@@ -25,15 +25,17 @@ if __name__ == '__main__':
     os.chdir(outputDir)
 
     print ("Running simulation")
+
+    executable = fileDir + "/../config/exec/runnerLink"
     
     if args.debugger == "valgrind":
-        os.system("valgrind --leak-check=full -s " + fileDir + "/../config/exec/runnerLink")
+        os.system("valgrind --leak-check=full -s " + executable)
 
     elif args.debugger == "gdb":
-        os.system("gdb " + fileDir + "/../config/exec/runnerLink")
+        os.system("gdb " + executable)
 
     elif args.debugger is None:
-        os.system(fileDir + "/../config/exec/runnerLink")
+        os.system(executable)
 
     else:
         print("Unknown debugger: " + args.debugger)

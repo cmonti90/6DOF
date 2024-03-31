@@ -7,9 +7,9 @@
 MassProperties::MassProperties( const double runRate, const std::string name )
     : SimLib::Model( runRate, name )
     , mass_( 5000.0 )
-    , rotInertia_{ 250.0 , 50.0  , 100.0 ,
-                   1000.0, 100.0 , 1000.0,
-                   100.0 , 1000.0, 1000.0 }
+    , rotInertia_{ 250.0, 50.0, 100.0,
+                   1000.0, 100.0, 1000.0,
+                   100.0, 1000.0, 1000.0 }
     , pEng_( nullptr )
 {
 }

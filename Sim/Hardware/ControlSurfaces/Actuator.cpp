@@ -45,9 +45,6 @@ void Actuator::update( const double cmd )
     stateErr_prev = stateErr;
     stateErr = cmd - angDeflStates[0];
 
-    PIDcmd_prev2 = PIDcmd_prev;
-    PIDcmd_prev = PIDcmd;
-
     Controller();
     RungeKutta4thOrder( PIDcmd );
 }
@@ -100,6 +97,10 @@ void Actuator::Controller()
 
     // Command
     PIDcmd = ( newCmd + ( 2.0 + pid.filterCoef * dt ) * PIDcmd_prev - PIDcmd_prev2 ) / ( 1.0 + pid.filterCoef * dt );
+
+    // Store previous states
+    PIDcmd_prev2 = PIDcmd_prev;
+    PIDcmd_prev  = PIDcmd;
 
 }
 
