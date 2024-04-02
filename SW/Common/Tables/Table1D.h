@@ -1,60 +1,91 @@
-#ifndef AFAE9597_1EDD_409F_B906_60DFE541C1A1
-#define AFAE9597_1EDD_409F_B906_60DFE541C1A1
+#ifndef TABLE1D_H
+#define TABLE1D_H
 
-template <typename T>
-class Table1D
+#include "Table.h"
+
+
+/////////////////////////////
+/////    DECLARATION    /////
+/////////////////////////////
+
+template < typename T >
+class Table1D : public Table< T >
 {
   public:
-    Table1D( const T* independentVar, const T* data )
-        : m_data( data ),
-          m_independentVar( independentVar ),
-          m_size( sizeof( data ) / sizeof( T ) )
-    {
-    }
 
-    virtual ~Table1D() {}
+    Table1D( const T* fpInput1, const int input1Length,
+             const T* fpOutput, const int outputLength );
 
-    T operator[]( const unsigned int index ) const
-    {
-        return m_data[index];
-    }
+    virtual ~Table1D();
 
-    virtual T lookUp( const T x ) const
-    {
-        if ( x < m_independentVar[0] )
-        {
-            return extrapolate( x, m_independentVar[0], m_data[0], ( m_data[1] - m_data[0] ) / ( m_independentVar[1] - m_independentVar[0] ) );
-        }
-        else if ( x > m_independentVar[m_size - 1u] )
-        {
-            return extrapolate( x, m_independentVar[m_size - 1u], m_data[m_size - 1u], ( m_data[m_size - 1u] - m_data[m_size - 2u] ) / ( m_independentVar[m_size - 1u] - m_independentVar[m_size - 2u] ) );
-        }
-        else
-        {
-            unsigned int idx = 0u;
-            while ( x > m_independentVar[idx + 1u] )
-            {
-                idx++;
-            }
-            return interpolate( idx, m_independentVar[idx], x, m_independentVar[idx + 1u] - m_independentVar[idx] );
-        }
-    }
+    T LookUp( const T fValue1, bool extrapolate = false );
+    void GetIndex( int& index1, T faScale[] );
 
-  protected:
-    T interpolate( const double idx, const T baseX, const T interpX, const T step ) const
-    {
-        T slope = ( m_data[static_cast<unsigned int>( idx ) + 1u] - m_data[static_cast<unsigned int>( idx )] ) / step;
-        return m_data[static_cast<unsigned int>( idx )] + slope * ( interpX - baseX );
-    }
+  private:
 
-    T extrapolate( const T extrapX, const T baseX, const T baseY, const T slope ) const
-    {
-        return baseY + slope * ( extrapX - baseX );
-    }
+    T ComputeValue();
 
-    const T* m_data;
-    const T* m_independentVar;
-    const unsigned int m_size;
-};
+    T scale1_[2];
+    int index1_;
 
-#endif /* AFAE9597_1EDD_409F_B906_60DFE541C1A1 */
+    const int input1Length_;
+    const T*  fpInput1_;
+
+    const int outputLength_;
+    const T*  fpOutput_;
+
+
+}; // class Table1D
+
+
+/////////////////////////////
+/////    DEFINITIONS    /////
+/////////////////////////////
+
+template < typename T >
+Table1D< T >::Table1D( const T* fpInput1, const int input1Length,
+                       const T* fpOutput, const int outputLength )
+    : Table< T >()
+    , scale1_       { static_cast< T >( 0 ), static_cast< T >( 0 ) }
+    , index1_       ( 0 )
+    , input1Length_ ( input1Length )
+    , fpInput1_     ( fpInput1 )
+    , outputLength_ ( outputLength )
+    , fpOutput_     ( fpOutput )
+{
+}
+
+
+template < typename T >
+Table1D< T >::~Table1D()
+{
+}
+
+
+template < typename T >
+T Table1D< T >::LookUp( const T fValue1, bool extrapolate )
+{
+    TableIndexAndScale( fValue1, fpInput1_, input1Length_, extrapolate, index1_, scale1_ );
+
+    return ComputeValue();
+}
+
+
+template < typename T >
+void Table1D< T >::GetIndex( int& index1, T faScale[] )
+{
+    index1 = index1_;
+    faScale[0] = scale1_[0];
+    faScale[1] = scale1_[1];
+}
+
+
+template < typename T >
+T Table1D< T >::ComputeValue()
+{
+    return ( scale1_[0] * fpOutput_[index1_] +
+             scale1_[1] * fpOutput_[index1_ + 1] );
+}
+
+
+#endif // TABLE1D_H
