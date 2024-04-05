@@ -1,8 +1,8 @@
 set(target AutopilotIntf)
 add_library(${target} INTERFACE)
-target_include_directories(${target}    INTERFACE  ${CMAKE_CURRENT_SOURCE_DIR} )
-target_link_libraries(${target} INTERFACE Messages
-                                          Serialization)
+target_include_directories(${target} INTERFACE  ${CMAKE_CURRENT_SOURCE_DIR} )
+target_link_libraries     (${target} INTERFACE  Messages
+                                                Serialization)
 
 
 ######################################
@@ -10,9 +10,8 @@ target_link_libraries(${target} INTERFACE Messages
 
 set(target Autopilot)
 
-set(SOURCES AutopilotComponent.cpp )
-
-set(HEADERS AutopilotComponent.h )
+set(SOURCES HighRateAutopilotComponent.cpp
+            LowRateAutopilotComponent.cpp )
 
 add_library(${target} STATIC ${SOURCES} )
 
