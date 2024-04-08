@@ -5,19 +5,21 @@
 
 #include "NavigationComponent.h"
 #include "GuidanceComponent.h"
-#include "AutopilotComponent.h"
+#include "HighRateAutopilotComponent.h"
+#include "LowRateAutopilotComponent.h"
 
 #include <iostream>
 
 ProcModule::ProcModule( std::shared_ptr< PubSub::QueueMngr >& queueMngr )
     : Module( queueMngr )
-    , pRtcClock           ( new TimePt::RtcClock    ( m_time ) )
-    , navThread           ( "NavigationThread" )
-    , guidanceThread      ( "GuidanceThread" )
-    , autopilotThread     ( "AutopilotThread" )
-    , pNavigationComponent( new NavigationComponent ( queueMngr, pRtcClock ) )
-    , pGuidanceComponent  ( new GuidanceComponent   ( queueMngr, pRtcClock ) )
-    , pAutopilotComponent ( new AutopilotComponent  ( queueMngr, pRtcClock ) )
+    , pRtcClock                     ( new TimePt::RtcClock( m_time ) )
+    , navThread                     ( "NavigationThread" )
+    , guidanceThread                ( "GuidanceThread" )
+    , autopilotThread               ( "AutopilotThread" )
+    , pNavigationComponent          ( new NavigationComponent         ( queueMngr, pRtcClock ) )
+    , pGuidanceComponent            ( new GuidanceComponent           ( queueMngr, pRtcClock ) )
+    , pHighRateAutopilotComponent   ( new HighRateAutopilotComponent  ( queueMngr, pRtcClock ) )
+    , pLowRateAutopilotComponent    ( new LowRateAutopilotComponent   ( queueMngr, pRtcClock ) )
 {
 }
 
@@ -34,5 +36,6 @@ void ProcModule::launch()
     AddCompToThread( guidanceThread, pGuidanceComponent.get() );
 
     RegisterThread( autopilotThread );
-    AddCompToThread( autopilotThread, pAutopilotComponent.get() );
+    AddCompToThread( autopilotThread, pHighRateAutopilotComponent.get() );
+    AddCompToThread( autopilotThread, pLowRateAutopilotComponent.get() );
 }

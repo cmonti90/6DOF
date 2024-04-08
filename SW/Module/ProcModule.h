@@ -13,26 +13,32 @@ namespace TimePt
 // SW Component forward declarations
 class NavigationComponent;
 class GuidanceComponent;
-class AutopilotComponent;
+class HighRateAutopilotComponent;
+class LowRateAutopilotComponent;
 
 class ProcModule : public PubSub::Module
 {
 public:
+
     ProcModule(  std::shared_ptr< PubSub::QueueMngr >& queueMngr );
     virtual ~ProcModule();
 
     virtual void launch() override;
 
 private:
-    std::shared_ptr<TimePt::RtcClock> pRtcClock;
 
+    std::shared_ptr< TimePt::RtcClock > pRtcClock;
+
+    // SW Threads
     PubSub::Thread navThread;
     PubSub::Thread guidanceThread;
     PubSub::Thread autopilotThread;
 
-    std::unique_ptr< NavigationComponent > pNavigationComponent;
-    std::unique_ptr< GuidanceComponent >   pGuidanceComponent;
-    std::unique_ptr< AutopilotComponent >  pAutopilotComponent;
+    // SW Components
+    std::unique_ptr< NavigationComponent        > pNavigationComponent;
+    std::unique_ptr< GuidanceComponent          > pGuidanceComponent;
+    std::unique_ptr< HighRateAutopilotComponent > pHighRateAutopilotComponent;
+    std::unique_ptr< LowRateAutopilotComponent  > pLowRateAutopilotComponent;
 
 };
 
