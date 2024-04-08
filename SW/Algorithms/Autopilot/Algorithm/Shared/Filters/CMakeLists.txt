@@ -1,6 +1,10 @@
 set(target AutopilotFilters)
 
 set(SOURCES
+        FilterP.cpp
+        FilterQR.cpp
+        FilterRollDC.cpp
+
         HighRateDigitalFilter2.cpp
         HighRateDigitalFilter4.cpp
 
