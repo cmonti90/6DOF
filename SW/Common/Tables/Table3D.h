@@ -74,11 +74,11 @@ Table3D< T >::Table3D( const T* fpInput1, const int input1Length,
     , outputLength_ ( outputLength )
     , fpOutput_     ( nullptr )
 {
-    fpOutput_ = new T**[ input3Length_ ];
+    fpOutput_ = new const T**[ input3Length_ ];
 
     for ( int i3 = 0; i3 < input3Length_; ++i3 )
     {
-        fpOutput_[ i3 ] = new T*[ input2Length_ ];
+        fpOutput_[ i3 ] = new const T*[ input2Length_ ];
 
         for ( int i2 = 0; i2 < input2Length_; ++i2 )
         {

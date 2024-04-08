@@ -95,7 +95,7 @@ Table5D< T >::Table5D( const T* fpInput1, const int input1Length,
     , outputLength_ ( outputLength )
     , fpOutput_     ( nullptr )
 {
-    fpOutput_ = new T**** [ input5Length_ ];
+    fpOutput_ = new const T**** [ input5Length_ ];
 
     for ( int i5 = 0; i5 < input5Length_; ++i5 )
     {

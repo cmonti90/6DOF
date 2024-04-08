@@ -62,7 +62,7 @@ Table2D< T >::Table2D( const T* fpInput1, const int input1Length,
     , outputLength_ ( outputLength )
     , fpOutput_     ( nullptr )
 {
-    fpOutput_ = new T*[ input2Length_ ];
+    fpOutput_ = new const T*[ input2Length_ ];
 
     for ( int i2 = 0; i2 < input2Length_; ++i2 )
     {

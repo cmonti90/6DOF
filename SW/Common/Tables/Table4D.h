@@ -84,7 +84,7 @@ Table4D< T >::Table4D( const T* fpInput1, const int input1Length,
     , outputLength_ ( outputLength )
     , fpOutput_     ( nullptr )
 {
-    fpOutput_ = new T*** [ input4Length_ ];
+    fpOutput_ = new const T*** [ input4Length_ ];
 
     for ( int i4 = 0; i4 < input4Length_; ++i4 )
     {
