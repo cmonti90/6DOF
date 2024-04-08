@@ -31,6 +31,7 @@ eom::eom( const double runRate, const std::string name )
     , windVelBody_( 0.0 )
 
     , eulerAngles_( 0.0 )
+    , eulerAnglesDot_( 0.0 )
 
     , velBody_( 0.0 )
     , accelBody_( 0.0 )
@@ -180,6 +181,9 @@ void eom::update()
     RungeKutta4thOrder( posEcef_, velEcef_, accelEcef_, angRatesBody_, angAccelBody_, pMassProps_->getRotInertia(),
                         q_nedToBody_, specificForceEcef_, momentEcef_ );
 
+    UpdateEulerStates();
+    UpdateBodyStates();
+
     UpdateEci();
     UpdateNed();
     UpdateBody();
@@ -213,6 +217,21 @@ void eom::finalize()
     }
 }
 
+
+void eom::UpdateEulerStates()
+{
+    eulerAngles_ = q_nedToBody_.ToEuler( myMath::TaitBryanOrder::ZYX );
+
+    eulerAnglesDot_[0] = angRatesBody_[0] + std::tan( eulerAngles_[1] ) * ( angRatesBody_[1] * std::sin( eulerAngles_[0] ) + angRatesBody_[2] * std::cos( eulerAngles_[0] ) );
+    eulerAnglesDot_[1] = angRatesBody_[1] * std::cos( eulerAngles_[0] ) - angRatesBody_[2] * std::sin( eulerAngles_[0] );
+    eulerAnglesDot_[2] = ( angRatesBody_[1] * std::sin( eulerAngles_[0] ) + angRatesBody_[2] * std::cos( eulerAngles_[0] ) ) / std::cos( eulerAngles_[1] );
+}
+
+
+void eom::UpdateBodyStates()
+{
+    ( void ) velBody_;
+}
 
 //////////////////////////////////////////////////////
 /// @note   Name: UpdateEci

@@ -3,7 +3,7 @@
 
 #include "HwIntf.h"
 
-#include "Vector.h"
+#include "myMathVector.h"
 #include "PayloadEndpoint.h"
 
 class eom;
@@ -18,7 +18,8 @@ namespace IMUTypes
 class IMU : public SimLib::HwIntf
 {
   public:
-    IMU( const double runRate, const std::string name = "IMU" );
+    IMU( const double runRate,
+         const std::string name = "IMU" );
     ~IMU();
 
   protected:
@@ -41,9 +42,12 @@ class IMU : public SimLib::HwIntf
     void GyroscopeMeasurement();
     void BuildSwOutput();
 
-    PubSub::PayloadEndpoint endoint_;
+    PubSub::PayloadEndpoint endpoint_;
 
+    const myMath::Vector3d distToCg_;
     double timeStamp_;
+    
+    myMath::Vector3d trueSensedAccel_;
     myMath::Vector3d measAccel_;
     myMath::Vector3d measOmega_;
 

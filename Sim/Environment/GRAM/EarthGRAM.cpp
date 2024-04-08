@@ -9,7 +9,7 @@
 
 #include <iomanip>
 
-#include "mathlib.h"
+#include "myMath.h"
 
 EarthGRAM::EarthGRAM( const double runRate,
                       const std::string name )

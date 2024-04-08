@@ -2,7 +2,7 @@
 #define EOM_H
 
 #include "EOMEcef.h"
-#include "mathlib.h"
+#include "myMath.h"
 
 class MassProperties;
 
@@ -29,6 +29,9 @@ class eom : public SimLib::EOMEcef
     void finalize  () override;
     void requestReferences( SimLib::ReferenceRequest& refReq ) override;
 
+    void UpdateEulerStates();
+    void UpdateBodyStates();
+
     double t_;
     double t_prev_;
     int counter_;
@@ -41,6 +44,7 @@ class eom : public SimLib::EOMEcef
     myMath::Vector3d windVelBody_;
 
     myMath::AngleD eulerAngles_;
+    myMath::AngleD eulerAnglesDot_;
 
     myMath::Vector3d velBody_;
     myMath::Vector3d accelBody_;
@@ -115,6 +119,9 @@ class eom : public SimLib::EOMEcef
   private:
 
     MassProperties* pMassProps_;
+
+    eom( const eom& )             = delete;
+    eom& operator=( const eom& )  = delete;
 };
 
 #endif

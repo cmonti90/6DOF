@@ -2,7 +2,7 @@
 #define AERO_H
 
 #include "Model.h"
-#include "mathlib.h"
+#include "myMath.h"
 
 class eom;
 // class EarthGRAM;

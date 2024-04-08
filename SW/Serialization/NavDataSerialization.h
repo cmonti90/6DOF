@@ -4,8 +4,8 @@
 #include "NavMsg.h"
 
 #include "Decorators.h"
-#include "Vector.h"
-#include "DCM.h"
+#include "myMathVector.h"
+#include "myMathDCM.h"
 
 struct NavDeserializedData
 {

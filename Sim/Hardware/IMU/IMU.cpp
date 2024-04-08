@@ -16,7 +16,9 @@ const double IMU::GYRO_NOISE_DENSITY    = 0.0;
 
 IMU::IMU( const double runRate, const std::string name )
     : SimLib::HwIntf( runRate, name )
-    , endoint_      ()
+    , endpoint_      ()
+    , distToCg_     ( 0.0 )
+    , timeStamp_    ( 0.0 )
     , measAccel_    ( 0.0 )
     , measOmega_    ( 0.0 )
     , counter_      ( 0 )
@@ -31,7 +33,7 @@ IMU::~IMU()
 
 void IMU::receiveQueueMngr( std::shared_ptr< PubSub::QueueMngr >& queueMngr )
 {
-    endoint_.configure( queueMngr );
+    endpoint_.configure( queueMngr );
 }
 
 void IMU::requestReferences( SimLib::ReferenceRequest& refReq )
@@ -53,7 +55,7 @@ void IMU::update()
     {
         BuildSwOutput();
 
-        endoint_.send< ImuMsg >( *swOutData_ );
+        endpoint_.send< ImuMsg >( *swOutData_ );
     }
 
     counter_++;
@@ -68,9 +70,10 @@ void IMU::AccelerometerMeasurement()
 {
     myMath::Vector3d accelEcef = pEom_->getAccelEcef();
 
-    measAccel_[0] = accelEcef[0] + ACCEL_BIAS;
-    measAccel_[1] = accelEcef[1] + ACCEL_BIAS;
-    measAccel_[2] = accelEcef[2] + ACCEL_BIAS;
+
+    // trueSensedAccel_[0] = accelEcef[0] - ;
+
+    // measAccel_[0] = trueSensedAccel_ + ACCEL_BIAS;
 }
 
 void IMU::GyroscopeMeasurement()

@@ -1,5 +1,5 @@
 #include "WGS84.h"
-#include "Constants.h"
+#include "myMathConstants.h"
 
 #include <cmath>
 
