@@ -3,15 +3,20 @@
 
 struct APGains
 {
+    APGains();
+    ~APGains();
+
+    void Reset();
+    
     float maxAlpha; // Maximum angle of attack for the missile  [rad]
 
     float Kp;       // Roll Rate Gain                           [s]
     float Kq;       // Pitch Rate Gain                          [s]
     float Kr;       // Yaw Rate Gain                            [s]
 
-    float Kphi;     // Roll Angle Gain                          [-]
-    float Ktheta;   // Pitch Angle Gain                         [-]
-    float Kpsi;     // Yaw Angle Gain                           [-]
+    float KPhi;     // Roll Angle Gain                          [-]
+    float KTheta;   // Pitch Angle Gain                         [-]
+    float KPsi;     // Yaw Angle Gain                           [-]
 
     float KAr;      // Roll Angle Error Gain                    [1/s]
     float KAz;      // Pitch Angle Error Gain                   [rad/s/G]

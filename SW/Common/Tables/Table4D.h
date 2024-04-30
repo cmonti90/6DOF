@@ -20,8 +20,19 @@ class Table4D : public Table< T >
 
     virtual ~Table4D();
 
-    T LookUp( const T fValue1, const T fValue2, const T fValue3, const T fValue4, bool extrapolate = false );
-    void GetIndex( int& index1, T faScale1[], int& index2, T faScale2[], int& index3, T faScale3[], int& index4, T faScale4[] );
+    T LookUp( const T fValue1, const T fValue2,
+              const T fValue3, const T fValue4,
+              bool extrapolate = false );
+
+    T LookUp( const int index1, const T faScale1[],
+              const int index2, const T faScale2[],
+              const int index3, const T faScale3[],
+              const int index4, const T faScale4[] );
+
+    void GetIndex( int& index1, T faScale1[],
+                   int& index2, T faScale2[],
+                   int& index3, T faScale3[],
+                   int& index4, T faScale4[] );
 
   private:
 
@@ -31,6 +42,7 @@ class Table4D : public Table< T >
     T scale2_[2];
     T scale3_[2];
     T scale4_[2];
+
     int index1_;
     int index2_;
     int index3_;
@@ -123,31 +135,59 @@ Table4D< T >::~Table4D()
 template< typename T >
 T Table4D< T >::LookUp( const T fValue1, const T fValue2, const T fValue3, const T fValue4, bool extrapolate )
 {
-    TableIndexAndScale( fValue1, fpInput1_, input1Length_, extrapolate, index1_, scale1_ );
-    TableIndexAndScale( fValue2, fpInput2_, input2Length_, extrapolate, index2_, scale2_ );
-    TableIndexAndScale( fValue3, fpInput3_, input3Length_, extrapolate, index3_, scale3_ );
-    TableIndexAndScale( fValue4, fpInput4_, input4Length_, extrapolate, index4_, scale4_ );
+    this->TableIndexAndScale( fValue1, fpInput1_, input1Length_, extrapolate, index1_, scale1_ );
+    this->TableIndexAndScale( fValue2, fpInput2_, input2Length_, extrapolate, index2_, scale2_ );
+    this->TableIndexAndScale( fValue3, fpInput3_, input3Length_, extrapolate, index3_, scale3_ );
+    this->TableIndexAndScale( fValue4, fpInput4_, input4Length_, extrapolate, index4_, scale4_ );
 
     return ComputeValue();
 }
 
 
 template< typename T >
-void Table4D< T >::GetIndex( int& index1, T faScale1[], int& index2, T faScale2[], int& index3, T faScale3[], int& index4, T faScale4[] )
+T Table4D< T >::LookUp( const int index1, const T faScale1[],
+                        const int index2, const T faScale2[],
+                        const int index3, const T faScale3[],
+                        const int index4, const T faScale4[] )
 {
-    index1 = index1_;
+    index1_    = index1;
+    scale1_[0] = faScale1[0];
+    scale1_[1] = faScale1[1];
+
+    index2_    = index2;
+    scale2_[0] = faScale2[0];
+    scale2_[1] = faScale2[1];
+
+    index3_    = index3;
+    scale3_[0] = faScale3[0];
+    scale3_[1] = faScale3[1];
+
+    index4_    = index4;
+    scale4_[0] = faScale4[0];
+    scale4_[1] = faScale4[1];
+
+    return ComputeValue();
+}
+
+template< typename T >
+void Table4D< T >::GetIndex( int& index1, T faScale1[],
+                             int& index2, T faScale2[],
+                             int& index3, T faScale3[],
+                             int& index4, T faScale4[] )
+{
+    index1      = index1_;
     faScale1[0] = scale1_[0];
     faScale1[1] = scale1_[1];
 
-    index2 = index2_;
+    index2      = index2_;
     faScale2[0] = scale2_[0];
     faScale2[1] = scale2_[1];
 
-    index3 = index3_;
+    index3      = index3_;
     faScale3[0] = scale3_[0];
     faScale3[1] = scale3_[1];
 
-    index4 = index4_;
+    index4      = index4_;
     faScale4[0] = scale4_[0];
     faScale4[1] = scale4_[1];
 }

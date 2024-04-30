@@ -5,7 +5,9 @@ enum MessageIds : int
 {
     AutopilotMsgId,
     GuidanceMsgId,
+    HighRateApMsgId,
     ImuMsgId,
+    LowRateApMsgId,
     NavMsgId,
     MsgIdCount
 };

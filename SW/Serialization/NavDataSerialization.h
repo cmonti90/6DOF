@@ -9,44 +9,53 @@
 
 struct NavDeserializedData
 {
-    myMath::Vector3d posEci;
-    myMath::Vector3d velEci;
-    myMath::Vector3d accEci;
+    myMath::Vector3f posEci;
+    myMath::Vector3f velEci;
+    myMath::Vector3f accEci;
 
-    myMath::Vector3d posEcef;
-    myMath::Vector3d velEcef;
-    myMath::Vector3d accEcef;
+    myMath::Vector3f posEcef;
+    myMath::Vector3f velEcef;
+    myMath::Vector3f accEcef;
 
-    myMath::Vector3d eulerAngs;
-    myMath::Vector3d eulerAngRates;
+    myMath::Vector3f eulerAngs;
+    myMath::Vector3f eulerAngRates;
 
-    myMath::DCMd bodyFromNed;
+    myMath::DCMf bodyFromEcef;
+    myMath::DCMf bodyFromNed;
 
-    NavDeserializedData() : posEci(),
-        velEci(),
-        accEci(),
-        posEcef(),
-        velEcef(),
-        accEcef(),
-        eulerAngs(),
-        eulerAngRates()
+    myMath::Vector3f gravityEcef;
+
+    NavDeserializedData()
+        : posEci()
+        , velEci()
+        , accEci()
+        , posEcef()
+        , velEcef()
+        , accEcef()
+        , eulerAngs()
+        , eulerAngRates()
+        , bodyFromEcef()
+        , bodyFromNed()
+        , gravityEcef()
     {
     }
 
     virtual void initialize()
     {
-        posEci = 0.0;
-        velEci = 0.0;
-        accEci = 0.0;
+        posEci = 0.0f;
+        velEci = 0.0f;
+        accEci = 0.0f;
 
-        posEcef = 0.0;
-        velEcef = 0.0;
-        accEcef = 0.0;
+        posEcef = 0.0f;
+        velEcef = 0.0f;
+        accEcef = 0.0f;
 
-        eulerAngs = 0.0;
-        eulerAngRates = 0.0;
+        eulerAngs     = 0.0f;
+        eulerAngRates = 0.0f;
 
-        bodyFromNed = myMath::DCMd::Identity();
+        bodyFromNed = myMath::DCMf::Identity();
+
+        gravityEcef = 0.0f;
     }
 
     virtual void reset()
@@ -56,7 +65,7 @@ struct NavDeserializedData
 };
 
 template <>
-struct PayloadDeserializer<NavData> : NavDeserializedData
+struct PayloadDeserializer< NavData > : NavDeserializedData
 {
     PayloadDeserializer() : NavDeserializedData()
     {
@@ -72,14 +81,18 @@ struct PayloadDeserializer<NavData> : NavDeserializedData
         velEcef = payload.velEcef_raw;
         accEcef = payload.accEcef_raw;
 
-        eulerAngs = payload.eulerAngs_raw;
+        eulerAngs     = payload.eulerAngs_raw;
         eulerAngRates = payload.eulerAngRates_raw;
-        bodyFromNed = payload.bodyFromNed_raw;
+
+        bodyFromEcef = payload.bodyFromEcef_raw;
+        bodyFromNed  = payload.bodyFromNed_raw;
+
+        gravityEcef = payload.gravityEcef_raw;
     }
 };
 
 template <>
-struct PayloadSerializer<NavData> : NavDeserializedData
+struct PayloadSerializer< NavData > : NavDeserializedData
 {
     PayloadSerializer() : NavDeserializedData()
     {
@@ -100,9 +113,12 @@ struct PayloadSerializer<NavData> : NavDeserializedData
             payload.eulerAngs_raw[i] = eulerAngs[i];
             payload.eulerAngRates_raw[i] = eulerAngRates[i];
 
+            payload.gravityEcef_raw[i] = gravityEcef[i];
+
             for ( unsigned int j{0u}; j < 3u; j++ )
             {
-                payload.bodyFromNed_raw[i][j] = bodyFromNed[i][j];
+                payload.bodyFromEcef_raw[i][j] = bodyFromEcef[i][j];
+                payload.bodyFromNed_raw[i][j]  = bodyFromNed[i][j];
             }
         }
     }

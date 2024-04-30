@@ -5,22 +5,24 @@
 #include "Payload.h"
 #include "Decorators.h"
 
-#include "AutopilotMsg.h"
 #include "GuidanceMsg.h"
+#include "HighRateAutopilotMsg.h"
+#include "LowRateAutopilotMsg.h"
 #include "NavMsg.h"
 
+#include "LowRateApSerialization.h"
 #include "NavDataSerialization.h"
 
 namespace LowRateAutopilotTypes
 {
     struct InData : Intf::MessageContainer<
-        InputPayload< GuidanceMsg                          >,
-        InputPayload< NavMsg     , Deserialize, Persistent >
+        InputPayload< GuidanceMsg                                   >,
+        InputPayload< NavMsg              , Deserialize, Persistent >
     >
     {};
 
     struct OutData : Intf::MessageContainer<
-        OutputPayload< AutopilotMsg >
+        OutputPayload< LowRateAutopilotMsg, Serialize >
     >
     {};
 }

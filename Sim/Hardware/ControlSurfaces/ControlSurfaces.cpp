@@ -7,15 +7,15 @@ ControlSurfaces::ControlSurfaces( const double runRate, const std::string name )
     : SimLib::HwIntf( runRate, name )
     , endpoint_()
     , swInData_( new CtrlSurfTypes::InData() )
-    , aileronL_( new Actuator( 0.0, 0.050, 5.0 ) )
-    , aileronR_( new Actuator( 0.0, 0.050, 5.0 ) )
-    , elevator_( new Actuator( 0.0, 0.050, 5.0 ) )
-    , rudder_  ( new Actuator( 0.0, 0.050, 5.0 ) )
+    , fin1_( new Actuator( 0.0, 0.050, 5.0 ) )
+    , fin2_( new Actuator( 0.0, 0.050, 5.0 ) )
+    , fin3_( new Actuator( 0.0, 0.050, 5.0 ) )
+    , fin4_( new Actuator( 0.0, 0.050, 5.0 ) )
 {
-    aileronL_->setPID( 7469.1259, 75079.5091, 52.6578, 1735.6444 );
-    aileronR_->setPID( 7469.1259, 75079.5091, 52.6578, 1735.6444 );
-    elevator_->setPID( 7469.1259, 75079.5091, 52.6578, 1735.6444 );
-    rudder_  ->setPID( 7469.1259, 75079.5091, 52.6578, 1735.6444 );
+    fin1_->setPID( 7469.1259, 75079.5091, 52.6578, 1735.6444 );
+    fin2_->setPID( 7469.1259, 75079.5091, 52.6578, 1735.6444 );
+    fin3_->setPID( 7469.1259, 75079.5091, 52.6578, 1735.6444 );
+    fin4_->setPID( 7469.1259, 75079.5091, 52.6578, 1735.6444 );
 }
 
 ControlSurfaces::~ControlSurfaces()
@@ -33,28 +33,28 @@ void ControlSurfaces::initialize()
 
     endpoint_.subscribe< AutopilotMsg >( *swInData_ );
 
-    aileronL_->initialize();
-    aileronR_->initialize();
-    elevator_->initialize();
-    rudder_  ->initialize();
+    fin1_->initialize();
+    fin2_->initialize();
+    fin3_->initialize();
+    fin4_->initialize();
 }
 
 void ControlSurfaces::update()
 {
     CheckForMessages();
 
-    aileronL_->update( swInData_->aileronCmd[0] );
-    aileronR_->update( swInData_->aileronCmd[1] );
-    elevator_->update( swInData_->elevatorCmd );
-    rudder_  ->update( swInData_->rudderCmd );
+    fin1_->update( swInData_->finCmd[0] );
+    fin2_->update( swInData_->finCmd[1] );
+    fin3_->update( swInData_->finCmd[2] );
+    fin4_->update( swInData_->finCmd[3] );
 }
 
 void ControlSurfaces::finalize()
 {
-    aileronL_->finalize();
-    aileronR_->finalize();
-    elevator_->finalize();
-    rudder_  ->finalize();
+    fin1_->finalize();
+    fin2_->finalize();
+    fin3_->finalize();
+    fin4_->finalize();
 }
 
 void ControlSurfaces::CheckForMessages()
@@ -86,22 +86,10 @@ void ControlSurfaces::CheckForMessages()
 
 // Getters
 
-double ControlSurfaces::getAileronLDeflection() const
+void ControlSurfaces::GetFinDeflections( float ( &finPosOut )[4] ) const
 {
-    return aileronL_->getDeflection();
-}
-
-double ControlSurfaces::getAileronRDeflection() const
-{
-    return aileronR_->getDeflection();
-}
-
-double ControlSurfaces::getElevatorDeflection() const
-{
-    return elevator_->getDeflection();
-}
-
-double ControlSurfaces::getRudderDeflection() const
-{
-    return rudder_->getDeflection();
+    finPosOut[0] = fin1_->getDeflection();
+    finPosOut[1] = fin2_->getDeflection();
+    finPosOut[2] = fin3_->getDeflection();
+    finPosOut[3] = fin4_->getDeflection();
 }

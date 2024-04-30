@@ -10,7 +10,7 @@ LowRateAutopilotComponent::LowRateAutopilotComponent( std::shared_ptr<PubSub::Qu
                                         const PubSub::Component_Label name )
     : PubSub::Component ( queueMngr, name )
     , endpoint_         ( queueMngr )
-    , pAlg              ( new LowRateAutopilotAlgorithm() )
+    , pAlg_              ( new LowRateAutopilotAlgorithm() )
     , inData_           ( new LowRateAutopilotTypes::InData() )
     , outData_          ( new LowRateAutopilotTypes::OutData() )
     , sysClock_         ( sysClock )
@@ -36,17 +36,12 @@ void LowRateAutopilotComponent::initialize( void )
 {
     BEGIN_CHECKED_EXCEPTION()
     {
-        inData_ ->initialize();
-        outData_->initialize();
-
         endpoint_.setActiveDepth( active_endpoint_depth );
         endpoint_.setPassiveDepth( passive_endpoint_depth );
 
         endpoint_.subscribe< GuidanceMsg >( *inData_, PubSub::Message_Type::ACTIVE );
 
         endpoint_.subscribe< NavMsg      >( *inData_, PubSub::Message_Type::PASSIVE );
-
-        pAlg->initialize();
     }
     END_CHECKED_EXCEPTION()
 }
@@ -81,6 +76,8 @@ void LowRateAutopilotComponent::update( void )
                     break;
             }
 
+            endpoint_.send< LowRateAutopilotMsg >( *outData_ );
+
             status = endpoint_.peek( label );
         }
     }
@@ -91,7 +88,7 @@ void LowRateAutopilotComponent::finalize( void )
 {
     BEGIN_CHECKED_EXCEPTION()
     {
-        pAlg->finalize();
+        pAlg_->finalize();
     }
     END_CHECKED_EXCEPTION()
 }

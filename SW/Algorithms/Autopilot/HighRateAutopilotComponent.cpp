@@ -10,7 +10,7 @@ HighRateAutopilotComponent::HighRateAutopilotComponent( std::shared_ptr<PubSub::
         const PubSub::Component_Label name )
     : PubSub::Component ( queueMngr, name )
     , endpoint_         ( queueMngr )
-    , pAlg              ( new HighRateAutopilotAlgorithm() )
+    , pAlg_              ( new HighRateAutopilotAlgorithm() )
     , inData_           ( new HighRateAutopilotTypes::InData() )
     , outData_          ( new HighRateAutopilotTypes::OutData() )
     , sysClock_         ( sysClock )
@@ -36,17 +36,14 @@ void HighRateAutopilotComponent::initialize( void )
 {
     BEGIN_CHECKED_EXCEPTION()
     {
-        inData_ ->initialize();
-        outData_->initialize();
-
         endpoint_.setActiveDepth( active_endpoint_depth );
         endpoint_.setPassiveDepth( passive_endpoint_depth );
 
-        endpoint_.subscribe< GuidanceMsg >( *inData_, PubSub::Message_Type::ACTIVE );
+        endpoint_.subscribe< ImuMsg              >( *inData_, PubSub::Message_Type::ACTIVE );
 
-        endpoint_.subscribe< NavMsg      >( *inData_, PubSub::Message_Type::PASSIVE );
-
-        pAlg->initialize();
+        endpoint_.subscribe< GuidanceMsg         >( *inData_, PubSub::Message_Type::PASSIVE );
+        endpoint_.subscribe< LowRateAutopilotMsg >( *inData_, PubSub::Message_Type::PASSIVE );
+        endpoint_.subscribe< NavMsg              >( *inData_, PubSub::Message_Type::PASSIVE );
     }
     END_CHECKED_EXCEPTION()
 }
@@ -65,6 +62,18 @@ void HighRateAutopilotComponent::update( void )
                 case GuidanceMsg::MESSAGE_LABEL:
 
                     endpoint_.receive< GuidanceMsg >( *inData_ );
+
+                    break;
+
+                case ImuMsg::MESSAGE_LABEL:
+
+                    endpoint_.receive< ImuMsg >( *inData_ );
+
+                    break;
+
+                case LowRateAutopilotMsg::MESSAGE_LABEL:
+
+                    endpoint_.receive< LowRateAutopilotMsg >( *inData_ );
 
                     break;
 
@@ -91,7 +100,7 @@ void HighRateAutopilotComponent::finalize( void )
 {
     BEGIN_CHECKED_EXCEPTION()
     {
-        pAlg->finalize();
+        pAlg_->finalize();
     }
     END_CHECKED_EXCEPTION()
 }

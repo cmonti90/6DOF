@@ -20,8 +20,16 @@ class Table3D : public Table< T >
 
     virtual ~Table3D();
 
-    T LookUp( const T fValue1, const T fValue2, const T fValue3, bool extrapolate = false );
-    void GetIndex( int& index1, T faScale1[], int& index2, T faScale2[], int& index3, T faScale3[] );
+    T LookUp( const T fValue1, const T fValue2,
+              const T fValue3, bool extrapolate = false );
+
+    T LookUp( const int index1, const T faScale1[],
+              const int index2, const T faScale2[],
+              const int index3, const T faScale3[] );
+
+    void GetIndex( int& index1, T faScale1[],
+                   int& index2, T faScale2[],
+                   int& index3, T faScale3[] );
 
   private:
 
@@ -30,6 +38,7 @@ class Table3D : public Table< T >
     T scale1_[2];
     T scale2_[2];
     T scale3_[2];
+
     int index1_;
     int index2_;
     int index3_;
@@ -74,7 +83,7 @@ Table3D< T >::Table3D( const T* fpInput1, const int input1Length,
     , outputLength_ ( outputLength )
     , fpOutput_     ( nullptr )
 {
-    fpOutput_ = new const T**[ input3Length_ ];
+    fpOutput_ = new const T** [ input3Length_ ];
 
     for ( int i3 = 0; i3 < input3Length_; ++i3 )
     {
@@ -103,26 +112,49 @@ Table3D< T >::~Table3D()
 template< typename T >
 T Table3D< T >::LookUp( const T fValue1, const T fValue2, const T fValue3, bool extrapolate )
 {
-    TableIndexAndScale( fValue1, fpInput1_, input1Length_, extrapolate, index1_, scale1_ );
-    TableIndexAndScale( fValue2, fpInput2_, input2Length_, extrapolate, index2_, scale2_ );
-    TableIndexAndScale( fValue3, fpInput3_, input3Length_, extrapolate, index3_, scale3_ );
+    this->TableIndexAndScale( fValue1, fpInput1_, input1Length_, extrapolate, index1_, scale1_ );
+    this->TableIndexAndScale( fValue2, fpInput2_, input2Length_, extrapolate, index2_, scale2_ );
+    this->TableIndexAndScale( fValue3, fpInput3_, input3Length_, extrapolate, index3_, scale3_ );
 
     return ComputeValue();
 }
 
 
 template< typename T >
-void Table3D< T >::GetIndex( int& index1, T faScale1[], int& index2, T faScale2[], int& index3, T faScale3[] )
+T Table3D< T >::LookUp( const int index1, const T faScale1[],
+                        const int index2, const T faScale2[],
+                        const int index3, const T faScale3[] )
 {
-    index1 = index1_;
+    index1_    = index1;
+    scale1_[0] = faScale1[0];
+    scale1_[1] = faScale1[1];
+
+    index2_    = index2;
+    scale2_[0] = faScale2[0];
+    scale2_[1] = faScale2[1];
+
+    index3_    = index3;
+    scale3_[0] = faScale3[0];
+    scale3_[1] = faScale3[1];
+
+    return ComputeValue();
+}
+
+
+template< typename T >
+void Table3D< T >::GetIndex( int& index1, T faScale1[],
+                             int& index2, T faScale2[],
+                             int& index3, T faScale3[] )
+{
+    index1      = index1_;
     faScale1[0] = scale1_[0];
     faScale1[1] = scale1_[1];
 
-    index2 = index2_;
+    index2      = index2_;
     faScale2[0] = scale2_[0];
     faScale2[1] = scale2_[1];
 
-    index3 = index3_;
+    index3      = index3_;
     faScale3[0] = scale3_[0];
     faScale3[1] = scale3_[1];
 }
@@ -134,7 +166,7 @@ T Table3D< T >::ComputeValue()
     const int index1p1 = index1_ + 1;
     const int index2p1 = index2_ + 1;
     const int index3p1 = index3_ + 1;
-    
+
     return ( scale3_[0] * scale2_[0] * scale1_[0] * fpOutput_[ index3_  ][ index2_  ][ index1_  ] +
              scale3_[0] * scale2_[0] * scale1_[1] * fpOutput_[ index3_  ][ index2_  ][ index1p1 ] +
              scale3_[0] * scale2_[1] * scale1_[0] * fpOutput_[ index3_  ][ index2p1 ][ index1_  ] +

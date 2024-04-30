@@ -45,7 +45,7 @@ class LowRateAutopilotComponent : public PubSub::Component
 
     PubSub::PayloadEndpoint endpoint_;
 
-    std::unique_ptr< LowRateAutopilotAlgorithm > pAlg;
+    std::unique_ptr< LowRateAutopilotAlgorithm > pAlg_;
 
     std::unique_ptr< LowRateAutopilotTypes::InData  > inData_;
     std::unique_ptr< LowRateAutopilotTypes::OutData > outData_;

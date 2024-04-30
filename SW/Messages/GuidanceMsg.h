@@ -1,5 +1,5 @@
-#ifndef BA4F55A0_04C9_4204_90F7_54C14F0C45D3
-#define BA4F55A0_04C9_4204_90F7_54C14F0C45D3
+#ifndef GUIDANCE_MSG_H
+#define GUIDANCE_MSG_H
 
 #include "MessagePayloadTemplate.hxx"
 
@@ -7,23 +7,31 @@
 
 struct GuidanceData
 {
-    double guidanceAccelCmdXbody;
-    double guidanceAccelCmdYbody;
-    double guidanceAccelCmdZbody;
+    float guidanceAccelCmdYbody;
+    float guidanceAccelCmdZbody;
+
+    float cmdRoll;
+    float integratedRollRate;
 
     void Default()
     {
-        guidanceAccelCmdXbody = 0.0;
-        guidanceAccelCmdYbody = 0.0;
-        guidanceAccelCmdZbody = 0.0;
+        guidanceAccelCmdYbody = 0.0f;
+        guidanceAccelCmdZbody = 0.0f;
+
+        cmdRoll = 0.0f;
+        integratedRollRate = 0.0f;
     }
 
-    GuidanceData() : guidanceAccelCmdXbody(), guidanceAccelCmdYbody(), guidanceAccelCmdZbody()
+    GuidanceData()
+        : guidanceAccelCmdYbody()
+        , guidanceAccelCmdZbody()
+        , cmdRoll()
+        , integratedRollRate()
     {
         Default();
     }
 };
 
-MESSAGE_PAYLOAD(GuidanceMsg, GuidanceData, GuidanceMsgId)
+MESSAGE_PAYLOAD( GuidanceMsg, GuidanceData, GuidanceMsgId )
 
-#endif /* BA4F55A0_04C9_4204_90F7_54C14F0C45D3 */
+#endif // GUIDANCE_MSG_H

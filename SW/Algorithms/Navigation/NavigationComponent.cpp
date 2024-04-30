@@ -83,8 +83,6 @@ void NavigationComponent::update( void )
             status = endpoint_.peek( label );
         }
 
-        outData_->accEcef = static_cast< double >( counter_ ) * myMath::Vector3d( {1.0, -2.0, 1.5} );
-
         endpoint_.send< NavMsg >( *outData_ );
 
         counter_++;

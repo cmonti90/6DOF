@@ -42,7 +42,7 @@ class HighRateAutopilotComponent : public PubSub::Component
   private:
     PubSub::PayloadEndpoint endpoint_;
 
-    std::unique_ptr< HighRateAutopilotAlgorithm > pAlg;
+    std::unique_ptr< HighRateAutopilotAlgorithm > pAlg_;
 
     std::unique_ptr< HighRateAutopilotTypes::InData  > inData_;
     std::unique_ptr< HighRateAutopilotTypes::OutData > outData_;

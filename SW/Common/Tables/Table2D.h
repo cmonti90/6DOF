@@ -19,7 +19,12 @@ class Table2D : public Table< T >
     virtual ~Table2D();
 
     T LookUp( const T fValue1, const T fValue2, bool extrapolate = false );
-    void GetIndex( int& index1, T faScale1[], int& index2, T faScale2[] );
+
+    T LookUp( const int index1, const T faScale1[],
+              const int index2, const T faScale2[] );
+
+    void GetIndex( int& index1, T faScale1[],
+                   int& index2, T faScale2[] );
 
   private:
 
@@ -27,6 +32,7 @@ class Table2D : public Table< T >
 
     T scale1_[2];
     T scale2_[2];
+
     int index1_;
     int index2_;
 
@@ -82,22 +88,38 @@ Table2D< T >::~Table2D()
 template< typename T >
 T Table2D< T >::LookUp( const T fValue1, const T fValue2, bool extrapolate )
 {
-    TableIndexAndScale( fValue1, fpInput1_, input1Length_, extrapolate, index1_, scale1_ );
-    TableIndexAndScale( fValue2, fpInput2_, input2Length_, extrapolate, index2_, scale2_ );
+    this->TableIndexAndScale( fValue1, fpInput1_, input1Length_, extrapolate, index1_, scale1_ );
+    this->TableIndexAndScale( fValue2, fpInput2_, input2Length_, extrapolate, index2_, scale2_ );
 
     return ComputeValue();
 }
 
 
 template< typename T >
-void Table2D< T >::GetIndex( int& index1, T faScale1[], int& index2, T faScale2[] )
+T Table2D< T >::LookUp( const int index1, const T faScale1[],
+                        const int index2, const T faScale2[] )
 {
-    index1 = index1_;
-    index2 = index2_;
+    index1_    = index1;
+    scale1_[0] = faScale1[0];
+    scale1_[1] = faScale1[1];
 
+    index2_    = index2;
+    scale2_[0] = faScale2[0];
+    scale2_[1] = faScale2[1];
+
+    return ComputeValue();
+}
+
+
+template< typename T >
+void Table2D< T >::GetIndex( int& index1, T faScale1[],
+                             int& index2, T faScale2[] )
+{
+    index1      = index1_;
     faScale1[0] = scale1_[0];
     faScale1[1] = scale1_[1];
 
+    index2      = index2_;
     faScale2[0] = scale2_[0];
     faScale2[1] = scale2_[1];
 }
@@ -108,7 +130,7 @@ T Table2D< T >::ComputeValue()
 {
     const int indexp1 = index1_ + 1;
     const int indexp2 = index2_ + 1;
-    
+
     return ( scale2_[0] * scale1_[0] * fpOutput_[ index2_ ][ index1_ ] +
              scale2_[0] * scale1_[1] * fpOutput_[ index2_ ][ indexp1 ] +
              scale2_[1] * scale1_[0] * fpOutput_[ indexp2 ][ index1_ ] +

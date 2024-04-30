@@ -9,17 +9,20 @@
 
 struct ImuDeserializedData
 {
+    myMath::Vector3d measVel;
     myMath::Vector3d measAccel;
     myMath::Vector3d measOmega;
 
     ImuDeserializedData()
-        : measAccel( 0.0 )
+        : measVel( 0.0 )
+        , measAccel( 0.0 )
         , measOmega( 0.0 )
     {
     }
 
     virtual void initialize()
     {
+        measVel   = 0.0;
         measAccel = 0.0;
         measOmega = 0.0;
     }

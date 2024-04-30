@@ -1,11 +1,15 @@
 #ifndef LowRateAutopilotAlgorithm_H
 #define LowRateAutopilotAlgorithm_H
 
-#include "ApGains.h"
-
 #include "myMath.h"
 
 #include "LowRateAutopilotTypes.h"
+
+#include <memory>
+
+class LowRateDigitalFilterLowPass2;
+class LowRateDigitalFilterComp;
+class LowRateDigitalFilterNotch2;
 
 class LowRateAutopilotAlgorithm
 {
@@ -14,27 +18,26 @@ class LowRateAutopilotAlgorithm
     LowRateAutopilotAlgorithm();
     virtual ~LowRateAutopilotAlgorithm();
 
-    void initialize();
     void process( const LowRateAutopilotTypes::InData& inData, LowRateAutopilotTypes::OutData& outData );
     void finalize();
 
   protected:
 
-    void SetDefaults();
-
-    void CalculateGainsAndLimits();
-
     void ProcessNavigationData( const LowRateAutopilotTypes::InData& inData );
 
-    void LRMTAPGains();
+    void CalculateGainsAndLimits( const LowRateAutopilotTypes::InData& inData );
 
-    void KssRateCommands();
+    void LRMTAPGains(const LowRateAutopilotTypes::InData& inData );
+
+    void KssRateCommands( const LowRateAutopilotTypes::InData& inData );
 
     void LRMTAPLimits();
 
     void LRMTAPFilters();
 
     float Orientation( const float angle ) const;
+
+    void BuildOutput( LowRateAutopilotTypes::OutData& outData );
 
     /////////////////////
     ///   Variables   ///
@@ -50,7 +53,7 @@ class LowRateAutopilotAlgorithm
 
     float aX_; // Missile acceleration in AP X-axis   [m/s^2]
 
-    myMath::Vector3f gravity_; // Gravity vector in AP frame   [m/s^2]
+    myMath::Vector3f gravityAp_; // Gravity vector in AP frame   [m/s^2]
 
     float maxG_;                // Maximum G limit for the missile      [G's]
     float cmdErrorLimit_;       // Acceleration Error Magnitude Limit   [m/s^2]
@@ -62,6 +65,20 @@ class LowRateAutopilotAlgorithm
 
     float ratio_;  // Flight Condition: Burn Ratio (Normalized CG Position) [-]
     float gAngle_; // Angle of Guidance Commands (in Polar Coordinates)     [rad]
+    float timeCons_; // Estimated Autopilot Time Constant                   [s]
+
+    int indexRatio_;    // Ratio Table Look-up Index                    [-]
+    int indexAltitude_; // Altitude Table Look-up Index                 [-]
+    int indexMach_;     // Mach Table Look-up Index                     [-]
+    int indexAlphaRatio_; // Alpha Ratio Table Look-up Index            [-]
+    int indexBetaRatio_;  // Beta Ratio Table Look-up Index             [-]
+    int indexAngle_;      // Angle Table Look-up Index                  [-]
+    float scaleRatio_;    // Ratio Table Look-up Scale Factors          [-]
+    float scaleAltitude_; // Altitude Table Look-up Scale Factors       [-]
+    float scaleMach_;     // Mach Table Look-up Scale Factors           [-]
+    float scaleAlphaRatio_; // Alpha Ratio Table Look-up Scale Factors  [-]
+    float scaleBetaRatio_;  // Beta Ratio Table Look-up Scale Factors   [-]
+    float scaleAngle_;      // Angle Table Look-up Scale Factors        [-]
 
     float rollLowPassFreq_;         // Roll Low Pass Filter Frequency               [Hz]
     float rollLowPassDampingRatio_; // Roll Low Pass Filter Damping Ratio           [-]
@@ -96,16 +113,16 @@ class LowRateAutopilotAlgorithm
     float lateralNotch1FilterParameters_ [5]; // Lateral Notch Filter 1 Parameters
     float lateralNotch2FilterParameters_ [5]; // Lateral Notch Filter 2 Parameters
 
-/*
-    LowRateDigitalFilterBase* rollLowPassFilter_; // Class with Low Filter Coefficient Look-up Routines
-    LowRateDigitalFilterBase* rollCompFilter_;    // Class with Compensation Filter Coefficient Look-up Routines
-    LowRateDigitalFilterBase* rollNotchFilter_;   // Class with Notch Filter Coefficient Look-up Routines
 
-    LowRateDigitalFilterBase* lateralLowPassFilter_; // Class with Low Filter Coefficient Look-up Routines
-    LowRateDigitalFilterBase* lateralCompFilter_;    // Class with Compensation Filter Coefficient Look-up Routines
-    LowRateDigitalFilterBase* lateralNotch1Filter_;  // Class with Notch Filter 1 Coefficient Look-up Routines
-    LowRateDigitalFilterBase* lateralNotch2Filter_;  // Class with Notch Filter 2 Coefficient Look-up Routines
-*/
+    std::unique_ptr< LowRateDigitalFilterLowPass2 > rollLowPassFilter_; // Class with Low Filter Coefficient Look-up Routines
+    std::unique_ptr< LowRateDigitalFilterComp     > rollCompFilter_;    // Class with Compensation Filter Coefficient Look-up Routines
+    std::unique_ptr< LowRateDigitalFilterNotch2   > rollNotchFilter_;   // Class with Notch Filter Coefficient Look-up Routines
+
+    std::unique_ptr< LowRateDigitalFilterLowPass2 > lateralLowPassFilter_; // Class with Low Filter Coefficient Look-up Routines
+    std::unique_ptr< LowRateDigitalFilterComp     > lateralCompFilter_;    // Class with Compensation Filter Coefficient Look-up Routines
+    std::unique_ptr< LowRateDigitalFilterNotch2   > lateralNotch1Filter_;  // Class with Notch Filter 1 Coefficient Look-up Routines
+    std::unique_ptr< LowRateDigitalFilterNotch2   > lateralNotch2Filter_;  // Class with Notch Filter 2 Coefficient Look-up Routines
+
 
   private:
 

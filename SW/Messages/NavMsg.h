@@ -7,70 +7,95 @@
 
 struct NavData
 {
-    double posEci_raw[3];
-    double velEci_raw[3];
-    double accEci_raw[3];
+    float time;
 
-    double posEcef_raw[3];
-    double velEcef_raw[3];
-    double accEcef_raw[3];
+    float posEci_raw[3];
+    float velEci_raw[3];
+    float accEci_raw[3];
 
-    double eulerAngs_raw[3];
-    double eulerAngRates_raw[3];
+    float posEcef_raw[3];
+    float velEcef_raw[3];
+    float accEcef_raw[3];
 
-    double bodyFromNed_raw[3][3];
+    float eulerAngs_raw[3];
+    float eulerAngRates_raw[3];
 
-    double angleOfAttack;
-    double angleOfSideslip;
+    float bodyFromEcef_raw[3][3];
+    float bodyFromNed_raw[3][3];
 
-    double angleOfAttackDot;
-    double angleOfSideslipDot;
+    float angleOfAttack;
+    float angleOfSideslip;
 
-    double altSeaLevel;
+    float angleOfAttackDot;
+    float angleOfSideslipDot;
+
+    float altSeaLevel;
+
+    float gravityEcef_raw[3];
+
+    float mach;
 
     void Default()
     {
-        angleOfAttack = 0.0;
-        angleOfSideslip = 0.0;
+        time = 0.0f;
 
-        angleOfAttackDot = 0.0;
-        angleOfSideslipDot = 0.0;
+        angleOfAttack   = 0.0f;
+        angleOfSideslip = 0.0f;
 
-        altSeaLevel = 0.0;
+        angleOfAttackDot   = 0.0f;
+        angleOfSideslipDot = 0.0f;
 
-        for (unsigned int i{0u}; i < 3u; i++)
+        altSeaLevel = 0.0f;
+
+        mach = 0.0f;
+
+        for ( unsigned int i{0u}; i < 3u; i++ )
         {
-            posEci_raw[i] = 0.0;
-            velEci_raw[i] = 0.0;
-            accEci_raw[i] = 0.0;
+            posEci_raw[i] = 0.0f;
+            velEci_raw[i] = 0.0f;
+            accEci_raw[i] = 0.0f;
 
-            posEcef_raw[i] = 0.0;
-            velEcef_raw[i] = 0.0;
-            accEcef_raw[i] = 0.0;
+            posEcef_raw[i] = 0.0f;
+            velEcef_raw[i] = 0.0f;
+            accEcef_raw[i] = 0.0f;
 
-            eulerAngs_raw[i] = 0.0;
-            eulerAngRates_raw[i] = 0.0;
+            eulerAngs_raw[i]     = 0.0f;
+            eulerAngRates_raw[i] = 0.0f;
+
+            gravityEcef_raw[i] = 0.0f;
+
+            for ( unsigned int j{0u}; i < 3u; i++ )
+            {
+                bodyFromEcef_raw[i][j] = 0.0f;
+                bodyFromNed_raw[i][j]  = 0.0f;
+            }
         }
     }
 
-    NavData() : posEci_raw(),
-                velEci_raw(),
-                accEci_raw(),
-                posEcef_raw(),
-                velEcef_raw(),
-                accEcef_raw(),
-                eulerAngs_raw(),
-                eulerAngRates_raw(),
-                angleOfAttack(),
-                angleOfSideslip(),
-                angleOfAttackDot(),
-                angleOfSideslipDot(),
-                altSeaLevel()
+    NavData()
+        : time()
+        , posEci_raw()
+        , velEci_raw()
+        , accEci_raw()
+        , posEcef_raw()
+        , velEcef_raw()
+        , accEcef_raw()
+        , eulerAngs_raw()
+        , eulerAngRates_raw()
+        , bodyFromEcef_raw()
+        , bodyFromNed_raw()
+        , angleOfAttack()
+        , angleOfSideslip()
+        , angleOfAttackDot()
+        , angleOfSideslipDot()
+        , altSeaLevel()
+        , gravityEcef_raw()
+        , mach()
     {
         Default();
     }
 };
 
-MESSAGE_PAYLOAD(NavMsg, NavData, NavMsgId)
+MESSAGE_PAYLOAD( NavMsg, NavData, NavMsgId )
 
 #endif /* B25DAB41_D1E7_4D25_9D19_0F2F59867A12 */

@@ -46,7 +46,7 @@ Table0D< T >::~Table0D()
 template< typename T >
 void Table0D< T >::LookUp( T fValue1, int& iIndex1, T faScale1[], bool extrapolate )
 {
-    TableIndexAndScale( fValue1, input1_, input1Length_, extrapolate, iIndex1, faScale1 );
+    this->TableIndexAndScale( fValue1, input1_, input1Length_, extrapolate, iIndex1, faScale1 );
 }
 
 #endif // TABLE0D_H

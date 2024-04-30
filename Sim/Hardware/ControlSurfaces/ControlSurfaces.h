@@ -20,10 +20,7 @@ class ControlSurfaces : public SimLib::HwIntf
     ~ControlSurfaces();
 
     // Getters
-    double getAileronLDeflection() const;
-    double getAileronRDeflection() const;
-    double getElevatorDeflection() const;
-    double getRudderDeflection() const;
+    void GetFinDeflections( float ( &finPosOut )[4] ) const;
 
   protected:
 
@@ -38,10 +35,10 @@ class ControlSurfaces : public SimLib::HwIntf
 
     std::unique_ptr< CtrlSurfTypes::InData > swInData_;
 
-    std::unique_ptr< Actuator > aileronL_;
-    std::unique_ptr< Actuator > aileronR_;
-    std::unique_ptr< Actuator > elevator_;
-    std::unique_ptr< Actuator > rudder_;
+    std::unique_ptr< Actuator > fin1_;
+    std::unique_ptr< Actuator > fin2_;
+    std::unique_ptr< Actuator > fin3_;
+    std::unique_ptr< Actuator > fin4_;
 
   private:
 
