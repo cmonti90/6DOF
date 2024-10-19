@@ -5,8 +5,8 @@
 
 #include "NavigationComponent.h"
 #include "GuidanceComponent.h"
-#include "HighRateAutopilotComponent.h"
-#include "LowRateAutopilotComponent.h"
+// #include "HighRateAutopilotComponent.h"
+// #include "LowRateAutopilotComponent.h"
 
 #include <iostream>
 
@@ -18,8 +18,8 @@ ProcModule::ProcModule( std::shared_ptr< PubSub::QueueMngr >& queueMngr )
     , autopilotThread               ( "AutopilotThread" )
     , pNavigationComponent          ( new NavigationComponent         ( queueMngr, pRtcClock ) )
     , pGuidanceComponent            ( new GuidanceComponent           ( queueMngr, pRtcClock ) )
-    , pHighRateAutopilotComponent   ( new HighRateAutopilotComponent  ( queueMngr, pRtcClock ) )
-    , pLowRateAutopilotComponent    ( new LowRateAutopilotComponent   ( queueMngr, pRtcClock ) )
+    // , pHighRateAutopilotComponent   ( new HighRateAutopilotComponent  ( queueMngr, pRtcClock ) )
+    // , pLowRateAutopilotComponent    ( new LowRateAutopilotComponent   ( queueMngr, pRtcClock ) )
 {
 }
 
@@ -36,6 +36,6 @@ void ProcModule::launch()
     AddCompToThread( guidanceThread, pGuidanceComponent.get() );
 
     RegisterThread( autopilotThread );
-    AddCompToThread( autopilotThread, pHighRateAutopilotComponent.get() );
-    AddCompToThread( autopilotThread, pLowRateAutopilotComponent.get() );
+    // AddCompToThread( autopilotThread, pHighRateAutopilotComponent.get() );
+    // AddCompToThread( autopilotThread, pLowRateAutopilotComponent.get() );
 }

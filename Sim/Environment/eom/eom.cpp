@@ -220,7 +220,7 @@ void eom::finalize()
 
 void eom::UpdateEulerStates()
 {
-    eulerAngles_ = q_nedToBody_.ToEuler( myMath::TaitBryanOrder::ZYX );
+    eulerAngles_ = q_nedToBody_.ToAngle( myMath::TaitBryanOrder::ZYX );
 
     eulerAnglesDot_[0] = angRatesBody_[0] + std::tan( eulerAngles_[1] ) * ( angRatesBody_[1] * std::sin( eulerAngles_[0] ) + angRatesBody_[2] * std::cos( eulerAngles_[0] ) );
     eulerAnglesDot_[1] = angRatesBody_[1] * std::cos( eulerAngles_[0] ) - angRatesBody_[2] * std::sin( eulerAngles_[0] );
@@ -367,45 +367,4 @@ void eom::UpdateWind()
     bodyFromWind_[2][0] = -sinAoA;
     bodyFromWind_[2][1] = 0.0;
     bodyFromWind_[2][2] = cosAoA;
-}
-
-//////////////////////////////////////////////////////
-/// @note   Name: quaternionDerivative
-/// @brief  Calculate quaternion derivative using
-///         angular rates
-/// @param  Roll rate in body frame
-/// @param  Pitch rate in body frame
-/// @param  Yaw rate in body frame
-/// @param  Quaternion from any frame to body frame
-/// @return Quaternion derivative
-//////////////////////////////////////////////////////
-myMath::QuaternionD eom::quaternionDerivative( const double p, const double q, const double r, myMath::QuaternionD q0 )
-{
-    q0.Normalize();
-
-    myMath::Matrix4d omega;
-
-    omega[0][0] = 0.0;
-    omega[0][1] = -r;
-    omega[0][2] = q;
-    omega[0][3] = p;
-
-    omega[1][0] = r;
-    omega[1][1] = 0.0;
-    omega[1][2] = -p;
-    omega[1][3] = q;
-
-    omega[2][0] = -q;
-    omega[2][1] = p;
-    omega[2][2] = 0.0;
-    omega[2][3] = r;
-
-    omega[3][0] = -p;
-    omega[3][1] = -q;
-    omega[3][2] = -r;
-    omega[3][3] = 0.0;
-
-    myMath::QuaternionD q_out = 0.5 * omega * q0;
-
-    return q_out;
 }

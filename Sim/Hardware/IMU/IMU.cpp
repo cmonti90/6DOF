@@ -6,13 +6,16 @@
 #include <math.h>
 #include <iostream>
 
-const int IMU::INTERUPT_RATE = 10;
+
 
 // IMU Properties
+const int    IMU::INTERUPT_RATE         = 10;
 const double IMU::ACCEL_BIAS            = 0.0;
 const double IMU::GYRO_BIAS             = 0.0;
 const double IMU::ACCEL_NOISE_DENSITY   = 0.0;
 const double IMU::GYRO_NOISE_DENSITY    = 0.0;
+
+
 
 IMU::IMU( const double runRate, const std::string name )
     : SimLib::HwIntf( runRate, name )

@@ -13,8 +13,8 @@ namespace TimePt
 // SW Component forward declarations
 class NavigationComponent;
 class GuidanceComponent;
-class HighRateAutopilotComponent;
-class LowRateAutopilotComponent;
+// class HighRateAutopilotComponent;
+// class LowRateAutopilotComponent;
 
 class ProcModule : public PubSub::Module
 {
@@ -37,8 +37,8 @@ private:
     // SW Components
     std::unique_ptr< NavigationComponent        > pNavigationComponent;
     std::unique_ptr< GuidanceComponent          > pGuidanceComponent;
-    std::unique_ptr< HighRateAutopilotComponent > pHighRateAutopilotComponent;
-    std::unique_ptr< LowRateAutopilotComponent  > pLowRateAutopilotComponent;
+    // std::unique_ptr< HighRateAutopilotComponent > pHighRateAutopilotComponent;
+    // std::unique_ptr< LowRateAutopilotComponent  > pLowRateAutopilotComponent;
 
 };
 

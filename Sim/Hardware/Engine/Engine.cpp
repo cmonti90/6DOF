@@ -35,6 +35,8 @@ void Engine::receiveQueueMngr( std::shared_ptr< PubSub::QueueMngr >& queueMngr )
 void Engine::initialize()
 {
     counter_ = 0u;
+
+    endpoint_.subscribe< HighRateAutopilotMsg >( *swInData_ );
 }
 
 void Engine::update()
@@ -60,9 +62,9 @@ void Engine::CheckForMessages()
     {
         switch ( label )
         {
-            case AutopilotMsg::MESSAGE_LABEL:
+            case HighRateAutopilotMsg::MESSAGE_LABEL:
 
-                endpoint_.receive< AutopilotMsg >( *swInData_ );
+                endpoint_.receive< HighRateAutopilotMsg >( *swInData_ );
 
                 break;
 

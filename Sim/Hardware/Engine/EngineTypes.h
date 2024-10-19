@@ -4,12 +4,12 @@
 #include "MessageContainer.h"
 #include "Payload.h"
 
-#include "AutopilotMsg.h"
+#include "HighRateAutopilotMsg.h"
 
 namespace EngineTypes
 {
     struct InData : Intf::MessageContainer<
-        InputPayload<AutopilotMsg>
+        InputPayload<HighRateAutopilotMsg>
     >
     {};
 }

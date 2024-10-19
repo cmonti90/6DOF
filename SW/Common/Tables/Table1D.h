@@ -19,7 +19,7 @@ class Table1D : public Table< T >
     virtual ~Table1D();
 
     T LookUp( const T fValue1, bool extrapolate = false );
-    T LookUp( const int index1, const T faScale[] )
+    T LookUp( const int index1, const T faScale[] );
     void GetIndex( int& index1, T faScale[] );
 
   private:
@@ -73,7 +73,7 @@ T Table1D< T >::LookUp( const T fValue1, bool extrapolate )
 
 
 template < typename T >
-T LookUp( const int index1, const T faScale[] )
+T Table1D< T >::LookUp( const int index1, const T faScale[] )
 {
     index1_    = index1;
     scale1_[0] = faScale[0];

@@ -105,8 +105,6 @@ class eom : public SimLib::EOMEcef
     double altSeaLevel_;
     double altGeodetic_;
 
-    myMath::QuaternionD quaternionDerivative( const double p, const double q, const double r, myMath::QuaternionD q0 );
-
     void UpdateEci();
     void UpdateNed();
     void UpdateBody();

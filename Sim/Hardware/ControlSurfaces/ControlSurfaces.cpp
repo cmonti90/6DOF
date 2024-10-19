@@ -31,7 +31,7 @@ void ControlSurfaces::initialize()
 {
     swInData_->reset();
 
-    endpoint_.subscribe< AutopilotMsg >( *swInData_ );
+    endpoint_.subscribe< HighRateAutopilotMsg >( *swInData_ );
 
     fin1_->initialize();
     fin2_->initialize();
@@ -43,10 +43,10 @@ void ControlSurfaces::update()
 {
     CheckForMessages();
 
-    fin1_->update( swInData_->finCmd[0] );
-    fin2_->update( swInData_->finCmd[1] );
-    fin3_->update( swInData_->finCmd[2] );
-    fin4_->update( swInData_->finCmd[3] );
+    fin1_->update( swInData_->fin1Cmd );
+    fin2_->update( swInData_->fin2Cmd );
+    fin3_->update( swInData_->fin3Cmd );
+    fin4_->update( swInData_->fin4Cmd );
 }
 
 void ControlSurfaces::finalize()
@@ -66,9 +66,9 @@ void ControlSurfaces::CheckForMessages()
     {
         switch ( label )
         {
-            case AutopilotMsg::MESSAGE_LABEL:
+            case HighRateAutopilotMsg::MESSAGE_LABEL:
 
-                endpoint_.receive< AutopilotMsg >( *swInData_ );
+                endpoint_.receive< HighRateAutopilotMsg >( *swInData_ );
 
                 break;
 
