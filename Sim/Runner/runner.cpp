@@ -7,5 +7,5 @@ int main()
 {
         sim_.go();
 
-        return 1;
+        return 0;
 }

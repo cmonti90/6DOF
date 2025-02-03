@@ -26,7 +26,9 @@ if __name__ == '__main__':
 
     print ("Running simulation")
 
-    executable = fileDir + "/../config/exec/runnerLink"
+    executable = fileDir + "/../bin/runner"
+
+    # test
     
     if args.debugger == "valgrind":
         os.system("valgrind --leak-check=full -s " + executable)

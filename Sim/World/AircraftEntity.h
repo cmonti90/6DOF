@@ -13,7 +13,7 @@ class eom;
 class IMU;
 class Aero;
 class Engine;
-class EarthGRAM;
+// class EarthGRAM;
 class MassProperties;
 class ControlSurfaces;
 
@@ -40,7 +40,7 @@ class AircraftEntity : public SimLib::Entity
     std::unique_ptr< IMU >            pImu;
     std::unique_ptr< Aero >           pAero;
     std::unique_ptr< Engine >         pEngine;
-    std::unique_ptr< EarthGRAM >      pEarthGram;
+    // std::unique_ptr< EarthGRAM >      pEarthGram;
     std::unique_ptr< MassProperties > pMassProps;
     std::unique_ptr< ControlSurfaces> pControlSurfaces;
 
