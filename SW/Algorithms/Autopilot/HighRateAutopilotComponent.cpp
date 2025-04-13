@@ -78,10 +78,11 @@ void HighRateAutopilotComponent::update( void )
                     break;
 
                 case NavMsg::MESSAGE_LABEL:
-
+                {
                     endpoint_.receive< NavMsg >( *inData_ );
 
                     break;
+                }
 
                 default:
 

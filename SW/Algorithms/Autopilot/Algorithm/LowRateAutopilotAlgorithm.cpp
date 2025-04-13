@@ -13,57 +13,57 @@
 
 namespace
 {
-    static float faDataRatio   [2] = {0.0f, 0.0f};
-    static float faDataAltitude[2] = {0.0f, 0.0f};
-    static float faDataMach    [2] = {0.0f, 0.0f};
+static float faDataRatio   [2] = {0.0f, 0.0f};
+static float faDataAltitude[2] = {0.0f, 0.0f};
+static float faDataMach    [2] = {0.0f, 0.0f};
 
-    static float faDataKp[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
-    static float faDataKq[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
-    static float faDataKr[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+static float faDataKp[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+static float faDataKq[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+static float faDataKr[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
 
-    static float faDataKPhi  [8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
-    static float faDataKTheta[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
-    static float faDataKPsi  [8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+static float faDataKPhi  [8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+static float faDataKTheta[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+static float faDataKPsi  [8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
 
-    static float faDataKAr[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
-    static float faDataKAz[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
-    static float faDataKAy[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+static float faDataKAr[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+static float faDataKAz[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+static float faDataKAy[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
 
-    static float faDataKAlpha[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
-    static float faDataKBeta [8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+static float faDataKAlpha[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+static float faDataKBeta [8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
 
-    static float faDataKPR[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
-    static float faDataKYR[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
-    static float faDataKRP[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
-    static float faDataKYP[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
-    static float faDataKRY[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
-    static float faDataKPY[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+static float faDataKPR[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+static float faDataKYR[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+static float faDataKRP[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+static float faDataKYP[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+static float faDataKRY[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+static float faDataKPY[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
 
-    static Table0D< float > table0DSubRatio   ( faDataRatio, 2 );
-    static Table0D< float > table0DSubAltitude( faDataAltitude, 2 );
-    static Table0D< float > table0DSubMach    ( faDataMach, 2 );
+static Table0D< float > table0DSubRatio   ( faDataRatio, 2 );
+static Table0D< float > table0DSubAltitude( faDataAltitude, 2 );
+static Table0D< float > table0DSubMach    ( faDataMach, 2 );
 
-    static Table3D< float > table3DSubKp( faDataMach, 2, faDataAltitude, 2, faDataRatio, 2, faDataKp, 8 );
-    static Table3D< float > table3DSubKq( faDataMach, 2, faDataAltitude, 2, faDataRatio, 2, faDataKq, 8 );
-    static Table3D< float > table3DSubKr( faDataMach, 2, faDataAltitude, 2, faDataRatio, 2, faDataKr, 8 );
+static Table3D< float > table3DSubKp( faDataMach, 2, faDataAltitude, 2, faDataRatio, 2, faDataKp, 8 );
+static Table3D< float > table3DSubKq( faDataMach, 2, faDataAltitude, 2, faDataRatio, 2, faDataKq, 8 );
+static Table3D< float > table3DSubKr( faDataMach, 2, faDataAltitude, 2, faDataRatio, 2, faDataKr, 8 );
 
-    static Table3D< float > table3DSubKPhi  ( faDataMach, 2, faDataAltitude, 2, faDataRatio, 2, faDataKPhi, 8 );
-    static Table3D< float > table3DSubKTheta( faDataMach, 2, faDataAltitude, 2, faDataRatio, 2, faDataKTheta, 8 );
-    static Table3D< float > table3DSubKPsi  ( faDataMach, 2, faDataAltitude, 2, faDataRatio, 2, faDataKPsi, 8 );
+static Table3D< float > table3DSubKPhi  ( faDataMach, 2, faDataAltitude, 2, faDataRatio, 2, faDataKPhi, 8 );
+static Table3D< float > table3DSubKTheta( faDataMach, 2, faDataAltitude, 2, faDataRatio, 2, faDataKTheta, 8 );
+static Table3D< float > table3DSubKPsi  ( faDataMach, 2, faDataAltitude, 2, faDataRatio, 2, faDataKPsi, 8 );
 
-    static Table3D< float > table3DSubKAr( faDataMach, 2, faDataAltitude, 2, faDataRatio, 2, faDataKAr, 8 );
-    static Table3D< float > table3DSubKAz( faDataMach, 2, faDataAltitude, 2, faDataRatio, 2, faDataKAz, 8 );
-    static Table3D< float > table3DSubKAy( faDataMach, 2, faDataAltitude, 2, faDataRatio, 2, faDataKAy, 8 );
+static Table3D< float > table3DSubKAr( faDataMach, 2, faDataAltitude, 2, faDataRatio, 2, faDataKAr, 8 );
+static Table3D< float > table3DSubKAz( faDataMach, 2, faDataAltitude, 2, faDataRatio, 2, faDataKAz, 8 );
+static Table3D< float > table3DSubKAy( faDataMach, 2, faDataAltitude, 2, faDataRatio, 2, faDataKAy, 8 );
 
-    static Table3D< float > table3DSubKAlpha( faDataMach, 2, faDataAltitude, 2, faDataRatio, 2, faDataKAlpha, 8 );
-    static Table3D< float > table3DSubKBeta ( faDataMach, 2, faDataAltitude, 2, faDataRatio, 2, faDataKBeta, 8 );
+static Table3D< float > table3DSubKAlpha( faDataMach, 2, faDataAltitude, 2, faDataRatio, 2, faDataKAlpha, 8 );
+static Table3D< float > table3DSubKBeta ( faDataMach, 2, faDataAltitude, 2, faDataRatio, 2, faDataKBeta, 8 );
 
-    static Table3D< float > table3DSubIKPR( faDataMach, 2, faDataAltitude, 2, faDataRatio, 2, faDataKPR, 8 );
-    static Table3D< float > table3DSubIKYR( faDataMach, 2, faDataAltitude, 2, faDataRatio, 2, faDataKYR, 8 );
-    static Table3D< float > table3DSubIKRP( faDataMach, 2, faDataAltitude, 2, faDataRatio, 2, faDataKRP, 8 );
-    static Table3D< float > table3DSubIKYP( faDataMach, 2, faDataAltitude, 2, faDataRatio, 2, faDataKYP, 8 );
-    static Table3D< float > table3DSubIKRY( faDataMach, 2, faDataAltitude, 2, faDataRatio, 2, faDataKRY, 8 );
-    static Table3D< float > table3DSubIKPY( faDataMach, 2, faDataAltitude, 2, faDataRatio, 2, faDataKPY, 8 );
+static Table3D< float > table3DSubIKPR( faDataMach, 2, faDataAltitude, 2, faDataRatio, 2, faDataKPR, 8 );
+static Table3D< float > table3DSubIKYR( faDataMach, 2, faDataAltitude, 2, faDataRatio, 2, faDataKYR, 8 );
+static Table3D< float > table3DSubIKRP( faDataMach, 2, faDataAltitude, 2, faDataRatio, 2, faDataKRP, 8 );
+static Table3D< float > table3DSubIKYP( faDataMach, 2, faDataAltitude, 2, faDataRatio, 2, faDataKYP, 8 );
+static Table3D< float > table3DSubIKRY( faDataMach, 2, faDataAltitude, 2, faDataRatio, 2, faDataKRY, 8 );
+static Table3D< float > table3DSubIKPY( faDataMach, 2, faDataAltitude, 2, faDataRatio, 2, faDataKPY, 8 );
 
 } // namespace
 
